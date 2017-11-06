@@ -27,7 +27,7 @@ class SubControlSet(object):
             raise ValueError("Can only assign a SubControl style.")
         # value._is_root = False
         # value._parent = instance
-        instance.__setitem__(self.name, new_style)
+        instance.__setitem__(self.name, value)
 
 
 class SubControlSetter(qstylizer.setter.Setter):
