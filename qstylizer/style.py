@@ -68,16 +68,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self._is_root = is_root
         self._attributes = self.get_attributes()
 
-    def __getitem__(self, key):
-        """Override the retrieving of a value from dictionary.
-
-        Find or create style in the key's hash location.
-
-        :param key: The dictionary key
-
-        """
-        return self._find_or_create_value_from_name(key)
-
     def _find_or_create_value_from_name(self, name):
         """Find or create a value from a string key.
 
@@ -153,40 +143,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         new_style = class_(name=name_stripped, parent=self,
                            is_root=False)
         self.__setitem__(name_stripped, new_style)
-
-    def __getattr__(self, name):
-        """Override the retrieving of the attribute.
-
-        If attribute starts with an underscore, return the attribute from
-        the object's __dict__ otherwise retrieve it from the ordered dict.
-
-        :param name: String name of attribute to retrieve
-
-        """
-        if name.startswith("_"):
-            return self.__getattribute__(name)
-        return self.__getitem__(name)
-
-    def __delattr__(self, name):
-        """Override the deleting of an attribute.
-
-        If attribute starts with an underscore, delete the attribute from
-        the object's __dict__ otherwise delete it from the ordered dict.
-
-        :param name: String name of attribute to delete
-
-        """
-        if name in self.__dict__:
-            return super(Style, self).__delattr__(name)
-        return self.__delitem__(name)
-
-    def __setattr__(self, name, val):
-        if name.startswith("_"):
-            return super(Style, self).__setattr__(name, val)
-        elif name in self._attributes:
-            return self._attributes[name].__set__(self, val)
-        name = name.replace('_', '-')
-        return self.__setitem__(name, val)
 
     @property
     def identifier(self):
@@ -272,6 +228,50 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             if isinstance(value, Style):
                 stylesheet += value.stylesheet()
         return stylesheet
+
+    def __getitem__(self, key):
+        """Override the retrieving of a value from dictionary.
+
+        Find or create style in the key's hash location.
+
+        :param key: The dictionary key
+
+        """
+        return self._find_or_create_value_from_name(key)
+
+    def __getattr__(self, name):
+        """Override the retrieving of the attribute.
+
+        If attribute starts with an underscore, return the attribute from
+        the object's __dict__ otherwise retrieve it from the ordered dict.
+
+        :param name: String name of attribute to retrieve
+
+        """
+        if name.startswith("_"):
+            return self.__getattribute__(name)
+        return self.__getitem__(name)
+
+    def __delattr__(self, name):
+        """Override the deleting of an attribute.
+
+        If attribute starts with an underscore, delete the attribute from
+        the object's __dict__ otherwise delete it from the ordered dict.
+
+        :param name: String name of attribute to delete
+
+        """
+        if name in self.__dict__:
+            return super(Style, self).__delattr__(name)
+        return self.__delitem__(name)
+
+    def __setattr__(self, name, val):
+        if name.startswith("_"):
+            return super(Style, self).__setattr__(name, val)
+        elif name in self._attributes:
+            return self._attributes[name].__set__(self, val)
+        name = name.replace('_', '-')
+        return self.__setitem__(name, val)
 
     def __deepcopy__(self, memo):
         cls = self.__class__
