@@ -139,6 +139,20 @@ def test_prop_semicolon(css):
     assert css.QComboBox.color == "red"
 
 
+def test_deepcopy(css):
+    import copy
+    css.QCheckBox.indicator.hover.border = "none"
+    css.QCheckBox.indicator.background_color = "red"
+    indicator = copy.deepcopy(css.QCheckBox.indicator)
+    indicator.color = "yellow"
+    indicator.hover.border = "1px solid green"
+    assert indicator is not css.QCheckBox.indicator
+    assert "color" in indicator.keys()
+    assert "color" not in css.QCheckBox.indicator.keys()
+    assert css.QCheckBox.indicator.hover.border == "none"
+    assert indicator.hover.border == "1px solid green"
+
+
 def test_assign_subcontrol(css):
     import qstylizer.style
     indicator = qstylizer.style.SubControl("indicator")
@@ -150,4 +164,8 @@ def test_assign_subcontrol(css):
     css.QComboBox.indicator = indicator
     css.QCheckBox.indicator = indicator
 
-    print css.stylesheet()
+    assert css.QCheckBox.indicator is not css.QComboBox.indicator
+    assert css.QCheckBox.indicator.identifier == "QCheckBox::indicator"
+    assert css.QComboBox.indicator.identifier == "QComboBox::indicator"
+
+
