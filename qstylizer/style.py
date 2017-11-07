@@ -35,7 +35,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     _pseudostates = qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
 
     @classmethod
-    def _subclass_from_name(cls, name):
+    def subclass_from_name(cls, name):
         """Determine subclass from string name.
 
         :param name: name of type string
@@ -149,7 +149,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         name_stripped = name.replace(":", "")
-        class_ = self._subclass_from_name(name)
+        class_ = self.subclass_from_name(name)
         new_style = class_(name=name_stripped, parent=self,
                            is_root=False)
         self.__setitem__(name_stripped, new_style)
