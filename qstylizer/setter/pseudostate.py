@@ -1,4 +1,6 @@
 
+import copy
+
 import qstylizer.setter
 
 
@@ -23,8 +25,9 @@ class PseudoStateSet(object):
         import qstylizer.style
         if not isinstance(value, qstylizer.style.PseudoState):
             raise ValueError("Can only assign a PseudoState style.")
-        # value._is_root = False
-        # value._parent = instance
+        value = copy.deepcopy(value)
+        value._is_root = False
+        value._parent = instance
         instance.__setitem__(self.name, value)
 
 

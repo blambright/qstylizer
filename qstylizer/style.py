@@ -1,5 +1,6 @@
 
 import re
+import copy
 import collections
 
 import qstylizer.setter.prop
@@ -271,6 +272,21 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             if isinstance(value, Style):
                 stylesheet += value.stylesheet()
         return stylesheet
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, copy.deepcopy(v, memo))
+        result.clear()
+        for k, v in self.items():
+            if isinstance(v, Style):
+                v._parent = result
+                v._is_root = False
+            result.__setitem__(k, copy.deepcopy(v, memo))
+        result._parent = self._parent
+        return result
 
     def __repr__(self, *args, **kwargs):
         return self.identifier
