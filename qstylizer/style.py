@@ -53,6 +53,20 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             class_ = ObjectProperty
         return class_
 
+    @classmethod
+    def split_name(cls, name):
+        """Split the name based on the _split_regex.
+
+        Return a list of each component.
+        Example:
+            name = "QObject::subcontrol:pseudostate"
+            return value = ["QObject", "::subcontrol", ":pseudostate"]
+
+        :param name: String name
+
+        """
+        return re.findall(cls._split_regex, name)[:-1]
+
     def __init__(self, name=None, parent=None, is_root=True):
         """Initialize the style dictionary.
 
@@ -120,7 +134,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: String to split
 
         """
-        split_names = re.findall(self._split_regex, name)[:-1]
+        split_names = self.split_name(name)
         curr_key = split_names[0]
         first_name = curr_key.replace(":", "")
         remaining = name.split(curr_key, 1)[-1]
