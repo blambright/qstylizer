@@ -124,7 +124,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         curr_key = split_names[0]
         first_name = curr_key.replace(":", "")
         remaining = name.split(curr_key, 1)[-1]
-        if self.get(first_name) is None:
+        if self._find_value_from_name(first_name) is None:
             self._create_substyle_from_name(curr_key)
         if remaining and remaining != curr_key:
             return self._find_value_from_name(first_name).__getitem__(remaining)
