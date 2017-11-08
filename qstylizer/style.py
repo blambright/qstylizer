@@ -54,8 +54,8 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return class_
 
     @classmethod
-    def split_name(cls, name):
-        """Split the name based on the _split_regex.
+    def split_identifier(cls, identifier):
+        """Split the identifier based on the _split_regex.
 
         Return a list of each component.
         Example:
@@ -65,7 +65,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: String name
 
         """
-        return re.findall(cls._split_regex, name)[:-1]
+        return re.findall(cls._split_regex, identifier)[:-1]
 
     def __init__(self, name=None, parent=None, is_root=True):
         """Initialize the style dictionary.
@@ -134,7 +134,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: String to split
 
         """
-        split_names = self.split_name(name)
+        split_names = self.split_identifier(name)
         curr_key = split_names[0]
         first_name = curr_key.replace(":", "")
         remaining = name.split(curr_key, 1)[-1]
