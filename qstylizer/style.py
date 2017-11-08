@@ -138,11 +138,12 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         curr_key = split_names[0]
         first_name = curr_key.replace(":", "")
         remaining = name.split(curr_key, 1)[-1]
-        if self._find_value_from_name(first_name) is None:
-            self._create_substyle_from_name(curr_key)
+        style = self._find_value_from_name(first_name)
+        if style is None:
+            style = self._create_substyle_from_name(curr_key)
         if remaining and remaining != curr_key:
-            return self._find_value_from_name(first_name).__getitem__(remaining)
-        return self._find_value_from_name(first_name)
+            return style.__getitem__(remaining)
+        return style
 
     def _create_substyle_from_name(self, name):
         """Create substyle from name.
@@ -155,9 +156,10 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         name_stripped = name.replace(":", "")
         class_ = self.subclass_from_name(name)
-        new_style = class_(name=name_stripped, parent=self,
+        style = class_(name=name_stripped, parent=self,
                            is_root=False)
-        self.__setitem__(name_stripped, new_style)
+        self.__setitem__(name_stripped, style)
+        return style
 
     @property
     def identifier(self):
