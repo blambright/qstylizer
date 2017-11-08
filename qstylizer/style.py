@@ -17,12 +17,12 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     Example structure::
 
         <Style>{
-            <QClassStyle name="QCheckBox">: {
+            "QCheckBox": <QClassStyle name="QCheckBox">{
                 "color": "red",
                 "background-color": "black",
-                <SubControl name="indicator">: {
+                "indicator: <SubControl name="indicator">{
                     "border": "1px solid green",
-                    <PseudoState name="hover">: {
+                    "hover": <PseudoState name="hover">{
                         "background-color": "green",
                     }
                 }
