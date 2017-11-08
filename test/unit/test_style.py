@@ -1,171 +1,179 @@
 
+
 import pytest
+import mock
 
 
-@pytest.fixture
-def css():
-    import qstylizer.style
-    # css = qstylizer.style.Style()
-    return qstylizer.style.Style()
+@pytest.mark.parametrize(
+    "name, expected_subclass",
+    [
+        ("indicator", "SubControl"),
+        ("has-children", "PseudoState"),
+        ("::subcontrol", "SubControl"),
+        (":pseudostate", "PseudoState"),
+        ("#objectName", "ObjectStyle"),
+        ("[echoMode=2]", "ObjectProperty"),
+        (" QFrame", "ChildClassStyle"),
+        ("QObject", "ClassStyle")
+    ]
+)
+def test_subclass_from_name(css, name, expected_subclass):
+    type(css)._subcontrols = mock.PropertyMock(
+        return_value={"indicator", "add_line", "branch"}
+    )
+    type(css)._pseudostates = mock.PropertyMock(
+        return_value={"alternate", "has-children", "branch"}
+    )
+    assert css.subclass_from_name(name).__name__ == expected_subclass
 
 
-def test_style(css):
-    assert css._parent is None
-    assert css.QWidget == css.QWidget.item._parent
+@pytest.mark.parametrize(
+    "identifier, expected_result",
+    [
+        ("QComboBox", ["QComboBox"]),
+        ("QComboBox:pseudostate", ["QComboBox", ":pseudostate"]),
+        ("QComboBox::indicator:pseudostate", ["QComboBox", "::indicator", ":pseudostate"]),
+        ("QWidget[echoMode=2]", ["QWidget", "[echoMode=2]"]),
+        ("QWidget#objectName", ["QWidget", "#objectName"]),
+        ("QWidget QFrame", ["QWidget", " QFrame"]),
+        ("#objectName", ["#objectName"]),
+        ("::pseudostate", ["::pseudostate"]),
+    ]
+)
+def test_split_identifier(css, identifier, expected_result):
+    assert css.split_identifier(identifier) == expected_result
 
 
-def test_style_cascade(css):
-    css.value = 2
-    assert css.value == 2
-    assert css["value"] == 2
-    css["value"] = 3
-    assert css["value"] == 3
-    assert css.value == 3
-    css.QWidget.color = "green"
-    assert css.QWidget.color == "green"
-    assert css["QWidget"]["color"] == "green"
-    css["QWidget"]["color"] = "blue"
-    assert css["QWidget"]["color"] == "blue"
-    assert css.QWidget.color == "blue"
+@pytest.mark.parametrize(
+    "name, found_value, expected_result",
+    [
+        ("QComboBox, QCheckBox", None, "StyleList"),
+        ("QComboBox", "Value", "Value"),
+        ("QComboBox", None, "Value"),
+    ]
+)
+def test_find_or_create_value_from_name(
+    mocker, css, name, found_value, expected_result
+):
+    mocked_create_substyle_list = mocker.patch.object(
+        css, "_create_substyle_list", return_value="StyleList"
+    )
+    mocked_create_substyles_from_name = mocker.patch.object(
+        css, "_create_substyles_from_name", return_value=expected_result
+    )
+    mocked_find_value_from_name = mocker.patch.object(
+        css, "_find_value_from_name", return_value=found_value
+    )
+    assert css._find_or_create_value_from_name(name) == expected_result
+    mocked_find_value_from_name.assert_called_once_with(name)
+    if "," in name:
+        mocked_create_substyle_list.assert_called_once_with(name)
+    elif not found_value:
+        mocked_create_substyles_from_name.assert_called_once_with(name)
 
 
-def test_delete_style(css):
-    css.QWidget.color = "blue"
-    assert "color" in css.QWidget.keys()
-    del css.QWidget.color
-    assert "color" not in css.QWidget.keys()
-    css.QWidget["color"] = "blue"
-    assert "color" in css.QWidget.keys()
-    del css.QWidget["color"]
-    assert "color" not in css.QWidget.keys()
+def test_find_value_from_name(mocker, css):
+    # expected_result = "Value"
+    # name = "Test"
+    # mocked_function = mocker.patch.object(
+    #     css, "get", return_value=expected_result
+    # )
+    # # print css.get
+    # # assert css._find_value_from_name(name) == expected_result
+    # mocked_function.assert_called_once_with(name)
+    pass
 
 
-def test_subcontrol(css):
-    import qstylizer.style
-    assert type(css.QWidget.item) == qstylizer.style.SubControl
+def test_create_substyle_list(css):
+    pass
 
 
-def test_pseudo_state(css):
-    import qstylizer.style
-    assert type(css.QWidget.item.selected) == qstylizer.style.PseudoState
+# @pytest.mark.parametrize(
+#     "name, curr_key, first, value, remaining", [
+#         ("QComboBox", "QComboBox", "QComboBox", ""),
+#         ("QComboBox::indicator", "QComboBox", "QComboBox", ""),
+#     ]
+# )
+# def test_create_substyles_from_name(
+#     mocker, css, name, curr_key, first, value, remaining
+# ):
+#     mocked_find_value_from_name = mocker.patch.object(
+#         css, "_find_value_from_name"
+#     )
+#     mocked_getitem = mocker.patch.object(
+#         mocked_find_value_from_name, "__getitem__"
+#     )
+#     mocked_create_substyle_from_name = mocker.patch.object(
+#         css, "_create_substyle_from_name"
+#     )
+#     css._create_substyles_from_name(name)
+#     mocked_find_value_from_name.assert_called_with(first)
+#     # mocked_create_substyle_from_name.assert_called_with(curr_key)
+
+
+def test_create_substyle_from_name(css):
+    pass
 
 
 def test_identifier(css):
-    assert css.QCheckBox.indicator.identifier == "QCheckBox::indicator"
-    assert css.QCheckBox.indicator.unchecked.identifier == "QCheckBox::indicator:unchecked"
-    assert css.QCheckBox.indicator.unchecked.hover.identifier == "QCheckBox::indicator:unchecked:hover"
-    assert css.Object.subcontrol.pseudostate.identifier == "Object::subcontrol:pseudostate"
-    assert css["Object::subcontrol:pseudostate"].identifier == "Object::subcontrol:pseudostate"
-    assert css.QLineEdit['[echoMode="2"]'].identifier == "QLineEdit[echoMode=\"2\"]"
-    assert css.Object["::subcontrol"][":pseudostate"].identifier == "Object::subcontrol:pseudostate"
-    assert css["QWidget#objectName"].identifier == "QWidget#objectName"
+    pass
 
 
-def test_style_list(css):
-    css["QCheckBox, QLineEdit, QFrame"].border = "none"
-    css["QWidget,#objectName"].border = "none"
-    css["*,QCheckBox::subcontrol:pseudostate"].margin = "none"
-    assert "QCheckBox" in css.keys()
-    assert "QLineEdit" in css.keys()
-    assert "QWidget" in css.keys()
-    assert "#objectName" in css.keys()
-    assert "border" in css.QWidget.keys()
-    assert "border" in css.QLineEdit.keys()
-    assert "margin" in css["QCheckBox::subcontrol:pseudostate"].keys()
-    print css.stylesheet()
+def test_name(css):
+    pass
 
 
-def test_style_style(css):
-    css.QCheckBox.indicator.unchecked.hover.border = "none"
-    css.QCheckBox.indicator.unchecked.hover.color = "green"
-    assert css.QCheckBox.indicator.unchecked.hover.style() == \
-           "QCheckBox::indicator:unchecked:hover {\n    border: none;\n    color: green;\n}\n"
+def test_parent(css):
+    pass
+
+
+def test_is_root(css):
+    pass
+
+
+def test_scope_operator(css):
+    pass
+
+
+def test_is_top_level(css):
+    pass
+
+
+def test_style(css):
+    pass
 
 
 def test_stylesheet(css):
-    css["*"].border = "none"
-    css.QFrame.border = "1px solid green"
-    css.QFrame.color = "green"
-    css.QCheckBox.border = "1px solid green"
-    css.QCheckBox.color = "green"
-    css.QCheckBox.indicator.background_color = "red"
-    css.QCheckBox.indicator.unchecked.border = "none"
-    css.QCheckBox.indicator.unchecked.background_color = "rgb(0,20,0)"
-    css.QCheckBox.indicator.unchecked.hover.background_color = "purple"
-    css.QLineEdit['[echoMode="2"]'].lineedit_password_character = 9679
-    css["QCheckBox::indicator:unchecked"].margin = 0
-
-    print
-    print css.stylesheet()
+    pass
 
 
-def test_empty_style(css):
-    css.QCheckBox.indicator.border = "none"
-    assert css.QCheckBox.style() == ""
+def test_getitem(css):
+    pass
 
 
-def test_subcontrol_set():
-    import qstylizer.style
-    qclass_style = qstylizer.style.ClassStyle("QObject")
-    with pytest.raises(ValueError):
-        qclass_style.text = "test"
-    qclass_style.text.color = "red"
-    print
-    print qclass_style.stylesheet()
+def test_getattr(css):
+    pass
 
 
-def test_pseudostate_set():
-    import qstylizer.style
-    indicator_style = qstylizer.style.SubControl("indicator")
-    with pytest.raises(ValueError):
-        indicator_style.pressed = "test"
-    indicator_style.pressed.color = "red"
-    print
-    print indicator_style.stylesheet()
+def test_delattr(css):
+    pass
 
 
-def test_subcontrol_options():
-    import qstylizer.setter.subcontrol
-    assert 'add-line' in qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()
-
-
-def test_pseudostate_options():
-    import qstylizer.setter.pseudostate
-    assert 'minimized' in qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
-
-
-def test_prop_semicolon(css):
-    css.QComboBox.color = "red;"
-    assert css.QComboBox.color == "red"
+def test_setattr(css):
+    pass
 
 
 def test_deepcopy(css):
-    import copy
-    css.QCheckBox.indicator.hover.border = "none"
-    css.QCheckBox.indicator.background_color = "red"
-    indicator = copy.deepcopy(css.QCheckBox.indicator)
-    indicator.color = "yellow"
-    indicator.hover.border = "1px solid green"
-    assert indicator is not css.QCheckBox.indicator
-    assert "color" in indicator.keys()
-    assert "color" not in css.QCheckBox.indicator.keys()
-    assert css.QCheckBox.indicator.hover.border == "none"
-    assert indicator.hover.border == "1px solid green"
+    pass
 
 
-def test_assign_subcontrol(css):
-    import qstylizer.style
-    indicator = qstylizer.style.SubControl("indicator")
-    indicator.background_color = "red"
-    indicator.unchecked.border = "none"
-    indicator.unchecked.background_color = "rgb(0,20,0)"
-    indicator.unchecked.hover.background_color = "purple"
+def test_repr(css):
+    pass
 
-    css.QComboBox.indicator = indicator
-    css.QCheckBox.indicator = indicator
 
-    assert css.QCheckBox.indicator is not css.QComboBox.indicator
-    assert css.QCheckBox.indicator.identifier == "QCheckBox::indicator"
-    assert css.QComboBox.indicator.identifier == "QComboBox::indicator"
+def test_str(css):
+    pass
+
+
 
 
