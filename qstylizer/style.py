@@ -325,7 +325,7 @@ class ClassStyle(Style,
 
 
 class ObjectStyle(ClassStyle):
-    """The ClassStyle definition.
+    """The ObjectStyle definition.
 
     Example object style name: "#objectName".
     Inherits from ClassStyle. Only difference is "#" is the scope operator.
