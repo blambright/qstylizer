@@ -158,8 +158,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         name_stripped = name.replace(":", "")
         class_ = self.subclass_from_name(name)
-        style = class_(name=name_stripped, parent=self,
-                           is_root=False)
+        style = class_(name=name_stripped, parent=self, is_root=False)
         self.__setitem__(name_stripped, style)
         return style
 
