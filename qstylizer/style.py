@@ -49,6 +49,8 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             class_ = PseudoState
         elif name.startswith("#"):
             class_ = ObjectStyle
+        elif name.startswith(" "):
+            class_ = ChildClassStyle
         elif "=" in name:
             class_ = ObjectProperty
         return class_
@@ -333,6 +335,21 @@ class ObjectStyle(ClassStyle):
     @property
     def scope_operator(self):
         return "#"
+
+
+class ChildClassStyle(ClassStyle):
+    """The ChildClassStyle definition.
+
+    Example object style name: " QFrame".
+    Inherits from ClassStyle.
+    QWidget QFrame {
+        property: value
+    }
+
+    """
+    @property
+    def scope_operator(self):
+        return " "
 
 
 class ObjectProperty(Style):
