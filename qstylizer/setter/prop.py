@@ -152,7 +152,7 @@ class PropSet(object):
     def __get__(self, instance, owner):
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.Style)
-        return instance.__getitem__(self.name)
+        return instance.find_value(self.name)
 
     def __set__(self, instance, value):
         import qstylizer.style
@@ -161,7 +161,7 @@ class PropSet(object):
             value = value.replace(";", "")
         except AttributeError:
             pass
-        instance.__setitem__(self.name, value)
+        instance.add_value(self.name, value)
 
 
 class PropSetter(qstylizer.setter.Setter):

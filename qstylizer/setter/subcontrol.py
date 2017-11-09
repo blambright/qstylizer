@@ -19,7 +19,7 @@ class SubControlSet(object):
                 parent=instance,
                 is_root=False
             )
-            instance.__setitem__(self.name, new_style)
+            instance.add_value(self.name, new_style)
         return instance.get(self.name)
 
     def __set__(self, instance, value):
@@ -29,7 +29,7 @@ class SubControlSet(object):
         value = copy.deepcopy(value)
         value._is_root = False
         value._parent = instance
-        instance.__setitem__(self.name, value)
+        instance.add_value(self.name, value)
 
 
 class SubControlSetter(qstylizer.setter.Setter):
