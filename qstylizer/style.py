@@ -85,6 +85,11 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self._is_root = is_root
         self._attributes = self.get_attributes()
 
+    @staticmethod
+    def _sanitize_key(name):
+        """Strip the key of colons and replace underscores with dashes."""
+        return str(name).replace(":", "").replace("_", "-")
+
     def find_or_create_value(self, name):
         """Find or create a value from a string key.
 
@@ -96,7 +101,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: The dictionary key
 
         """
-        name = str(name).replace("_", "-")
         value = self.find_value(name)
         if value is not None:
             return value
@@ -111,6 +115,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         Simply return the key's hash value in the ordered dict.
 
         """
+        key = self._sanitize_key(key)
         return self.get(key)
 
     def create_substyle_list(self, name):
@@ -155,14 +160,14 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: String name
 
         """
-        name_stripped = name.replace(":", "")
         class_ = self.subclass(name)
-        style = class_(name=name_stripped, parent=self, is_root=False)
-        self.add_item(name_stripped, style)
+        style = class_(name=name, parent=self, is_root=False)
+        self.add_item(name, style)
         return style
 
     def add_item(self, key, value):
         """Add item to ordered dictionary."""
+        key = self._sanitize_key(key)
         self.__setitem__(key, value)
 
     @property
@@ -192,7 +197,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     @name.setter
     def name(self, name):
-        self._name = name.replace("_", "-").replace(":", "")
+        self._name = self._sanitize_key(name)
 
     @property
     def parent(self):
@@ -291,7 +296,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             return super(Style, self).__setattr__(name, val)
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
-        name = name.replace('_', '-')
         return self.add_item(name, val)
 
     def __deepcopy__(self, memo):
