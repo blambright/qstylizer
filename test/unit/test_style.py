@@ -17,14 +17,14 @@ import mock
         ("QObject", "ClassStyle")
     ]
 )
-def test_subclass_from_name(css, name, expected_subclass):
+def test_subclass(css, name, expected_subclass):
     type(css)._subcontrols = mock.PropertyMock(
         return_value={"indicator", "add_line", "branch"}
     )
     type(css)._pseudostates = mock.PropertyMock(
         return_value={"alternate", "has-children", "branch"}
     )
-    assert css.subclass_from_name(name).__name__ == expected_subclass
+    assert css.subclass(name).__name__ == expected_subclass
 
 
 @pytest.mark.parametrize(
