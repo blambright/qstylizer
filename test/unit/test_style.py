@@ -52,7 +52,7 @@ def test_split_identifier(css, identifier, expected_result):
         ("QComboBox", None, "Value"),
     ]
 )
-def test_find_or_create_value_from_name(
+def test_find_or_create_value(
     mocker, css, name, found_value, expected_result
 ):
     mocked_create_substyle_list = mocker.patch.object(
@@ -64,7 +64,7 @@ def test_find_or_create_value_from_name(
     mocked_find_value_from_name = mocker.patch.object(
         css, "_find_value_from_name", return_value=found_value
     )
-    assert css._find_or_create_value_from_name(name) == expected_result
+    assert css._find_or_create_value(name) == expected_result
     mocked_find_value_from_name.assert_called_once_with(name)
     if "," in name:
         mocked_create_substyle_list.assert_called_once_with(name)

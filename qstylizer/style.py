@@ -85,7 +85,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self._is_root = is_root
         self._attributes = self.get_attributes()
 
-    def _find_or_create_value_from_name(self, name):
+    def _find_or_create_value(self, name):
         """Find or create a value from a string key.
 
         If the key value already exists, return the value.
@@ -255,7 +255,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param key: The dictionary key
 
         """
-        return self._find_or_create_value_from_name(key)
+        return self._find_or_create_value(key)
 
     def __getattr__(self, name):
         """Override the retrieving of the attribute.
