@@ -61,25 +61,25 @@ def test_find_or_create_value(
     mocked_create_substyles_from_name = mocker.patch.object(
         css, "_create_substyles_from_name", return_value=expected_result
     )
-    mocked_find_value_from_name = mocker.patch.object(
-        css, "_find_value_from_name", return_value=found_value
+    mocked_find_value = mocker.patch.object(
+        css, "_find_value", return_value=found_value
     )
     assert css._find_or_create_value(name) == expected_result
-    mocked_find_value_from_name.assert_called_once_with(name)
+    mocked_find_value.assert_called_once_with(name)
     if "," in name:
         mocked_create_substyle_list.assert_called_once_with(name)
     elif not found_value:
         mocked_create_substyles_from_name.assert_called_once_with(name)
 
 
-def test_find_value_from_name(mocker, css):
+def test_find_value(mocker, css):
     # expected_result = "Value"
     # name = "Test"
     # mocked_function = mocker.patch.object(
     #     css, "get", return_value=expected_result
     # )
     # # print css.get
-    # # assert css._find_value_from_name(name) == expected_result
+    # # assert css._find_value(name) == expected_result
     # mocked_function.assert_called_once_with(name)
     pass
 
@@ -97,17 +97,17 @@ def test_create_substyle_list(css):
 # def test_create_substyles_from_name(
 #     mocker, css, name, curr_key, first, value, remaining
 # ):
-#     mocked_find_value_from_name = mocker.patch.object(
-#         css, "_find_value_from_name"
+#     mocked_find_value = mocker.patch.object(
+#         css, "_find_value"
 #     )
 #     mocked_getitem = mocker.patch.object(
-#         mocked_find_value_from_name, "__getitem__"
+#         mocked_find_value, "__getitem__"
 #     )
 #     mocked_create_substyle_from_name = mocker.patch.object(
 #         css, "_create_substyle_from_name"
 #     )
 #     css._create_substyles_from_name(name)
-#     mocked_find_value_from_name.assert_called_with(first)
+#     mocked_find_value.assert_called_with(first)
 #     # mocked_create_substyle_from_name.assert_called_with(curr_key)
 
 

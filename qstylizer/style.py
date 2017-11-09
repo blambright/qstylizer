@@ -97,7 +97,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         name = str(name).replace("_", "-")
-        value = self._find_value_from_name(name)
+        value = self._find_value(name)
         if value is not None:
             return value
         if "," in name:
@@ -105,7 +105,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             return style_list
         return self._create_substyles_from_name(name)
 
-    def _find_value_from_name(self, key):
+    def _find_value(self, key):
         """Find value from key.
 
         Simply return the key's hash value in the ordered dict.
@@ -140,7 +140,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         curr_key = split_names[0]
         first_name = curr_key.replace(":", "")
         remaining = name.split(curr_key, 1)[-1]
-        style = self._find_value_from_name(first_name)
+        style = self._find_value(first_name)
         if style is None:
             style = self._create_substyle_from_name(curr_key)
         if remaining and remaining != curr_key:
