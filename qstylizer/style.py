@@ -120,7 +120,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         style_list = StyleList(name=name, parent=self, is_root=False)
-        self.__setitem__(name, style_list)
+        self._add_item(name, style_list)
         return style_list
 
     def _create_substyles(self, identifier):
@@ -144,7 +144,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         if style is None:
             style = self._create_substyle(curr_key)
         if remaining and remaining != curr_key:
-            return style.__getitem__(remaining)
+            return style._find_or_create_value(remaining)
         return style
 
     def _create_substyle(self, name):
@@ -159,8 +159,12 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         name_stripped = name.replace(":", "")
         class_ = self.subclass(name)
         style = class_(name=name_stripped, parent=self, is_root=False)
-        self.__setitem__(name_stripped, style)
+        self._add_item(name_stripped, style)
         return style
+
+    def _add_item(self, key, value):
+        """Add item to ordered dictionary."""
+        self.__setitem__(key, value)
 
     @property
     def identifier(self):
@@ -268,7 +272,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         if name.startswith("_"):
             return self.__getattribute__(name)
-        return self.__getitem__(name)
+        return self._find_or_create_value(name)
 
     def __delattr__(self, name):
         """Override the deleting of an attribute.
@@ -289,7 +293,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
         name = name.replace('_', '-')
-        return self.__setitem__(name, val)
+        return self._add_item(name, val)
 
     def __deepcopy__(self, memo):
         cls = self.__class__
@@ -302,7 +306,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             if isinstance(v, Style):
                 v._parent = result
                 v._is_root = False
-            result.__setitem__(k, copy.deepcopy(v, memo))
+            result._add_item(k, copy.deepcopy(v, memo))
         result._parent = self._parent
         return result
 
@@ -383,7 +387,7 @@ class StyleList(Style):
             return super(Style, self).__setattr__(name, val)
         style_names = self.name.split(",")
         for style_name in style_names:
-            self._parent.__getitem__(style_name).__setitem__(name, val)
+            self._parent._find_or_create_value(style_name)._add_item(name, val)
         return None
 
     @property
