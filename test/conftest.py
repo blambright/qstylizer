@@ -6,7 +6,7 @@ import pytest
 @pytest.fixture
 def css():
     import qstylizer.style
-    return qstylizer.style.Style()
+    return qstylizer.style.StyleSheet()
 
 
 @pytest.fixture

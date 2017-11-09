@@ -7,6 +7,7 @@ import collections
 import qstylizer.setter.prop
 import qstylizer.setter.subcontrol
 import qstylizer.setter.pseudostate
+import qstylizer.setter.qclass
 
 
 class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
@@ -318,6 +319,15 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     def __str__(self):
         return self.style()
+
+
+class StyleSheet(Style,
+                 qstylizer.setter.qclass.ClassStyleSetter):
+    """The StyleSheet definition.
+
+    Contains descriptors for all class and property options.
+
+    """
 
 
 class ClassStyle(Style,
