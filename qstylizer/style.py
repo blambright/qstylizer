@@ -85,7 +85,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self._is_root = is_root
         self._attributes = self.get_attributes()
 
-    def _find_or_create_value(self, name):
+    def find_or_create_value(self, name):
         """Find or create a value from a string key.
 
         If the key value already exists, return the value.
@@ -97,15 +97,15 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         name = str(name).replace("_", "-")
-        value = self._find_value(name)
+        value = self.find_value(name)
         if value is not None:
             return value
         if "," in name:
-            style_list = self._create_substyle_list(name)
+            style_list = self.create_substyle_list(name)
             return style_list
-        return self._create_substyles(name)
+        return self.create_substyles(name)
 
-    def _find_value(self, key):
+    def find_value(self, key):
         """Find value from key.
 
         Simply return the key's hash value in the ordered dict.
@@ -113,17 +113,17 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         return self.get(key)
 
-    def _create_substyle_list(self, name):
+    def create_substyle_list(self, name):
         """Create a StyleList object and add it to ordered dict.
 
         :param name: String name
 
         """
         style_list = StyleList(name=name, parent=self, is_root=False)
-        self._add_item(name, style_list)
+        self.add_item(name, style_list)
         return style_list
 
-    def _create_substyles(self, identifier):
+    def create_substyles(self, identifier):
         """Create substyles from identifier.
 
         Split the identifier into individual components based on the _split_regex
@@ -139,14 +139,14 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         split_names = self.split_identifier(identifier)
         curr_name = split_names[0]
         remaining = identifier.split(curr_name, 1)[-1]
-        style = self._find_value(curr_name.replace(":", ""))
+        style = self.find_value(curr_name.replace(":", ""))
         if style is None:
-            style = self._create_substyle(curr_name)
+            style = self.create_substyle(curr_name)
         if remaining and remaining != curr_name:
-            return style._find_or_create_value(remaining)
+            return style.find_or_create_value(remaining)
         return style
 
-    def _create_substyle(self, name):
+    def create_substyle(self, name):
         """Create substyle from name.
 
         Determine subclass from name, create an instance of the subclass,
@@ -158,10 +158,10 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         name_stripped = name.replace(":", "")
         class_ = self.subclass(name)
         style = class_(name=name_stripped, parent=self, is_root=False)
-        self._add_item(name_stripped, style)
+        self.add_item(name_stripped, style)
         return style
 
-    def _add_item(self, key, value):
+    def add_item(self, key, value):
         """Add item to ordered dictionary."""
         self.__setitem__(key, value)
 
@@ -258,7 +258,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param key: The dictionary key
 
         """
-        return self._find_or_create_value(key)
+        return self.find_or_create_value(key)
 
     def __getattr__(self, name):
         """Override the retrieving of the attribute.
@@ -271,7 +271,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         if name.startswith("_"):
             return self.__getattribute__(name)
-        return self._find_or_create_value(name)
+        return self.find_or_create_value(name)
 
     def __delattr__(self, name):
         """Override the deleting of an attribute.
@@ -292,7 +292,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
         name = name.replace('_', '-')
-        return self._add_item(name, val)
+        return self.add_item(name, val)
 
     def __deepcopy__(self, memo):
         cls = self.__class__
@@ -305,7 +305,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             if isinstance(v, Style):
                 v._parent = result
                 v._is_root = False
-            result._add_item(k, copy.deepcopy(v, memo))
+            result.add_item(k, copy.deepcopy(v, memo))
         result._parent = self._parent
         return result
 
@@ -386,7 +386,7 @@ class StyleList(Style):
             return super(Style, self).__setattr__(name, val)
         style_names = self.name.split(",")
         for style_name in style_names:
-            self._parent._find_or_create_value(style_name)._add_item(name, val)
+            self._parent.find_or_create_value(style_name).add_item(name, val)
         return None
 
     @property

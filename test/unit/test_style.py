@@ -53,18 +53,18 @@ def test_split_identifier(css, identifier, expected_result):
     ]
 )
 def test_find_or_create_value(
-    mocker, css, name, found_value, expected_result
+    mocker, css, style, name, found_value, expected_result
 ):
     mocked_create_substyle_list = mocker.patch.object(
-        css, "_create_substyle_list", return_value="StyleList"
+        style, "create_substyle_list", return_value="StyleList"
     )
     mocked_create_substyles = mocker.patch.object(
-        css, "_create_substyles", return_value=expected_result
+        style, "create_substyles", return_value=expected_result
     )
     mocked_find_value = mocker.patch.object(
-        css, "_find_value", return_value=found_value
+        style, "find_value", return_value=found_value
     )
-    assert css._find_or_create_value(name) == expected_result
+    assert css.find_or_create_value(name) == expected_result
     mocked_find_value.assert_called_once_with(name)
     if "," in name:
         mocked_create_substyle_list.assert_called_once_with(name)
@@ -79,7 +79,7 @@ def test_find_value(mocker, css):
     #     css, "get", return_value=expected_result
     # )
     # # print css.get
-    # # assert css._find_value(name) == expected_result
+    # # assert css.find_value(name) == expected_result
     # mocked_function.assert_called_once_with(name)
     pass
 
@@ -98,15 +98,15 @@ def test_create_substyle_list(css):
 #     mocker, css, name, curr_key, first, value, remaining
 # ):
 #     mocked_find_value = mocker.patch.object(
-#         css, "_find_value"
+#         css, "find_value"
 #     )
 #     mocked_getitem = mocker.patch.object(
 #         mocked_find_value, "__getitem__"
 #     )
 #     mocked_create_substyle = mocker.patch.object(
-#         css, "_create_substyle"
+#         css, "create_substyle"
 #     )
-#     css._create_substyles(name)
+#     css.create_substyles(name)
 #     mocked_find_value.assert_called_with(first)
 #     # mocked_create_substyle.assert_called_with(curr_key)
 
