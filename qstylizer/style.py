@@ -148,7 +148,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         split_names = self.split_identifier(identifier)
         curr_name = split_names[0]
         remaining = identifier.split(curr_name, 1)[-1]
-        style = self.find_value(curr_name.replace(":", ""))
+        style = self.find_value(curr_name)
         if style is None:
             style = self.create_substyle(curr_name)
         if remaining and remaining != curr_name:
