@@ -137,13 +137,12 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         split_names = self.split_identifier(identifier)
-        curr_key = split_names[0]
-        first_name = curr_key.replace(":", "")
-        remaining = identifier.split(curr_key, 1)[-1]
-        style = self._find_value(first_name)
+        curr_name = split_names[0]
+        remaining = identifier.split(curr_name, 1)[-1]
+        style = self._find_value(curr_name.replace(":", ""))
         if style is None:
-            style = self._create_substyle(curr_key)
-        if remaining and remaining != curr_key:
+            style = self._create_substyle(curr_name)
+        if remaining and remaining != curr_name:
             return style._find_or_create_value(remaining)
         return style
 
