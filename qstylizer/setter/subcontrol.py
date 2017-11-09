@@ -13,14 +13,14 @@ class SubControlSet(object):
     def __get__(self, instance, owner):
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.Style)
-        if instance.get(self.name) is None:
+        if instance.find_value(self.name) is None:
             new_style = qstylizer.style.SubControl(
                 name=self.name,
                 parent=instance,
                 is_root=False
             )
             instance.add_value(self.name, new_style)
-        return instance.get(self.name)
+        return instance.find_value(self.name)
 
     def __set__(self, instance, value):
         import qstylizer.style
