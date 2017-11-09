@@ -90,9 +90,16 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self._attributes = self.get_attributes()
 
     @staticmethod
-    def _sanitize_key(name):
+    def _sanitize_key(key):
         """Strip the key of colons and replace underscores with dashes."""
-        return str(name).replace(":", "").replace("_", "-")
+        return str(key).replace(":", "").replace("_", "-")
+
+    @staticmethod
+    def _sanitize_value(value):
+        """Strip the value of any semi-colons."""
+        if type(value) in [str, unicode]:
+            return value.replace(";", "")
+        return value
 
     def find_or_create_value(self, name):
         """Find or create a value from a string key.
@@ -172,6 +179,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def add_value(self, key, value):
         """Add item to ordered dictionary."""
         key = self._sanitize_key(key)
+        value = self._sanitize_value(value)
         self.__setitem__(key, value)
 
     @property
