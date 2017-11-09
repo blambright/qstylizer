@@ -103,7 +103,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         if "," in name:
             style_list = self._create_substyle_list(name)
             return style_list
-        return self._create_substyles_from_name(name)
+        return self._create_substyles(name)
 
     def _find_value(self, key):
         """Find value from key.
@@ -123,31 +123,31 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self.__setitem__(name, style_list)
         return style_list
 
-    def _create_substyles_from_name(self, name):
-        """Create substyles from name.
+    def _create_substyles(self, identifier):
+        """Create substyles from identifier.
 
-        Split the name into individual components based on the _split_regex
+        Split the identifier into individual components based on the _split_regex
         and recursively build the Style hierarchy looping through
         the components.
 
-        If name is "QClass::subcontrol::pseudostate",
+        If identifier is "QClass::subcontrol::pseudostate",
         first_key is "QClass" and remaining is "::subcontrol::pseudostate"
 
         :param name: String to split
 
         """
-        split_names = self.split_identifier(name)
+        split_names = self.split_identifier(identifier)
         curr_key = split_names[0]
         first_name = curr_key.replace(":", "")
-        remaining = name.split(curr_key, 1)[-1]
+        remaining = identifier.split(curr_key, 1)[-1]
         style = self._find_value(first_name)
         if style is None:
-            style = self._create_substyle_from_name(curr_key)
+            style = self._create_substyle(curr_key)
         if remaining and remaining != curr_key:
             return style.__getitem__(remaining)
         return style
 
-    def _create_substyle_from_name(self, name):
+    def _create_substyle(self, name):
         """Create substyle from name.
 
         Determine subclass from name, create an instance of the subclass,

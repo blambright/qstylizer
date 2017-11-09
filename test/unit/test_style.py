@@ -58,8 +58,8 @@ def test_find_or_create_value(
     mocked_create_substyle_list = mocker.patch.object(
         css, "_create_substyle_list", return_value="StyleList"
     )
-    mocked_create_substyles_from_name = mocker.patch.object(
-        css, "_create_substyles_from_name", return_value=expected_result
+    mocked_create_substyles = mocker.patch.object(
+        css, "_create_substyles", return_value=expected_result
     )
     mocked_find_value = mocker.patch.object(
         css, "_find_value", return_value=found_value
@@ -69,7 +69,7 @@ def test_find_or_create_value(
     if "," in name:
         mocked_create_substyle_list.assert_called_once_with(name)
     elif not found_value:
-        mocked_create_substyles_from_name.assert_called_once_with(name)
+        mocked_create_substyles.assert_called_once_with(name)
 
 
 def test_find_value(mocker, css):
@@ -94,7 +94,7 @@ def test_create_substyle_list(css):
 #         ("QComboBox::indicator", "QComboBox", "QComboBox", ""),
 #     ]
 # )
-# def test_create_substyles_from_name(
+# def test_create_substyles(
 #     mocker, css, name, curr_key, first, value, remaining
 # ):
 #     mocked_find_value = mocker.patch.object(
@@ -103,15 +103,15 @@ def test_create_substyle_list(css):
 #     mocked_getitem = mocker.patch.object(
 #         mocked_find_value, "__getitem__"
 #     )
-#     mocked_create_substyle_from_name = mocker.patch.object(
-#         css, "_create_substyle_from_name"
+#     mocked_create_substyle = mocker.patch.object(
+#         css, "_create_substyle"
 #     )
-#     css._create_substyles_from_name(name)
+#     css._create_substyles(name)
 #     mocked_find_value.assert_called_with(first)
-#     # mocked_create_substyle_from_name.assert_called_with(curr_key)
+#     # mocked_create_substyle.assert_called_with(curr_key)
 
 
-def test_create_substyle_from_name(css):
+def test_create_substyle(css):
     pass
 
 
