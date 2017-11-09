@@ -35,6 +35,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     _properties = qstylizer.setter.prop.PropSetter.get_attr_options()
     _subcontrols = qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()
     _pseudostates = qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
+    _qclasses = qstylizer.setter.qclass.ClassStyleSetter.get_attr_options()
 
     @classmethod
     def subclass(cls, name):
@@ -52,6 +53,8 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             class_ = ObjectStyle
         elif name.startswith(" "):
             class_ = ChildClassStyle
+        elif name in cls._qclasses:
+            class_ = ClassStyle
         elif "=" in name:
             class_ = ObjectProperty
         return class_
