@@ -10,6 +10,6 @@ def css():
 
 
 @pytest.fixture
-def style():
+def style_class():
     import qstylizer.style
     return qstylizer.style.Style
