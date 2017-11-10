@@ -152,8 +152,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: String to split
 
         """
-        split_names = self.split_identifier(identifier)
-        curr_name = split_names[0]
+        curr_name = self.split_identifier(identifier)[0]
         remaining = identifier.split(curr_name, 1)[-1]
         style = self.find_value(curr_name)
         if style is None:
