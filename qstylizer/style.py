@@ -32,10 +32,10 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     """
     _split_regex = "\[[A-Za-z0-9='\"]+\]|\W*\w*"
-    _properties = qstylizer.setter.prop.PropSetter.get_attr_options()
-    _subcontrols = qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()
-    _pseudostates = qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
-    _qclasses = qstylizer.setter.qclass.ClassStyleSetter.get_attr_options()
+    qproperties = qstylizer.setter.prop.PropSetter.get_attr_options()
+    qsubcontrols = qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()
+    qpseudostates = qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
+    qclasses = qstylizer.setter.qclass.ClassStyleSetter.get_attr_options()
 
     @classmethod
     def subclass(cls, name):
@@ -45,15 +45,15 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         class_ = ClassStyle
-        if name.startswith("::") or name in cls._subcontrols:
+        if name.startswith("::") or name in cls.qsubcontrols:
             class_ = SubControl
-        elif name.startswith(":") or name in cls._pseudostates:
+        elif name.startswith(":") or name in cls.qpseudostates:
             class_ = PseudoState
         elif name.startswith("#"):
             class_ = ObjectStyle
         elif name.startswith(" "):
             class_ = ChildClassStyle
-        elif name in cls._qclasses:
+        elif name in cls.qclasses:
             class_ = ClassStyle
         elif "=" in name:
             class_ = ObjectProperty

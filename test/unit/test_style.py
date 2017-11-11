@@ -27,12 +27,6 @@ import pytest
     ]
 )
 def test_subclass(mocker, style_class, css, name, expected):
-    style_class._subcontrols = mocker.PropertyMock(
-        return_value={"indicator", "add-line", "branch"}
-    )
-    style_class._pseudostates = mocker.PropertyMock(
-        return_value={"alternate", "has-children", "checked"}
-    )
     assert css.subclass(name).__name__ == expected
 
 
