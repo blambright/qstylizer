@@ -241,21 +241,59 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         Style is a leaf if its dictionary values contain no Styles (only properties).
 
         """
-        return not [style for style in self.values() if isinstance(style, Style)]
+        for value in self.values():
+            if isinstance(value, Style):
+                return False
+        return True
 
     def is_top_level(self):
         return self._parent.is_root
 
+    def is_global(self):
+        """Determine if style is global.
+
+        A style is global if it nameless, it is the root and it has substyles.
+        Resulting style string should contain a "*" as the identifier
+        ::
+            * {
+                background-color: red;
+            }
+            QComboBox {
+            ...
+
+        """
+        return not self.identifier and self.is_root and not self.is_leaf()
+
+    def is_unscoped(self):
+        """Determine if style is unscoped.
+
+        A style is unscoped if it is root and it has no substyles.
+        Resulting style string should contain no brackets.
+        ::
+            background-color: red;
+            border: none;
+
+        """
+        return self.is_root and self.is_leaf()
+
     def style(self):
         """Return the identifier and properties as a single string."""
+        is_leaf = self.is_leaf()
+        style_format = "{identifier} {{\n{properties}}}\n"
+        prop_format = "    {}: {};\n"
+        if self.is_unscoped():
+            style_format = "{properties}"
+            prop_format = "{}: {};\n"
         properties = ""
         sheet = ""
         identifier = self.identifier
+        if self.is_global():
+            identifier = "*"
         for key, value in self.items():
             if not isinstance(value, Style):
-                properties += "    {}: {};\n".format(key, value)
+                properties += prop_format.format(key, value)
         if properties:
-            sheet = "{identifier} {{\n{properties}}}\n".format(**locals())
+            sheet = style_format.format(**locals())
         return sheet
 
     def stylesheet(self):
