@@ -203,97 +203,64 @@ def test_create_substyle_list(mocker, style_class, css):
     mocked_add_value.called_once_with(name, style_list)
 
 
-# @pytest.mark.parametrize(
-#     "identifier, "
-#     "curr_name, "
-#     "found_style, "
-#     "new_style, "
-#     "expected, "
-#     "create_substyle_call_count, "
-#     "find_or_create_value_call_count, ",
-#     [
-#         (
-#             "QComboBox",
-#             "QComboBox",
-#             "ClassStyle",
-#             "Style",
-#             "Style",
-#             0,
-#             0,
-#         ),
-#         (
-#             "QComboBox::indicator",
-#             "QComboBox",
-#             "ClassStyle",
-#             "Style",
-#             "Style",
-#             0,
-#             1,
-#         ),
-#         (
-#             "QComboBox::indicator",
-#             "QComboBox",
-#             None,
-#             "Style",
-#             "Style",
-#             1,
-#             1,
-#         ),
-#     ],
-#     ids=[
-#         "with-existing-single-style",
-#         "with-existing-multiple-style",
-#         "with-new-multiple-style",
-#     ]
-# )
-# def test_create_substyles(
-#     mocker, style_class, css, identifier,
-#     curr_name, found_style, new_style, expected,
-#     create_substyle_call_count, find_or_create_value_call_count
-# ):
-#     mocked_split_identifier = mocker.patch.object(
-#         style_class, "split_identifier", return_value=curr_name
-#     )
-#     mocked_find_value = mocker.patch.object(
-#         style_class, "find_value", return_value=found_style
-#     )
-#     mocked_create_substyle = mocker.patch.object(
-#         style_class, "create_substyle", return_value=new_style
-#     )
-#     mocked_create_substyle = mocker.patch.object(
-#         style_class, "find_or_create_value", return_value=expected
-#     )
-#
-#     assert css.create_substyles(identifier) == expected
-#     mocked_split_identifier.assert_called_once_with(identifier)
-#     mocked_find_value.assert_called_once_with(curr_name)
-#     assert mocked_find_value.create_substyle.call_count == create_substyle_call_count
-#     assert mocked_find_value.find_or_create_value.call_count == find_or_create_value_call_count
-#     # mocked_create_substyle.assert_called_with(curr_key)
+@pytest.mark.parametrize(
+    "identifier, "
+    "curr_name, "
+    "find_or_create_value_call_count, ",
+    [
+        (
+            "QComboBox",
+            "QComboBox",
+            0,
+        ),
+        (
+            "QComboBox::indicator",
+            "QComboBox",
+            1,
+        ),
+    ],
+    ids=[
+        "with-single-style",
+        "with-multiple-style",
+    ]
+)
+def test_create_substyles(
+    mocker, style_class, css, identifier, curr_name,
+    find_or_create_value_call_count
+):
+    mocked_style = mocker.MagicMock()
+    mocked_split_identifier = mocker.patch.object(
+        style_class, "split_identifier", return_value=[curr_name]
+    )
+    mocked_find_value = mocker.patch.object(
+        style_class, "find_value", return_value=mocked_style
+    )
+    mocker.patch.object(
+        style_class, "create_substyle", return_value=mocked_style
+    )
+    mocker.patch.object(
+        style_class, "find_or_create_value", return_value=mocked_style
+    )
+    css.create_substyles(identifier)
+    mocked_split_identifier.assert_called_once_with(identifier)
+    mocked_find_value.assert_called_once_with(curr_name)
+    assert mocked_style.find_or_create_value.call_count == find_or_create_value_call_count
 
 
-def test_create_substyle(css):
-    pass
-
-
-def test_identifier(css):
-    pass
-
-
-def test_name(css):
-    pass
-
-
-def test_parent(css):
-    pass
-
-
-def test_is_root(css):
-    pass
-
-
-def test_scope_operator(css):
-    pass
+def test_create_substyle(mocker, style_class, css):
+    name = "::indicator"
+    style = mocker.MagicMock()
+    class_ = mocker.MagicMock(return_value=style)
+    mocked_subclass_function = mocker.patch.object(
+        style_class, "subclass", return_value=class_
+    )
+    mocked_add_value = mocker.patch.object(
+        style_class, "add_value"
+    )
+    css.create_substyle(name)
+    mocked_add_value.assert_called_with(name, style)
+    mocked_subclass_function.assert_called_once_with(name)
+    class_.assert_called_with(name=name, parent=css, is_root=False)
 
 
 def test_is_top_level(css):
