@@ -243,14 +243,17 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def is_top_level(self):
         return isinstance(self._parent, StyleSheet)
 
+    def _stylesheet(self):
+        stylesheet = self.to_string(cascade=False)
+        for key, value in self.items():
+            if isinstance(value, Style):
+                stylesheet += value.to_string(cascade=True)
+        return stylesheet
+
     def to_string(self, cascade=False):
         """Return the identifier and properties as a single string."""
         if cascade:
-            stylesheet = self.to_string(cascade=False)
-            for key, value in self.items():
-                if isinstance(value, Style):
-                    stylesheet += value.to_string(cascade=True)
-            return stylesheet
+            return self._stylesheet()
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
         properties = ""
@@ -351,11 +354,7 @@ class StyleSheet(Style,
     def to_string(self, cascade=True):
         """Return the identifier and properties as a single string."""
         if cascade:
-            stylesheet = self.to_string(cascade=False)
-            for key, value in self.items():
-                if isinstance(value, Style):
-                    stylesheet += value.to_string(cascade=True)
-            return stylesheet
+            return self._stylesheet()
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
         identifier = self.identifier
