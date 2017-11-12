@@ -85,7 +85,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         self._name = self._sanitize_key(name) if name else None
         self._parent = parent
-        self._children = {}
         self._attributes = self.get_attributes()
 
     @staticmethod
