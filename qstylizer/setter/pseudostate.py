@@ -17,7 +17,6 @@ class PseudoStateSet(object):
             new_style = qstylizer.style.PseudoState(
                 name=self.name,
                 parent=instance,
-                is_root=False
             )
             instance.add_value(self.name, new_style)
         return instance.find_value(self.name)

@@ -254,7 +254,7 @@ def test_create_substyle(mocker, style_class, css):
     css.create_substyle(name)
     mocked_add_value.assert_called_with(name, style)
     mocked_subclass_function.assert_called_once_with(name)
-    class_.assert_called_with(name=name, parent=css, is_root=False)
+    class_.assert_called_with(name=name, parent=css)
 
 
 def test_is_top_level(css):

@@ -73,12 +73,11 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         return re.findall(cls._split_regex, identifier)[:-1]
 
-    def __init__(self, name=None, parent=None, is_root=True):
+    def __init__(self, name=None, parent=None):
         """Initialize the style dictionary.
 
         :param name: The name of the Style
         :param parent:  The parent Style
-        :param is_root: Is root of stylesheet hierarchy
 
         """
         super(Style, self).__init__()
@@ -86,7 +85,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self._name = name
         self._parent = parent
         self._children = {}
-        self._is_root = is_root
         self._attributes = self.get_attributes()
 
     @staticmethod
@@ -135,7 +133,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: String name
 
         """
-        style_list = StyleList(name=name, parent=self, is_root=False)
+        style_list = StyleList(name=name, parent=self)
         self.add_value(name, style_list)
         return style_list
 
@@ -171,7 +169,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         class_ = self.subclass(name)
-        style = class_(name=name, parent=self, is_root=False)
+        style = class_(name=name, parent=self)
         self.add_value(name, style)
         return style
 
@@ -215,10 +213,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self._parent
 
     @property
-    def is_root(self):
-        return self._is_root
-
-    @property
     def scope_operator(self):
         """Get the scope operator.
 
@@ -247,47 +241,15 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return True
 
     def is_top_level(self):
-        return self._parent.is_root
-
-    def is_global(self):
-        """Determine if style is global.
-
-        A style is global if it nameless, it is the root and it has substyles.
-        Resulting style string should contain a "*" as the identifier
-        ::
-            * {
-                background-color: red;
-            }
-            QComboBox {
-            ...
-
-        """
-        return not self.identifier and self.is_root and not self.is_leaf()
-
-    def is_unscoped(self):
-        """Determine if style is unscoped.
-
-        A style is unscoped if it is root and it has no substyles.
-        Resulting style string should contain no brackets.
-        ::
-            background-color: red;
-            border: none;
-
-        """
-        return self.is_root and self.is_leaf()
+        return isinstance(self._parent, StyleSheet)
 
     def style(self):
         """Return the identifier and properties as a single string."""
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
-        if self.is_unscoped():
-            style_format = "{properties}"
-            prop_format = "{}: {};\n"
         properties = ""
         sheet = ""
         identifier = self.identifier
-        if self.is_global():
-            identifier = "*"
         for key, value in self.items():
             if not isinstance(value, Style):
                 properties += prop_format.format(key, value)
@@ -356,14 +318,13 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         for k, v in self.items():
             if isinstance(v, Style):
                 v._parent = result
-                v._is_root = False
             result.add_value(k, copy.deepcopy(v, memo))
         result._parent = self._parent
         return result
 
     def __repr__(self, *args, **kwargs):
-        return "<{0} id='{1}'>\n{2}".format(
-            self.__class__.__name__, self.identifier, self.style()
+        return "<{0} /> {1}".format(
+            self.__class__.__name__, self.style()
         )
 
     def __str__(self):
@@ -377,6 +338,59 @@ class StyleSheet(Style,
     Contains descriptors for all class and property options.
 
     """
+    def is_global(self):
+        """Determine if style is global.
+
+        A style is global if it nameless, it is the root and it has substyles.
+        Resulting style string should contain a "*" as the identifier
+        ::
+            * {
+                background-color: red;
+            }
+            QComboBox {
+            ...
+
+        """
+        return not self.is_leaf()
+
+    def is_unscoped(self):
+        """Determine if style is unscoped.
+
+        A style is unscoped if it is root and it has no substyles.
+        Resulting style string should contain no brackets.
+        ::
+            background-color: red;
+            border: none;
+
+        """
+        return self.is_leaf()
+
+    def style(self):
+        """Return the identifier and properties as a single string."""
+        style_format = "{identifier} {{\n{properties}}}\n"
+        prop_format = "    {}: {};\n"
+        if self.is_unscoped():
+            style_format = "{properties}"
+            prop_format = "{}: {};\n"
+        properties = ""
+        sheet = ""
+        identifier = self.identifier
+        if self.is_global():
+            identifier = "*"
+        for key, value in self.items():
+            if not isinstance(value, Style):
+                properties += prop_format.format(key, value)
+        if properties:
+            sheet = style_format.format(**locals())
+        return sheet
+
+    def __repr__(self, *args, **kwargs):
+        repr_format = "<{0} />{2}---"
+        if self.is_unscoped():
+            repr_format = "<{0} id='{1}'>\n{2}---"
+        return repr_format.format(
+            self.__class__.__name__, self.identifier, self.style()
+        )
 
 
 class ClassStyle(Style,
