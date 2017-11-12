@@ -18,7 +18,7 @@ class PseudoStateSet(object):
                 name=self.name,
                 parent=instance,
             )
-            instance.add_value(self.name, new_style)
+            instance._add_value(self.name, new_style)
         return instance.find_value(self.name)
 
     def __set__(self, instance, value):
@@ -28,7 +28,7 @@ class PseudoStateSet(object):
         value = copy.deepcopy(value)
         value._is_root = False
         value._parent = instance
-        instance.add_value(self.name, value)
+        instance._add_value(self.name, value)
 
 
 class PseudoStateSetter(qstylizer.setter.Setter):

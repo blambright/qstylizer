@@ -192,7 +192,7 @@ def test_create_substyle_list(mocker, style_class, css):
     style_list = "StyleListInstance"
     name = "test"
     mocker.patch.object(qstylizer.style, "StyleList", return_value=style_list)
-    mocked_add_value = mocker.patch.object(style_class, "add_value")
+    mocked_add_value = mocker.patch.object(style_class, "_add_value")
     assert css.create_substyle_list(name) == style_list
     mocked_add_value.called_once_with(name, style_list)
 
@@ -249,7 +249,7 @@ def test_create_substyle(mocker, style_class, css):
         style_class, "subclass", return_value=class_
     )
     mocked_add_value = mocker.patch.object(
-        style_class, "add_value"
+        style_class, "_add_value"
     )
     css.create_substyle(name)
     mocked_add_value.assert_called_with(name, style)

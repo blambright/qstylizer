@@ -139,7 +139,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         style_list = StyleList(name=name, parent=self)
-        self.add_value(name, style_list)
+        self._add_value(name, style_list)
         return style_list
 
     def create_substyles(self, selector):
@@ -175,10 +175,10 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         class_ = self.subclass(name)
         style = class_(name=name, parent=self)
-        self.add_value(name, style)
+        self._add_value(name, style)
         return style
 
-    def add_value(self, key, value):
+    def _add_value(self, key, value):
         """Add item to ordered dictionary."""
         key = self._sanitize_key(key)
         value = self._sanitize_value(value)
@@ -312,7 +312,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             return super(StyleRule, self).__setattr__(name, val)
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
-        return self.add_value(name, val)
+        return self._add_value(name, val)
 
     def __deepcopy__(self, memo):
         cls = self.__class__
@@ -324,7 +324,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         for k, v in self.items():
             if isinstance(v, StyleRule):
                 v._parent = result
-            result.add_value(k, copy.deepcopy(v, memo))
+            result._add_value(k, copy.deepcopy(v, memo))
         result._parent = self._parent
         return result
 
@@ -467,7 +467,7 @@ class StyleList(StyleRule):
             return super(StyleRule, self).__setattr__(name, val)
         style_names = self.name.split(",")
         for style_name in style_names:
-            self._parent.find_or_create_value(style_name).add_value(name, val)
+            self._parent.find_or_create_value(style_name)._add_value(name, val)
         return None
 
     @property

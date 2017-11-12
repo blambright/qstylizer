@@ -157,7 +157,7 @@ class PropSet(object):
     def __set__(self, instance, value):
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
-        instance.add_value(self.name, value)
+        instance._add_value(self.name, value)
 
 
 class PropSetter(qstylizer.setter.Setter):
