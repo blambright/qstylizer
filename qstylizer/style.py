@@ -375,7 +375,7 @@ class StyleSheet(Style,
 
     def __repr__(self, *args, **kwargs):
         repr_format = "<{0} />{1}---"
-        if self.is_unscoped():
+        if self.is_global_scope():
             repr_format = "<{0} />\n{1}---"
         return repr_format.format(
             self.__class__.__name__, self.to_string(cascade=False)
