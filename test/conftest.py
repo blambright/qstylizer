@@ -12,4 +12,4 @@ def css():
 @pytest.fixture
 def style_class():
     import qstylizer.style
-    return qstylizer.style.Style
+    return qstylizer.style.StyleRule

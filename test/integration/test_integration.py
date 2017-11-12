@@ -151,7 +151,7 @@ def test_empty_style(css):
 
 def test_subcontrol_set():
     import qstylizer.style
-    qclass_style = qstylizer.style.ClassStyle("QObject")
+    qclass_style = qstylizer.style.ClassStyleRule("QObject")
     with pytest.raises(ValueError):
         qclass_style.text = "test"
     qclass_style.text.color = "red"

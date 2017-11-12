@@ -12,7 +12,7 @@ class SubControlSet(object):
 
     def __get__(self, instance, owner):
         import qstylizer.style
-        assert isinstance(instance, qstylizer.style.Style)
+        assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
             new_style = qstylizer.style.SubControl(
                 name=self.name,

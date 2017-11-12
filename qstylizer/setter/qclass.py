@@ -12,9 +12,9 @@ class ClassStyleSet(object):
 
     def __get__(self, instance, owner):
         import qstylizer.style
-        assert isinstance(instance, qstylizer.style.Style)
+        assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
-            new_style = qstylizer.style.ClassStyle(
+            new_style = qstylizer.style.ClassStyleRule(
                 name=self.name,
                 parent=instance,
             )
@@ -23,8 +23,8 @@ class ClassStyleSet(object):
 
     def __set__(self, instance, value):
         import qstylizer.style
-        if not isinstance(value, qstylizer.style.ClassStyle):
-            raise ValueError("Can only assign a ClassStyle style.")
+        if not isinstance(value, qstylizer.style.ClassStyleRule):
+            raise ValueError("Can only assign a ClassStyleRule style.")
         value = copy.deepcopy(value)
         value._is_root = False
         value._parent = instance

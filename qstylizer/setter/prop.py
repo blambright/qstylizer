@@ -151,12 +151,12 @@ class PropSet(object):
 
     def __get__(self, instance, owner):
         import qstylizer.style
-        assert isinstance(instance, qstylizer.style.Style)
+        assert isinstance(instance, qstylizer.style.StyleRule)
         return instance.find_value(self.name)
 
     def __set__(self, instance, value):
         import qstylizer.style
-        assert isinstance(instance, qstylizer.style.Style)
+        assert isinstance(instance, qstylizer.style.StyleRule)
         instance.add_value(self.name, value)
 
 

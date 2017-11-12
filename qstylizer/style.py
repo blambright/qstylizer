@@ -10,14 +10,14 @@ import qstylizer.setter.pseudostate
 import qstylizer.setter.qclass
 
 
-class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
-    """Style Object.
+class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
+    """StyleRule Object.
 
     A dictionary containing nested Styles and property:value pairs.
 
     Example structure::
 
-        <Style>{
+        <StyleRule>{
             "QCheckBox": <QClassStyle name="QCheckBox">{
                 "color": "red",
                 "background-color": "black",
@@ -45,17 +45,17 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         name = name.replace("not_", "").replace("!", "")
-        class_ = Style
+        class_ = StyleRule
         if name.startswith("::") or name in cls.qsubcontrols:
             class_ = SubControl
         elif name.startswith(":") or name in cls.qpseudostates:
             class_ = PseudoState
         elif name.startswith("#"):
-            class_ = ObjectStyle
+            class_ = ObjectStyleRule
         elif name.startswith(" "):
             class_ = ChildClassStyle
         elif name in cls.qclasses or name.startswith("Q"):
-            class_ = ClassStyle
+            class_ = ClassStyleRule
         elif "=" in name:
             class_ = ObjectProperty
         return class_
@@ -77,11 +77,11 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def __init__(self, name=None, parent=None):
         """Initialize the style dictionary.
 
-        :param name: The name of the Style
-        :param parent:  The parent Style
+        :param name: The name of the StyleRule
+        :param parent:  The parent StyleRule
 
         """
-        super(Style, self).__init__()
+        super(StyleRule, self).__init__()
 
         self._name = self._sanitize_key(name) if name else None
         self._parent = parent
@@ -146,7 +146,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """Create substyles from selector.
 
         Split the selector into individual components based on the _split_regex
-        and recursively build the Style hierarchy looping through
+        and recursively build the StyleRule hierarchy looping through
         the components.
 
         If selector is "QClass::subcontrol::pseudostate",
@@ -199,7 +199,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     @property
     def name(self):
-        """Return the name of the Style (eg. "QCheckBox").
+        """Return the name of the StyleRule (eg. "QCheckBox").
 
         Strip off the scope operator if it exists in name.
 
@@ -222,7 +222,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """Get the scope operator.
 
         The scope operator is the "::" or ":" that is printed in front
-        of the name of the Style in the selector.
+        of the name of the StyleRule in the selector.
 
         Subclasses are expected to define the scope operator or else it will
         try to guess it based on its position in the hierarchy.
@@ -237,11 +237,11 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def is_leaf(self):
         """Determine if style is a leaf.
 
-        Style is a leaf if its dictionary values contain no Styles (only properties).
+        StyleRule is a leaf if its dictionary values contain no Styles (only properties).
 
         """
         for value in self.values():
-            if isinstance(value, Style):
+            if isinstance(value, StyleRule):
                 return False
         return True
 
@@ -251,7 +251,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def _stylesheet(self):
         stylesheet = self.to_string(cascade=False)
         for key, value in self.items():
-            if isinstance(value, Style):
+            if isinstance(value, StyleRule):
                 stylesheet += value.to_string(cascade=True)
         return stylesheet
 
@@ -265,7 +265,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         sheet = ""
         selector = self.selector
         for key, value in self.items():
-            if not isinstance(value, Style):
+            if not isinstance(value, StyleRule):
                 properties += prop_format.format(key, value)
         if properties:
             sheet = style_format.format(**locals())
@@ -304,12 +304,12 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         if name in self.__dict__:
-            return super(Style, self).__delattr__(name)
+            return super(StyleRule, self).__delattr__(name)
         return self.__delitem__(name)
 
     def __setattr__(self, name, val):
         if name.startswith("_"):
-            return super(Style, self).__setattr__(name, val)
+            return super(StyleRule, self).__setattr__(name, val)
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
         return self.add_value(name, val)
@@ -322,7 +322,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             setattr(result, k, copy.deepcopy(v, memo))
         result.clear()
         for k, v in self.items():
-            if isinstance(v, Style):
+            if isinstance(v, StyleRule):
                 v._parent = result
             result.add_value(k, copy.deepcopy(v, memo))
         result._parent = self._parent
@@ -337,7 +337,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self.to_string()
 
 
-class StyleSheet(Style,
+class StyleSheet(StyleRule,
                  qstylizer.setter.qclass.ClassStyleSetter):
     """The StyleSheet definition.
 
@@ -371,7 +371,7 @@ class StyleSheet(Style,
         properties = ""
         sheet = ""
         for key, value in self.items():
-            if not isinstance(value, Style):
+            if not isinstance(value, StyleRule):
                 properties += prop_format.format(key, value)
         if properties:
             sheet = style_format.format(**locals())
@@ -391,10 +391,10 @@ class StyleSheet(Style,
         )
 
 
-class ClassStyle(Style,
+class ClassStyleRule(StyleRule,
                  qstylizer.setter.subcontrol.SubControlSetter,
                  qstylizer.setter.pseudostate.PseudoStateSetter):
-    """The ClassStyle definition.
+    """The ClassStyleRule definition.
 
     Example class style name: "QCheckBox".
     Contains descriptors for all subcontrols and pseudostates.
@@ -402,11 +402,11 @@ class ClassStyle(Style,
     """
 
 
-class ObjectStyle(ClassStyle):
-    """The ObjectStyle definition.
+class ObjectStyleRule(ClassStyleRule):
+    """The ObjectStyleRule definition.
 
     Example object style name: "#objectName".
-    Inherits from ClassStyle. Only difference is "#" is the scope operator.
+    Inherits from ClassStyleRule. Only difference is "#" is the scope operator.
 
     """
     @property
@@ -414,11 +414,11 @@ class ObjectStyle(ClassStyle):
         return "#"
 
 
-class ChildClassStyle(ClassStyle):
+class ChildClassStyle(ClassStyleRule):
     """The ChildClassStyle definition.
 
     Example object style name: " QFrame".
-    Inherits from ClassStyle.
+    Inherits from ClassStyleRule.
     QWidget QFrame {
         property: value
     }
@@ -429,7 +429,7 @@ class ChildClassStyle(ClassStyle):
         return " "
 
 
-class ObjectProperty(Style):
+class ObjectProperty(StyleRule):
     """The ObjectProperty definition.
 
     Example object property style name: "[echoMode="2"]".
@@ -440,7 +440,7 @@ class ObjectProperty(Style):
         return ""
 
 
-class StyleList(Style):
+class StyleList(StyleRule):
     """The StyleList definition.
 
     Example style list name: "QCheckBox, QComboBox".
@@ -449,8 +449,8 @@ class StyleList(Style):
     def __init__(self, *args, **kwargs):
         """Initialize the style dictionary.
 
-        :param name: The name of the Style
-        :param parent:  The parent Style
+        :param name: The name of the StyleRule
+        :param parent:  The parent StyleRule
 
         """
         super(StyleList, self).__init__(*args, **kwargs)
@@ -464,11 +464,11 @@ class StyleList(Style):
         """Override the setting of an attribute.
 
         Will loop through all components in name separated by a comma and set the
-        property in each of the substyles in the parent Style.
+        property in each of the substyles in the parent StyleRule.
 
         """
         if name.startswith("_"):
-            return super(Style, self).__setattr__(name, val)
+            return super(StyleRule, self).__setattr__(name, val)
         style_names = self.name.split(",")
         for style_name in style_names:
             self._parent.find_or_create_value(style_name).add_value(name, val)
@@ -480,7 +480,7 @@ class StyleList(Style):
         return self._name.replace(" ", "")
 
 
-class SubControl(Style, qstylizer.setter.pseudostate.PseudoStateSetter):
+class SubControl(StyleRule, qstylizer.setter.pseudostate.PseudoStateSetter):
     """The SubControl definition.
 
     Example subcontrol name: "::indicator".
@@ -491,7 +491,7 @@ class SubControl(Style, qstylizer.setter.pseudostate.PseudoStateSetter):
         return "::"
 
 
-class PseudoState(Style):
+class PseudoState(StyleRule):
     """The PseudoState definition.
 
     Example pseudostate name: ":hover".

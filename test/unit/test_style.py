@@ -10,10 +10,10 @@ import pytest
         ("has-children", "PseudoState"),
         ("::subcontrol", "SubControl"),
         (":pseudostate", "PseudoState"),
-        ("#objectName", "ObjectStyle"),
+        ("#objectName", "ObjectStyleRule"),
         ("[echoMode=2]", "ObjectProperty"),
         (" QFrame", "ChildClassStyle"),
-        ("QObject", "ClassStyle")
+        ("QObject", "ClassStyleRule")
     ],
     ids=[
         "with-known-subcontrol",
