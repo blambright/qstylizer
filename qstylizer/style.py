@@ -446,15 +446,11 @@ class StyleList(StyleRule):
     Example style list name: "QCheckBox, QComboBox".
 
     """
-    def __init__(self, *args, **kwargs):
-        """Initialize the style dictionary.
 
-        :param name: The name of the StyleRule
-        :param parent:  The parent StyleRule
-
-        """
-        super(StyleList, self).__init__(*args, **kwargs)
-        self._name = kwargs.get("name")
+    @staticmethod
+    def _sanitize_key(key):
+        """Strip the key of colons and replace underscores with dashes."""
+        return str(key).replace("\n", "")
 
     @property
     def scope_operator(self):

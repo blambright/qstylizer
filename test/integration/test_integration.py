@@ -59,7 +59,7 @@ def test_selector(css):
 def test_style_list(css):
     css["QCheckBox, QLineEdit, QFrame"].border = "none"
     css["QWidget,#objectName"].border = "none"
-    css["*,QCheckBox::subcontrol:pseudostate"].margin = "none"
+    css["*,\nQCheckBox::subcontrol:pseudostate"].margin = "none"
     assert "QCheckBox" in css.keys()
     assert "QLineEdit" in css.keys()
     assert "QWidget" in css.keys()
