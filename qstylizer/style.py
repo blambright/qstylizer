@@ -61,8 +61,8 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return class_
 
     @classmethod
-    def split_identifier(cls, identifier):
-        """Split the identifier based on the _split_regex.
+    def split_selector(cls, selector):
+        """Split the selector based on the _split_regex.
 
         Return a list of each component.
         Example:
@@ -72,7 +72,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: String name
 
         """
-        return re.findall(cls._split_regex, identifier)[:-1]
+        return re.findall(cls._split_regex, selector)[:-1]
 
     def __init__(self, name=None, parent=None):
         """Initialize the style dictionary.
@@ -142,21 +142,21 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self.add_value(name, style_list)
         return style_list
 
-    def create_substyles(self, identifier):
-        """Create substyles from identifier.
+    def create_substyles(self, selector):
+        """Create substyles from selector.
 
-        Split the identifier into individual components based on the _split_regex
+        Split the selector into individual components based on the _split_regex
         and recursively build the Style hierarchy looping through
         the components.
 
-        If identifier is "QClass::subcontrol::pseudostate",
+        If selector is "QClass::subcontrol::pseudostate",
         first_key is "QClass" and remaining is "::subcontrol::pseudostate"
 
         :param name: String to split
 
         """
-        curr_name = self.split_identifier(identifier)[0]
-        remaining = identifier.split(curr_name, 1)[-1]
+        curr_name = self.split_selector(selector)[0]
+        remaining = selector.split(curr_name, 1)[-1]
         style = self.find_value(curr_name)
         if style is None:
             style = self.create_substyle(curr_name)
@@ -185,8 +185,8 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self.__setitem__(key, value)
 
     @property
-    def identifier(self):
-        """Get the identifier.
+    def selector(self):
+        """Get the selector.
 
         Example::
 
@@ -195,7 +195,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         if not self._parent:
             return self.name if self.name else ""
-        return self._parent.identifier + self.scope_operator + self.name
+        return self._parent.selector + self.scope_operator + self.name
 
     @property
     def name(self):
@@ -222,7 +222,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """Get the scope operator.
 
         The scope operator is the "::" or ":" that is printed in front
-        of the name of the Style in the identifier.
+        of the name of the Style in the selector.
 
         Subclasses are expected to define the scope operator or else it will
         try to guess it based on its position in the hierarchy.
@@ -256,14 +256,14 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return stylesheet
 
     def to_string(self, cascade=False):
-        """Return the identifier and properties as a single string."""
+        """Return the selector and properties as a single string."""
         if cascade:
             return self._stylesheet()
-        style_format = "{identifier} {{\n{properties}}}\n"
+        style_format = "{selector} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
         properties = ""
         sheet = ""
-        identifier = self.identifier
+        selector = self.selector
         for key, value in self.items():
             if not isinstance(value, Style):
                 properties += prop_format.format(key, value)
@@ -357,17 +357,17 @@ class StyleSheet(Style,
         return self.is_leaf()
 
     def to_string(self, cascade=True):
-        """Return the identifier and properties as a single string."""
+        """Return the selector and properties as a single string."""
         if cascade:
             return self._stylesheet()
-        style_format = "{identifier} {{\n{properties}}}\n"
+        style_format = "{selector} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
-        identifier = self.identifier
+        selector = self.selector
         if self.is_global_scope():
             style_format = "{properties}"
             prop_format = "{}: {};\n"
         else:
-            identifier = "*"
+            selector = "*"
         properties = ""
         sheet = ""
         for key, value in self.items():

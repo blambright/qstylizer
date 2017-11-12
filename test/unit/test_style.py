@@ -31,7 +31,7 @@ def test_subclass(mocker, style_class, css, name, expected):
 
 
 @pytest.mark.parametrize(
-    "identifier, expected",
+    "selector, expected",
     [
         (
             "QComboBox",
@@ -77,8 +77,8 @@ def test_subclass(mocker, style_class, css, name, expected):
         "with-only-pseudostate",
     ]
 )
-def test_split_identifier(css, identifier, expected):
-    assert css.split_identifier(identifier) == expected
+def test_split_selector(css, selector, expected):
+    assert css.split_selector(selector) == expected
 
 
 @pytest.mark.parametrize(
@@ -198,7 +198,7 @@ def test_create_substyle_list(mocker, style_class, css):
 
 
 @pytest.mark.parametrize(
-    "identifier, "
+    "selector, "
     "curr_name, "
     "find_or_create_value_call_count, ",
     [
@@ -219,12 +219,12 @@ def test_create_substyle_list(mocker, style_class, css):
     ]
 )
 def test_create_substyles(
-    mocker, style_class, css, identifier, curr_name,
+    mocker, style_class, css, selector, curr_name,
     find_or_create_value_call_count
 ):
     mocked_style = mocker.MagicMock()
-    mocked_split_identifier = mocker.patch.object(
-        style_class, "split_identifier", return_value=[curr_name]
+    mocked_split_selector = mocker.patch.object(
+        style_class, "split_selector", return_value=[curr_name]
     )
     mocked_find_value = mocker.patch.object(
         style_class, "find_value", return_value=mocked_style
@@ -235,8 +235,8 @@ def test_create_substyles(
     mocker.patch.object(
         style_class, "find_or_create_value", return_value=mocked_style
     )
-    css.create_substyles(identifier)
-    mocked_split_identifier.assert_called_once_with(identifier)
+    css.create_substyles(selector)
+    mocked_split_selector.assert_called_once_with(selector)
     mocked_find_value.assert_called_once_with(curr_name)
     assert mocked_style.find_or_create_value.call_count == find_or_create_value_call_count
 

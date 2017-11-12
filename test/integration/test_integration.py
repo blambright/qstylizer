@@ -45,15 +45,15 @@ def test_pseudo_state(css):
     assert type(css.QWidget.item.selected) == qstylizer.style.PseudoState
 
 
-def test_identifier(css):
-    assert css.QCheckBox.indicator.identifier == "QCheckBox::indicator"
-    assert css.QCheckBox.indicator.unchecked.identifier == "QCheckBox::indicator:unchecked"
-    assert css.QCheckBox.indicator.unchecked.hover.identifier == "QCheckBox::indicator:unchecked:hover"
-    assert css.Object.subcontrol.pseudostate.identifier == "Object::subcontrol:pseudostate"
-    assert css["Object::subcontrol:pseudostate"].identifier == "Object::subcontrol:pseudostate"
-    assert css.QLineEdit['[echoMode="2"]'].identifier == "QLineEdit[echoMode=\"2\"]"
-    assert css.Object["::subcontrol"][":pseudostate"].identifier == "Object::subcontrol:pseudostate"
-    assert css["QWidget#objectName"].identifier == "QWidget#objectName"
+def test_selector(css):
+    assert css.QCheckBox.indicator.selector == "QCheckBox::indicator"
+    assert css.QCheckBox.indicator.unchecked.selector == "QCheckBox::indicator:unchecked"
+    assert css.QCheckBox.indicator.unchecked.hover.selector == "QCheckBox::indicator:unchecked:hover"
+    assert css.Object.subcontrol.pseudostate.selector == "Object::subcontrol:pseudostate"
+    assert css["Object::subcontrol:pseudostate"].selector == "Object::subcontrol:pseudostate"
+    assert css.QLineEdit['[echoMode="2"]'].selector == "QLineEdit[echoMode=\"2\"]"
+    assert css.Object["::subcontrol"][":pseudostate"].selector == "Object::subcontrol:pseudostate"
+    assert css["QWidget#objectName"].selector == "QWidget#objectName"
 
 
 def test_style_list(css):
@@ -220,8 +220,8 @@ def test_assign_subcontrol(css):
     css.QCheckBox.indicator = subcontrol
 
     assert css.QCheckBox.indicator is not css.QComboBox.indicator
-    assert css.QCheckBox.indicator.identifier == "QCheckBox::indicator"
-    assert css.QComboBox.indicator.identifier == "QComboBox::indicator"
+    assert css.QCheckBox.indicator.selector == "QCheckBox::indicator"
+    assert css.QComboBox.indicator.selector == "QComboBox::indicator"
 
 
 def test_child_class_style(css):
