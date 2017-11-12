@@ -97,7 +97,7 @@ def test_style_list(css):
 def test_style_style(css):
     css.QCheckBox.indicator.unchecked.hover.border = "none"
     css.QCheckBox.indicator.unchecked.hover.color = "green"
-    assert css.QCheckBox.indicator.unchecked.hover.style() == \
+    assert css.QCheckBox.indicator.unchecked.hover.to_string() == \
            "QCheckBox::indicator:unchecked:hover {\n    border: none;\n    color: green;\n}\n"
 
 
@@ -147,7 +147,7 @@ def test_stylesheet(css):
 
 def test_empty_style(css):
     css.QCheckBox.indicator.border = "none"
-    assert css.QCheckBox.style() == ""
+    assert css.QCheckBox.to_string() == ""
 
 
 def test_subcontrol_set():

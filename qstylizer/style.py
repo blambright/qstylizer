@@ -243,7 +243,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def is_top_level(self):
         return isinstance(self._parent, StyleSheet)
 
-    def style(self):
+    def to_string(self):
         """Return the identifier and properties as a single string."""
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
@@ -259,7 +259,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     def stylesheet(self):
         """Return a stylesheet as string containing the entire hierarchy."""
-        stylesheet = self.style()
+        stylesheet = self.to_string()
         for key, value in self.items():
             if isinstance(value, Style):
                 stylesheet += value.stylesheet()
@@ -324,11 +324,11 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     def __repr__(self, *args, **kwargs):
         return "<{0} /> {1}".format(
-            self.__class__.__name__, self.style()
+            self.__class__.__name__, self.to_string()
         )
 
     def __str__(self):
-        return self.style()
+        return self.to_string()
 
 
 class StyleSheet(Style,
@@ -365,7 +365,7 @@ class StyleSheet(Style,
         """
         return self.is_leaf()
 
-    def style(self):
+    def to_string(self):
         """Return the identifier and properties as a single string."""
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
@@ -389,7 +389,7 @@ class StyleSheet(Style,
         if self.is_unscoped():
             repr_format = "<{0} id='{1}'>\n{2}---"
         return repr_format.format(
-            self.__class__.__name__, self.identifier, self.style()
+            self.__class__.__name__, self.identifier, self.to_string()
         )
 
 
