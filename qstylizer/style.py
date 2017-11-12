@@ -324,8 +324,8 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return result
 
     def __repr__(self, *args, **kwargs):
-        return "<{0} /> {1}".format(
-            self.__class__.__name__, self.to_string()
+        return "<{0} name='{1}' />".format(
+            self.__class__.__name__, self.name
         )
 
     def __str__(self):
@@ -372,12 +372,17 @@ class StyleSheet(Style,
             sheet = style_format.format(**locals())
         return sheet
 
+    @property
+    def name(self):
+        """Return the name of the StyleSheet."""
+        return self._name
+
     def __repr__(self, *args, **kwargs):
-        repr_format = "<{0} />{1}---"
-        if self.is_global_scope():
-            repr_format = "<{0} />\n{1}---"
-        return repr_format.format(
-            self.__class__.__name__, self.to_string(cascade=False)
+        template = "<{0} />"
+        if self.name:
+            template = "<{0} name='{1}' />"
+        return template.format(
+            self.__class__.__name__, self.name
         )
 
 
