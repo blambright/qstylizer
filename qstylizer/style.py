@@ -336,26 +336,11 @@ class StyleSheet(Style,
     Contains descriptors for all class and property options.
 
     """
-    def is_global(self):
-        """Determine if style is global.
+    def is_global_scope(self):
+        """Determine if style is global scope.
 
-        A style is global if it nameless, it is the root and it has substyles.
-        Resulting style string should contain a "*" as the identifier
-        ::
-            * {
-                background-color: red;
-            }
-            QComboBox {
-            ...
-
-        """
-        return not self.is_leaf()
-
-    def is_unscoped(self):
-        """Determine if style is unscoped.
-
-        A style is unscoped if it is root and it has no substyles.
-        Resulting style string should contain no brackets.
+        A StyleSheet is global scope if it has no substyles.
+        Resulting string should contain no brackets.
         ::
             background-color: red;
             border: none;
@@ -373,14 +358,14 @@ class StyleSheet(Style,
             return stylesheet
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
-        if self.is_unscoped():
+        identifier = self.identifier
+        if self.is_global_scope():
             style_format = "{properties}"
             prop_format = "{}: {};\n"
+        else:
+            identifier = "*"
         properties = ""
         sheet = ""
-        identifier = self.identifier
-        if self.is_global():
-            identifier = "*"
         for key, value in self.items():
             if not isinstance(value, Style):
                 properties += prop_format.format(key, value)
@@ -389,11 +374,11 @@ class StyleSheet(Style,
         return sheet
 
     def __repr__(self, *args, **kwargs):
-        repr_format = "<{0} />{2}---"
+        repr_format = "<{0} />{1}---"
         if self.is_unscoped():
-            repr_format = "<{0} id='{1}'>\n{2}---"
+            repr_format = "<{0} />\n{1}---"
         return repr_format.format(
-            self.__class__.__name__, self.identifier, self.to_string(cascade=False)
+            self.__class__.__name__, self.to_string(cascade=False)
         )
 
 
