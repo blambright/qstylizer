@@ -67,7 +67,7 @@ def test_style_list(css):
     assert "border" in css.QWidget.keys()
     assert "border" in css.QLineEdit.keys()
     assert "margin" in css["QCheckBox::subcontrol:pseudostate"].keys()
-    assert css.stylesheet() == textwrap.dedent(
+    assert css.to_string() == textwrap.dedent(
         """
         QCheckBox {
             border: none;
@@ -114,7 +114,7 @@ def test_stylesheet(css):
     css.QLineEdit['[echoMode="2"]'].lineedit_password_character = 9679
     css["QCheckBox::indicator:unchecked"].margin = 0
 
-    assert css.stylesheet() == textwrap.dedent(
+    assert css.to_string() == textwrap.dedent(
         """
         * {
             border: none;
@@ -156,7 +156,7 @@ def test_subcontrol_set():
     with pytest.raises(ValueError):
         qclass_style.text = "test"
     qclass_style.text.color = "red"
-    assert qclass_style.stylesheet() == textwrap.dedent(
+    assert qclass_style.to_string(cascade=True) == textwrap.dedent(
         """
         QObject::text {
             color: red;
@@ -171,7 +171,7 @@ def test_pseudostate_set():
     with pytest.raises(ValueError):
         indicator_style.pressed = "test"
     indicator_style.pressed.color = "red"
-    assert indicator_style.stylesheet() == textwrap.dedent(
+    assert indicator_style.to_string(cascade=True) == textwrap.dedent(
         """
         indicator:pressed {
             color: red;
@@ -229,7 +229,7 @@ def test_child_class_style(css):
     css.QWidget.color = "red"
     css["QWidget QFrame"].background_color = "green"
     css.QFrame.color = "black"
-    assert css.stylesheet() == textwrap.dedent(
+    assert css.to_string() == textwrap.dedent(
         """
         QWidget {
             color: red;
@@ -247,7 +247,7 @@ def test_child_class_style(css):
 def test_unscoped_style(css):
     css.background_color = "red"
     css.border = "none"
-    assert css.stylesheet() == textwrap.dedent(
+    assert css.to_string() == textwrap.dedent(
         """
         background-color: red;
         border: none;
@@ -259,7 +259,7 @@ def test_global_style(css):
     css.background_color = "red"
     css.border = "none"
     css.QWidget.indicator.border = "1px solid green"
-    print css.stylesheet() == textwrap.dedent(
+    print css.to_string() == textwrap.dedent(
         """
         * {
             background-color: red;

@@ -243,8 +243,14 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def is_top_level(self):
         return isinstance(self._parent, StyleSheet)
 
-    def to_string(self):
+    def to_string(self, cascade=False):
         """Return the identifier and properties as a single string."""
+        if cascade:
+            stylesheet = self.to_string(cascade=False)
+            for key, value in self.items():
+                if isinstance(value, Style):
+                    stylesheet += value.to_string(cascade=True)
+            return stylesheet
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
         properties = ""
@@ -256,14 +262,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         if properties:
             sheet = style_format.format(**locals())
         return sheet
-
-    def stylesheet(self):
-        """Return a stylesheet as string containing the entire hierarchy."""
-        stylesheet = self.to_string()
-        for key, value in self.items():
-            if isinstance(value, Style):
-                stylesheet += value.stylesheet()
-        return stylesheet
 
     def __getitem__(self, key):
         """Override the retrieving of a value from dictionary.
@@ -365,8 +363,14 @@ class StyleSheet(Style,
         """
         return self.is_leaf()
 
-    def to_string(self):
+    def to_string(self, cascade=True):
         """Return the identifier and properties as a single string."""
+        if cascade:
+            stylesheet = self.to_string(cascade=False)
+            for key, value in self.items():
+                if isinstance(value, Style):
+                    stylesheet += value.to_string(cascade=True)
+            return stylesheet
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
         if self.is_unscoped():
@@ -389,7 +393,7 @@ class StyleSheet(Style,
         if self.is_unscoped():
             repr_format = "<{0} id='{1}'>\n{2}---"
         return repr_format.format(
-            self.__class__.__name__, self.identifier, self.to_string()
+            self.__class__.__name__, self.identifier, self.to_string(cascade=False)
         )
 
 
