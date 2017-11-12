@@ -113,7 +113,6 @@ def test_stylesheet(css):
     css.QCheckBox.indicator.unchecked.hover.background_color = "purple"
     css.QLineEdit['[echoMode="2"]'].lineedit_password_character = 9679
     css["QCheckBox::indicator:unchecked"].margin = 0
-
     assert css.to_string() == textwrap.dedent(
         """
         * {
@@ -267,6 +266,32 @@ def test_global_style(css):
         }
         QWidget::indicator {
             border: 1px solid green;
+        }
+        """
+    )[1:]
+
+
+def test_not_operator(css):
+    import qstylizer.style
+    css.QWidget.indicator["!selected"].color = "green"
+    assert type(css.QWidget.indicator["!selected"]) == qstylizer.style.PseudoState
+    assert css.to_string() == textwrap.dedent(
+        """
+        QWidget::indicator:!selected {
+            color: green;
+        }
+        """
+    )[1:]
+
+
+def test_getattr_not(css):
+    import qstylizer.style
+    css.QWidget.indicator.not_selected.color = "green"
+    assert type(css.QWidget.indicator.not_selected) == qstylizer.style.PseudoState
+    assert css.to_string() == textwrap.dedent(
+        """
+        QWidget::indicator:!selected {
+            color: green;
         }
         """
     )[1:]

@@ -44,7 +44,8 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: name of type string
 
         """
-        class_ = ClassStyle
+        name = name.replace("not_", "").replace("!", "")
+        class_ = Style
         if name.startswith("::") or name in cls.qsubcontrols:
             class_ = SubControl
         elif name.startswith(":") or name in cls.qpseudostates:
@@ -53,7 +54,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
             class_ = ObjectStyle
         elif name.startswith(" "):
             class_ = ChildClassStyle
-        elif name in cls.qclasses:
+        elif name in cls.qclasses or name.startswith("Q"):
             class_ = ClassStyle
         elif "=" in name:
             class_ = ObjectProperty
@@ -82,7 +83,7 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """
         super(Style, self).__init__()
 
-        self._name = name
+        self._name = self._sanitize_key(name) if name else None
         self._parent = parent
         self._children = {}
         self._attributes = self.get_attributes()
@@ -90,7 +91,12 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     @staticmethod
     def _sanitize_key(key):
         """Strip the key of colons and replace underscores with dashes."""
-        return str(key).replace(":", "").replace("_", "-")
+        return (
+            str(key)
+            .replace("not_", "!")
+            .replace(":", "")
+            .replace("_", "-")
+        )
 
     @staticmethod
     def _sanitize_value(value):
@@ -441,6 +447,16 @@ class StyleList(Style):
     Example style list name: "QCheckBox, QComboBox".
 
     """
+    def __init__(self, *args, **kwargs):
+        """Initialize the style dictionary.
+
+        :param name: The name of the Style
+        :param parent:  The parent Style
+
+        """
+        super(StyleList, self).__init__(*args, **kwargs)
+        self._name = kwargs.get("name")
+
     @property
     def scope_operator(self):
         return ""
