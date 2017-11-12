@@ -278,7 +278,6 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     def style(self):
         """Return the identifier and properties as a single string."""
-        is_leaf = self.is_leaf()
         style_format = "{identifier} {{\n{properties}}}\n"
         prop_format = "    {}: {};\n"
         if self.is_unscoped():
@@ -363,7 +362,9 @@ class Style(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return result
 
     def __repr__(self, *args, **kwargs):
-        return self.identifier
+        return "<{0} id='{1}'>\n{2}".format(
+            self.__class__.__name__, self.identifier, self.style()
+        )
 
     def __str__(self):
         return self.style()
