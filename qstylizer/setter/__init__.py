@@ -34,26 +34,25 @@ class StyleRuleSetter(object):
     _descriptor_cls = StyleRuleSet
 
     left = _descriptor_cls("left")
-    right = _descriptor_cls("left")
-    top = _descriptor_cls("left")
-    bottom = _descriptor_cls("left")
+    right = _descriptor_cls("right")
+    top = _descriptor_cls("top")
+    bottom = _descriptor_cls("bottom")
 
     @classmethod
     def get_attributes(cls):
         attributes = {}
         for class_ in cls.__bases__:
-            if not issubclass(class_, StyleRuleSetter) or class_._descriptor_cls is None:
+            if not issubclass(class_, StyleRuleSetter):
                 continue
             attributes.update({
                 key: value for key, value in class_.__dict__.items()
                 if isinstance(value, class_._descriptor_cls)
             })
             attributes.update(class_.get_attributes())
-        if cls._descriptor_cls is not None:
-            attributes.update({
-                key: value for key, value in cls.__dict__.items()
-                if isinstance(value, cls._descriptor_cls)
-            })
+        attributes.update({
+            key: value for key, value in cls.__dict__.items()
+            if isinstance(value, cls._descriptor_cls)
+        })
         return attributes
 
     @classmethod
