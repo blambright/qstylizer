@@ -65,6 +65,10 @@ def test_subclass(mocker, style_class, css, name, expected):
             "::pseudostate",
             ["::pseudostate"]
         ),
+        (
+            "QTreeView::branch:!has-children:adjoins-item",
+            ["QTreeView", "::branch", ":!has_children", ":adjoins_item"]
+        )
     ],
     ids=[
         "with-single-name",
@@ -75,6 +79,7 @@ def test_subclass(mocker, style_class, css, name, expected):
         "with-child-class",
         "with-object",
         "with-only-pseudostate",
+        "with-not-operator-and-dashes"
     ]
 )
 def test_split_selector(css, selector, expected):
