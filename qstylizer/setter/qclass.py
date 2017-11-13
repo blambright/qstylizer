@@ -5,10 +5,7 @@ import copy
 import qstylizer.setter
 
 
-class ClassStyleSet(object):
-
-    def __init__(self, name):
-        self.name = name
+class ClassStyleSet(qstylizer.setter.StyleRuleSet):
 
     def __get__(self, instance, owner):
         import qstylizer.style
@@ -26,12 +23,11 @@ class ClassStyleSet(object):
         if not isinstance(value, qstylizer.style.ClassStyleRule):
             raise ValueError("Can only assign a ClassStyleRule style.")
         value = copy.deepcopy(value)
-        value._is_root = False
         value._parent = instance
         instance._add_value(self.name, value)
 
 
-class ClassStyleSetter(qstylizer.setter.Setter):
+class ClassStyleSetter(qstylizer.setter.StyleRuleSetter):
 
     _descriptor_cls = ClassStyleSet
 

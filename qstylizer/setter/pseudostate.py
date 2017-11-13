@@ -5,10 +5,7 @@ import copy
 import qstylizer.setter
 
 
-class PseudoStateSet(object):
-
-    def __init__(self, name):
-        self.name = name
+class PseudoStateSet(qstylizer.setter.StyleRuleSet):
 
     def __get__(self, instance, owner):
         import qstylizer.style
@@ -31,14 +28,13 @@ class PseudoStateSet(object):
         instance._add_value(self.name, value)
 
 
-class PseudoStateSetter(qstylizer.setter.Setter):
+class PseudoStateSetter(qstylizer.setter.StyleRuleSetter):
 
     _descriptor_cls = PseudoStateSet
 
     active = _descriptor_cls("active")
     adjoins_item = _descriptor_cls("adjoins-item")
     alternate = _descriptor_cls("alternate")
-    bottom = _descriptor_cls("bottom")
     checked = _descriptor_cls("checked")
     closable = _descriptor_cls("closable")
     closed = _descriptor_cls("closed")
@@ -58,7 +54,6 @@ class PseudoStateSetter(qstylizer.setter.Setter):
     hover = _descriptor_cls("hover")
     indeterminate = _descriptor_cls("indeterminate")
     last = _descriptor_cls("last")
-    left = _descriptor_cls("left")
     maximized = _descriptor_cls("maximized")
     middle = _descriptor_cls("middle")
     minimized = _descriptor_cls("minimized")
@@ -73,9 +68,7 @@ class PseudoStateSetter(qstylizer.setter.Setter):
     pressed = _descriptor_cls("pressed")
     previous_selected = _descriptor_cls("previous-selected")
     read_only = _descriptor_cls("read-only")
-    right = _descriptor_cls("right")
     selected = _descriptor_cls("selected")
-    top = _descriptor_cls("top")
     unchecked = _descriptor_cls("unchecked")
     vertical = _descriptor_cls("vertical")
     window = _descriptor_cls("window")

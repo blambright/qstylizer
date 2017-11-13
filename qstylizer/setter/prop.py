@@ -144,23 +144,15 @@ def get_property_values():
     return _property_values
 
 
-class PropSet(object):
-
-    def __init__(self, name):
-        self.name = name
+class PropSet(qstylizer.setter.StyleRuleSet):
 
     def __get__(self, instance, owner):
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         return instance.find_value(self.name)
 
-    def __set__(self, instance, value):
-        import qstylizer.style
-        assert isinstance(instance, qstylizer.style.StyleRule)
-        instance._add_value(self.name, value)
 
-
-class PropSetter(qstylizer.setter.Setter):
+class PropSetter(qstylizer.setter.StyleRuleSetter):
 
     _descriptor_cls = PropSet
 
@@ -209,7 +201,6 @@ class PropSetter(qstylizer.setter.Setter):
     border_top_style = _descriptor_cls("border-top-style")
     border_top_width = _descriptor_cls("border-top-width")
     border_width = _descriptor_cls("border-width")
-    bottom = _descriptor_cls("bottom")
     color = _descriptor_cls("color")
     float = _descriptor_cls("float")
     font = _descriptor_cls("font")
@@ -221,7 +212,6 @@ class PropSetter(qstylizer.setter.Setter):
     height = _descriptor_cls("height")
     image = _descriptor_cls("image")
     image_position = _descriptor_cls("image-position")
-    left = _descriptor_cls("left")
     line_height = _descriptor_cls("line-height")
     list_style = _descriptor_cls("list-style")
     list_style_type = _descriptor_cls("list-style-type")
@@ -252,7 +242,6 @@ class PropSetter(qstylizer.setter.Setter):
     page_break_after = _descriptor_cls("page-break-after")
     page_break_before = _descriptor_cls("page-break-before")
     position = _descriptor_cls("position")
-    right = _descriptor_cls("right")
     selection_background_color = _descriptor_cls("selection-background-color")
     selection_color = _descriptor_cls("selection-color")
     spacing = _descriptor_cls("spacing")
@@ -263,7 +252,6 @@ class PropSetter(qstylizer.setter.Setter):
     text_indent = _descriptor_cls("text-indent")
     text_transform = _descriptor_cls("text-transform")
     text_underline_style = _descriptor_cls("text-underline-style")
-    top = _descriptor_cls("top")
     vertical_align = _descriptor_cls("vertical-align")
     white_space = _descriptor_cls("white-space")
     width = _descriptor_cls("width")

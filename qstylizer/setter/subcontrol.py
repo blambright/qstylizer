@@ -5,10 +5,7 @@ import copy
 import qstylizer.setter
 
 
-class SubControlSet(object):
-
-    def __init__(self, name):
-        self.name = name
+class SubControlSet(qstylizer.setter.StyleRuleSet):
 
     def __get__(self, instance, owner):
         import qstylizer.style
@@ -26,12 +23,11 @@ class SubControlSet(object):
         if not isinstance(value, qstylizer.style.SubControl):
             raise ValueError("Can only assign a SubControl style.")
         value = copy.deepcopy(value)
-        value._is_root = False
         value._parent = instance
         instance._add_value(self.name, value)
 
 
-class SubControlSetter(qstylizer.setter.Setter):
+class SubControlSetter(qstylizer.setter.StyleRuleSetter):
 
     _descriptor_cls = SubControlSet
 
