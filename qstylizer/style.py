@@ -72,6 +72,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         :param name: String name
 
         """
+        selector = selector.replace("-", "_")
         return re.findall(cls._split_regex, selector)[:-1]
 
     def __init__(self, name=None, parent=None):
@@ -156,7 +157,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
         """
         curr_name = self.split_selector(selector)[0]
-        remaining = selector.split(curr_name, 1)[-1]
+        remaining = selector.split(curr_name, 1)[-1].replace("-", "_")
         style = self.find_value(curr_name)
         if style is None:
             style = self.create_substyle(curr_name)
