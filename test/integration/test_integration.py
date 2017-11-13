@@ -295,3 +295,24 @@ def test_getattr_not(css):
         }
         """
     )[1:]
+
+
+def test_pseudostate_prop_same_name(css):
+    css.QWidget.top = 0
+    css.QWidget.right = 0
+    css.QWidget.bottom = 0
+    css.QWidget.left = 0
+    css.QTabBar.tab.top.color = "red"
+    assert css.to_string() == textwrap.dedent(
+        """
+        QWidget {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        QTabBar::tab:top {
+            color: red;
+        }
+        """
+    )[1:]
