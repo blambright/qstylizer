@@ -179,11 +179,11 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self._add_value(name, style)
         return style
 
-    def _add_value(self, key, value):
+    def _add_value(self, key, value, **kwargs):
         """Add item to ordered dictionary."""
         key = self._sanitize_key(key)
         value = self._sanitize_value(value)
-        self.__setitem__(key, value)
+        super(StyleRule, self).__setitem__(key, value, **kwargs)
 
     @property
     def selector(self):
@@ -311,9 +311,18 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def __setattr__(self, name, val):
         if name.startswith("_"):
             return super(StyleRule, self).__setattr__(name, val)
+        elif name in self.qproperties:
+            return qstylizer.setter.prop.PropSet(name).__set__(self, val)
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
         return self._add_value(name, val)
+
+    def __setitem__(self, key, value, **kwargs):
+        if key in self.qproperties:
+            return qstylizer.setter.prop.PropSet(key).__set__(self, value)
+        elif key in self._attributes:
+            return self._attributes[key].__set__(self, value)
+        return self._add_value(key, value, **kwargs)
 
     def __deepcopy__(self, memo):
         cls = self.__class__
@@ -453,23 +462,31 @@ class StyleList(StyleRule):
         """Strip the key of colons and replace underscores with dashes."""
         return str(key).replace("\n", "")
 
-    @property
-    def scope_operator(self):
-        return ""
-
-    def __setattr__(self, name, val):
-        """Override the setting of an attribute.
+    def _find_or_create_values_in_parent(self, name, val):
+        """Find or create value in parent StyleRule
 
         Will loop through all components in name separated by a comma and set the
         property in each of the substyles in the parent StyleRule.
 
         """
-        if name.startswith("_"):
-            return super(StyleRule, self).__setattr__(name, val)
         style_names = self.name.split(",")
         for style_name in style_names:
-            self._parent.find_or_create_value(style_name)._add_value(name, val)
+            self._parent.find_or_create_value(style_name).__setattr__(name, val)
         return None
+
+    @property
+    def scope_operator(self):
+        return ""
+
+    def __setattr__(self, name, val):
+        """Override the setting of an attribute."""
+        if name.startswith("_"):
+            return super(StyleRule, self).__setattr__(name, val)
+        self._find_or_create_values_in_parent(name, val)
+
+    def __setitem__(self, key, value, **kwargs):
+        """Override the setting of a value in ordered dict."""
+        self._find_or_create_values_in_parent(key, value)
 
     @property
     def name(self):
