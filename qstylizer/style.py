@@ -184,6 +184,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         key = self._sanitize_key(key)
         value = self._sanitize_value(value)
         super(StyleRule, self).__setitem__(key, value, **kwargs)
+        return self.find_value(key)
 
     @property
     def selector(self):
@@ -311,16 +312,12 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def __setattr__(self, name, val):
         if name.startswith("_"):
             return super(StyleRule, self).__setattr__(name, val)
-        elif name in self.qproperties:
-            return qstylizer.setter.prop.PropSet(name).__set__(self, val)
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
         return self._add_value(name, val)
 
     def __setitem__(self, key, value, **kwargs):
-        if key in self.qproperties:
-            return qstylizer.setter.prop.PropSet(key).__set__(self, value)
-        elif key in self._attributes:
+        if key in self._attributes:
             return self._attributes[key].__set__(self, value)
         return self._add_value(key, value, **kwargs)
 
@@ -482,11 +479,11 @@ class StyleList(StyleRule):
         """Override the setting of an attribute."""
         if name.startswith("_"):
             return super(StyleRule, self).__setattr__(name, val)
-        self._find_or_create_values_in_parent(name, val)
+        return self._find_or_create_values_in_parent(name, val)
 
     def __setitem__(self, key, value, **kwargs):
         """Override the setting of a value in ordered dict."""
-        self._find_or_create_values_in_parent(key, value)
+        return self._find_or_create_values_in_parent(key, value)
 
     @property
     def name(self):
