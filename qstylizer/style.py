@@ -320,7 +320,10 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def __setitem__(self, key, value, **kwargs):
         if key in self._attr_options:
             key = key.replace("-", "_")
-            return self._attributes[key].__set__(self, value)
+            try:
+                return self._attributes[key].__set__(self, value)
+            except KeyError:
+                pass
         return self._add_value(key, value, **kwargs)
 
     def __deepcopy__(self, memo):
