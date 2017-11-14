@@ -20,7 +20,6 @@ class StyleRuleSet(object):
         return instance.find_value(self.name)
 
     def __set__(self, instance, value):
-        import qstylizer.style
         value = copy.deepcopy(value)
         try:
             value._parent = instance
