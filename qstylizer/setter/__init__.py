@@ -57,5 +57,5 @@ class StyleRuleSetter(object):
     @classmethod
     def get_attr_options(cls):
         return set(
-            [x.replace("_", "-") for x, y in cls.get_attributes().items()]
+            [x.replace("_", "-") for x in cls.get_attributes().keys()]
         )
