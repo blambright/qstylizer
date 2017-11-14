@@ -67,3 +67,17 @@ class SubControlSetter(qstylizer.setter.StyleRuleSetter):
     title = _descriptor_cls("title")
     up_arrow = _descriptor_cls("up-arrow")
     up_button = _descriptor_cls("up-button")
+
+    @classmethod
+    def get_attributes(cls):
+        """Get all of the settable attributes of the StyleRule.
+
+        Remove the inherited style rules from the base class like
+        "left", "top", etc.
+
+        """
+        attributes = super(SubControlSetter, cls).get_attributes()
+        return {
+            key: value for key, value in attributes.items()
+            if type(value) is not qstylizer.setter.StyleRuleSet
+        }

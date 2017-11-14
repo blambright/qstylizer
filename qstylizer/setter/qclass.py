@@ -75,3 +75,17 @@ class ClassStyleSetter(qstylizer.setter.StyleRuleSetter):
     QTreeWidget = _descriptor_cls("QTreeWidget")
     QWidget = _descriptor_cls("QWidget")
 
+    @classmethod
+    def get_attributes(cls):
+        """Get all of the settable attributes of the StyleRule.
+
+        Remove the inherited style rules from the base class like
+        "left", "top", etc.
+
+        """
+        attributes = super(ClassStyleSetter, cls).get_attributes()
+        return {
+            key: value for key, value in attributes.items()
+            if type(value) is not qstylizer.setter.StyleRuleSet
+        }
+

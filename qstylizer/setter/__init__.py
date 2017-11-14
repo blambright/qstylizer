@@ -39,6 +39,7 @@ class StyleRuleSetter(object):
 
     @classmethod
     def get_attributes(cls):
+        """Get all of the settable attributes of the StyleRule."""
         attributes = {}
         for class_ in cls.__bases__:
             if not issubclass(class_, StyleRuleSetter):
