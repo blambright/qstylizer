@@ -87,6 +87,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         self._name = self._sanitize_key(name) if name else None
         self._parent = parent
         self._attributes = self.get_attributes()
+        self._attr_options = self.get_attr_options()
 
     @staticmethod
     def _sanitize_key(key):
@@ -317,7 +318,8 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self._add_value(name, val)
 
     def __setitem__(self, key, value, **kwargs):
-        if key in self._attributes:
+        if key in self._attr_options:
+            key = key.replace("-", "_")
             return self._attributes[key].__set__(self, value)
         return self._add_value(key, value, **kwargs)
 
