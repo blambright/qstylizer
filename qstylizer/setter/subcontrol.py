@@ -11,7 +11,7 @@ class SubControlSet(qstylizer.setter.StyleRuleSet):
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
-            new_style = qstylizer.style.SubControl(
+            new_style = qstylizer.style.SubControlRule(
                 name=self.name,
                 parent=instance,
             )
@@ -20,8 +20,8 @@ class SubControlSet(qstylizer.setter.StyleRuleSet):
 
     def __set__(self, instance, value):
         import qstylizer.style
-        if not isinstance(value, qstylizer.style.SubControl):
-            raise ValueError("Can only assign a SubControl style.")
+        if not isinstance(value, qstylizer.style.SubControlRule):
+            raise ValueError("Can only assign a SubControlRule style.")
         value = copy.deepcopy(value)
         value._parent = instance
         instance._add_value(self.name, value)

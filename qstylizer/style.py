@@ -18,12 +18,12 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     Example structure::
 
         <StyleRule>{
-            "QCheckBox": <QClassStyle name="QCheckBox">{
+            "QCheckBox": <ClassRule name="QCheckBox">{
                 "color": "red",
                 "background-color": "black",
-                "indicator: <SubControl name="indicator">{
+                "indicator: <SubControlRule name="indicator">{
                     "border": "1px solid green",
-                    "hover": <PseudoState name="hover">{
+                    "hover": <PseudoStateRule name="hover">{
                         "background-color": "green",
                     }
                 }
@@ -47,17 +47,17 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         name = name.replace("not_", "").replace("!", "")
         class_ = StyleRule
         if name.startswith("::") or name in cls.qsubcontrols:
-            class_ = SubControl
+            class_ = SubControlRule
         elif name.startswith(":") or name in cls.qpseudostates:
-            class_ = PseudoState
+            class_ = PseudoStateRule
         elif name.startswith("#"):
-            class_ = ObjectStyleRule
+            class_ = ObjectRule
         elif name.startswith(" "):
-            class_ = ChildClassStyle
+            class_ = ChildClassRule
         elif name in cls.qclasses or name.startswith("Q"):
-            class_ = ClassStyleRule
+            class_ = ClassRule
         elif "=" in name:
-            class_ = ObjectProperty
+            class_ = ObjectPropRule
         return class_
 
     @classmethod
@@ -403,10 +403,10 @@ class StyleSheet(StyleRule,
         )
 
 
-class ClassStyleRule(StyleRule,
+class ClassRule(StyleRule,
                  qstylizer.setter.subcontrol.SubControlSetter,
                  qstylizer.setter.pseudostate.PseudoStateSetter):
-    """The ClassStyleRule definition.
+    """The ClassRule definition.
 
     Example class style name: "QCheckBox".
     Contains descriptors for all subcontrols and pseudostates.
@@ -414,11 +414,11 @@ class ClassStyleRule(StyleRule,
     """
 
 
-class ObjectStyleRule(ClassStyleRule):
-    """The ObjectStyleRule definition.
+class ObjectRule(ClassRule):
+    """The ObjectRule definition.
 
     Example object style name: "#objectName".
-    Inherits from ClassStyleRule. Only difference is "#" is the scope operator.
+    Inherits from ClassRule. Only difference is "#" is the scope operator.
 
     """
     @property
@@ -426,11 +426,11 @@ class ObjectStyleRule(ClassStyleRule):
         return "#"
 
 
-class ChildClassStyle(ClassStyleRule):
-    """The ChildClassStyle definition.
+class ChildClassRule(ClassRule):
+    """The ChildClassRule definition.
 
     Example object style name: " QFrame".
-    Inherits from ClassStyleRule.
+    Inherits from ClassRule.
     QWidget QFrame {
         property: value
     }
@@ -441,8 +441,8 @@ class ChildClassStyle(ClassStyleRule):
         return " "
 
 
-class ObjectProperty(StyleRule):
-    """The ObjectProperty definition.
+class ObjectPropRule(StyleRule):
+    """The ObjectPropRule definition.
 
     Example object property style name: "[echoMode="2"]".
 
@@ -496,8 +496,8 @@ class StyleList(StyleRule):
         return self._name.replace(" ", "")
 
 
-class SubControl(StyleRule, qstylizer.setter.pseudostate.PseudoStateSetter):
-    """The SubControl definition.
+class SubControlRule(StyleRule, qstylizer.setter.pseudostate.PseudoStateSetter):
+    """The SubControlRule definition.
 
     Example subcontrol name: "::indicator".
 
@@ -507,8 +507,8 @@ class SubControl(StyleRule, qstylizer.setter.pseudostate.PseudoStateSetter):
         return "::"
 
 
-class PseudoState(StyleRule):
-    """The PseudoState definition.
+class PseudoStateRule(StyleRule):
+    """The PseudoStateRule definition.
 
     Example pseudostate name: ":hover".
 

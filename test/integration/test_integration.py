@@ -37,12 +37,12 @@ def test_delete_style(css):
 
 def test_subcontrol(css):
     import qstylizer.style
-    assert type(css.QWidget.item) == qstylizer.style.SubControl
+    assert type(css.QWidget.item) == qstylizer.style.SubControlRule
 
 
 def test_pseudo_state(css):
     import qstylizer.style
-    assert type(css.QWidget.item.selected) == qstylizer.style.PseudoState
+    assert type(css.QWidget.item.selected) == qstylizer.style.PseudoStateRule
 
 
 def test_selector(css):
@@ -151,7 +151,7 @@ def test_empty_style(css):
 
 def test_subcontrol_set():
     import qstylizer.style
-    qclass_style = qstylizer.style.ClassStyleRule("QObject")
+    qclass_style = qstylizer.style.ClassRule("QObject")
     with pytest.raises(ValueError):
         qclass_style.text = "test"
     qclass_style.text.color = "red"
@@ -166,7 +166,7 @@ def test_subcontrol_set():
 
 def test_pseudostate_set():
     import qstylizer.style
-    indicator_style = qstylizer.style.SubControl("indicator")
+    indicator_style = qstylizer.style.SubControlRule("indicator")
     with pytest.raises(ValueError):
         indicator_style.pressed = "test"
     indicator_style.pressed.color = "red"
@@ -210,7 +210,7 @@ def test_deepcopy(css):
 
 def test_assign_subcontrol(css):
     import qstylizer.style
-    subcontrol = qstylizer.style.SubControl("indicator")
+    subcontrol = qstylizer.style.SubControlRule("indicator")
     subcontrol.background_color = "red"
     subcontrol.unchecked.border = "none"
     subcontrol.unchecked.background_color = "rgb(0,20,0)"
@@ -274,7 +274,7 @@ def test_global_style(css):
 def test_not_operator(css):
     import qstylizer.style
     css.QWidget.indicator["!selected"].color = "green"
-    assert type(css.QWidget.indicator["!selected"]) == qstylizer.style.PseudoState
+    assert type(css.QWidget.indicator["!selected"]) == qstylizer.style.PseudoStateRule
     assert css.to_string() == textwrap.dedent(
         """
         QWidget::indicator:!selected {
@@ -287,7 +287,7 @@ def test_not_operator(css):
 def test_getattr_not(css):
     import qstylizer.style
     css.QWidget.indicator.not_selected.color = "green"
-    assert type(css.QWidget.indicator.not_selected) == qstylizer.style.PseudoState
+    assert type(css.QWidget.indicator.not_selected) == qstylizer.style.PseudoStateRule
     assert css.to_string() == textwrap.dedent(
         """
         QWidget::indicator:!selected {

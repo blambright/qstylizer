@@ -5,3 +5,4 @@
 .eggs
 *.egg-info
 build
+test_stylesheet.py

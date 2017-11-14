@@ -11,7 +11,7 @@ class PseudoStateSet(qstylizer.setter.StyleRuleSet):
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
-            new_style = qstylizer.style.PseudoState(
+            new_style = qstylizer.style.PseudoStateRule(
                 name=self.name,
                 parent=instance,
             )
@@ -20,8 +20,8 @@ class PseudoStateSet(qstylizer.setter.StyleRuleSet):
 
     def __set__(self, instance, value):
         import qstylizer.style
-        if not isinstance(value, qstylizer.style.PseudoState):
-            raise ValueError("Can only assign a PseudoState style.")
+        if not isinstance(value, qstylizer.style.PseudoStateRule):
+            raise ValueError("Can only assign a PseudoStateRule style.")
         value = copy.deepcopy(value)
         value._is_root = False
         value._parent = instance

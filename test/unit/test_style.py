@@ -6,14 +6,14 @@ import pytest
 @pytest.mark.parametrize(
     "name, expected",
     [
-        ("indicator", "SubControl"),
-        ("has-children", "PseudoState"),
-        ("::subcontrol", "SubControl"),
-        (":pseudostate", "PseudoState"),
-        ("#objectName", "ObjectStyleRule"),
-        ("[echoMode=2]", "ObjectProperty"),
-        (" QFrame", "ChildClassStyle"),
-        ("QObject", "ClassStyleRule")
+        ("indicator", "SubControlRule"),
+        ("has-children", "PseudoStateRule"),
+        ("::subcontrol", "SubControlRule"),
+        (":pseudostate", "PseudoStateRule"),
+        ("#objectName", "ObjectRule"),
+        ("[echoMode=2]", "ObjectPropRule"),
+        (" QFrame", "ChildClassRule"),
+        ("QObject", "ClassRule")
     ],
     ids=[
         "with-known-subcontrol",
