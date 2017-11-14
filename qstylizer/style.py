@@ -15,19 +15,42 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     A dictionary containing nested Styles and property:value pairs.
 
-    Example structure::
+    Example structure:
 
-        <StyleRule>{
-            "QCheckBox": <ClassRule name="QCheckBox">{
-                "color": "red",
-                "background-color": "black",
-                "indicator: <SubControlRule name="indicator">{
-                    "border": "1px solid green",
-                    "hover": <PseudoStateRule name="hover">{
-                        "background-color": "green",
-                    }
-                }
-            }
+    .. code-block:: xml
+
+        <ClassRule name="QCheckBox" dict={
+            "color": "red",
+            "background-color": "black",
+            "indicator: <SubControlRule name="indicator" dict={
+                "border": "1px solid green",
+                "hover": <PseudoStateRule name="hover" dict={
+                    "background-color": "green",
+                    "border": "0px transparent black"
+                } />
+            } />
+        } />
+
+    Output format::
+
+        <selector> {
+            <property>: <value>;
+            <property>: <value>;
+            ...
+        }
+
+    Stylesheet output::
+
+        QCheckBox {
+            color: red;
+            background-color: black;
+        }
+        QCheckBox::indicator {
+            border: 1px solid green;
+        }
+        QCheckBox::indicator:hover {
+            background-color: green;
+            border: 0px transparent black;
         }
 
     """
@@ -39,7 +62,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     @classmethod
     def subclass(cls, name):
-        """Determine subclass from string name.
+        """Determine StyleRule subclass from string name.
 
         :param name: name of type string
 
@@ -65,7 +88,8 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """Split the selector based on the _split_regex.
 
         Return a list of each component.
-        Example:
+        Example::
+
             name = "QObject::subcontrol:pseudostate"
             return value = ["QObject", "::subcontrol", ":pseudostate"]
 
@@ -76,7 +100,9 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return re.findall(cls._split_regex, selector)[:-1]
 
     def __init__(self, name=None, parent=None):
-        """Initialize the style dictionary.
+        """Initialize the StyleRule dictionary.
+
+        .. note:: All public variables will be put into ordered dictionary.
 
         :param name: The name of the StyleRule
         :param parent:  The parent StyleRule
@@ -91,7 +117,11 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     @staticmethod
     def _sanitize_key(key):
-        """Strip the key of colons and replace underscores with dashes."""
+        """Strip the key of colons and replace underscores with dashes.
+
+        :param key: A string variable
+
+        """
         return (
             str(key)
             .replace("not_", "!")
@@ -101,7 +131,11 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     @staticmethod
     def _sanitize_value(value):
-        """Strip the value of any semi-colons."""
+        """Strip the value of any semi-colons.
+
+        :param value: A value of any type
+
+        """
         if type(value) in [str, unicode]:
             return value.replace(";", "")
         return value
@@ -128,7 +162,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
     def find_value(self, key):
         """Find value from key.
 
-        Simply return the key's hash value in the ordered dict.
+        Return the sanitized key's hash value in the ordered dict.
 
         """
         key = self._sanitize_key(key)
@@ -238,9 +272,10 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return "::"
 
     def is_leaf(self):
-        """Determine if style is a leaf.
+        """Determine if StyleRule is a leaf.
 
-        StyleRule is a leaf if its dictionary values contain no Styles (only properties).
+        StyleRule is a leaf if its dictionary values
+        contain no Styles (only properties).
 
         """
         for value in self.values():
@@ -249,9 +284,19 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return True
 
     def is_top_level(self):
+        """Determine if StyleRule is top level.
+
+        StyleRule is top level if its parent is of the StyleSheet class.
+
+        """
         return isinstance(self._parent, StyleSheet)
 
     def _stylesheet(self):
+        """Return the stylesheet.
+
+        Loop through all of the substyles and generate a stylesheet string.
+
+        """
         stylesheet = self.to_string(cascade=False)
         for key, value in self.items():
             if isinstance(value, StyleRule):
@@ -259,7 +304,11 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return stylesheet
 
     def to_string(self, cascade=False):
-        """Return the selector and properties as a single string."""
+        """Return the selector and properties as a single string.
+
+        :param cascade: If True, loop through all substyles to generate a stylesheet.
+
+        """
         if cascade:
             return self._stylesheet()
         style_format = "{selector} {{\n{properties}}}\n"
@@ -285,10 +334,10 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self.find_or_create_value(key)
 
     def __getattr__(self, name):
-        """Override the retrieving of the attribute.
+        """Override the retrieving of an attribute.
 
         If attribute starts with an underscore, return the attribute from
-        the object's __dict__ otherwise retrieve it from the ordered dict.
+        the object's __dict__ otherwise retrieve or create it in the ordered dict.
 
         :param name: String name of attribute to retrieve
 
@@ -298,7 +347,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self.find_or_create_value(name)
 
     def __delattr__(self, name):
-        """Override the deleting of an attribute.
+        """Override the deletion of an attribute.
 
         If attribute starts with an underscore, delete the attribute from
         the object's __dict__ otherwise delete it from the ordered dict.
@@ -311,6 +360,15 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self.__delitem__(name)
 
     def __setattr__(self, name, val):
+        """Override the setting of an attribute.
+
+        If name is in the pre-defined attributes, call the attribute's
+        descriptor's __set__ function. Otherwise, add it to ordered dict as-is.
+
+        :param name: The attribute name
+        :param val: The value to set
+
+        """
         if name.startswith("_"):
             return super(StyleRule, self).__setattr__(name, val)
         elif name in self._attributes:
@@ -318,6 +376,15 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self._add_value(name, val)
 
     def __setitem__(self, key, value, **kwargs):
+        """Override the setting of an attribute in ordered dict.
+
+        If key is in pre-defined attributes, call attribute's descriptor's
+        __set__ function. Otherwise add the value to ordered dict as-is.
+
+        :param key: The hash key of the ordered dict
+        :param value: The value to map to hash key
+
+        """
         if key in self._attr_options:
             key = key.replace("-", "_")
             try:
@@ -327,6 +394,12 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self._add_value(key, value, **kwargs)
 
     def __deepcopy__(self, memo):
+        """Override deepcopy.
+
+        Make a deepcopy of all member attributes as well as all substyle rules
+        in ordered dictionary.
+
+        """
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
@@ -341,11 +414,13 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return result
 
     def __repr__(self, *args, **kwargs):
+        """Set the representation to look like xml syntax."""
         return "<{0} name='{1}' />".format(
             self.__class__.__name__, self.name
         )
 
     def __str__(self):
+        """Call to_string if StyleRule is cast to string."""
         return self.to_string()
 
 
@@ -369,7 +444,11 @@ class StyleSheet(StyleRule,
         return self.is_leaf()
 
     def to_string(self, cascade=True):
-        """Return the selector and properties as a single string."""
+        """Return the selector and properties as a single string.
+
+        :param cascade: If True, loop through all substyles to generate a stylesheet.
+
+        """
         if cascade:
             return self._stylesheet()
         style_format = "{selector} {{\n{properties}}}\n"
@@ -395,6 +474,7 @@ class StyleSheet(StyleRule,
         return self._name
 
     def __repr__(self, *args, **kwargs):
+        """Set the representation to look like xml syntax."""
         template = "<{0} />"
         if self.name:
             template = "<{0} name='{1}' />"
@@ -461,7 +541,7 @@ class StyleList(StyleRule):
 
     @staticmethod
     def _sanitize_key(key):
-        """Strip the key of colons and replace underscores with dashes."""
+        """Strip the key of newlines only."""
         return str(key).replace("\n", "")
 
     def _find_or_create_values_in_parent(self, name, val):
@@ -469,6 +549,9 @@ class StyleList(StyleRule):
 
         Will loop through all components in name separated by a comma and set the
         property in each of the substyles in the parent StyleRule.
+
+        :param name: The attribute name
+        :param val: The value
 
         """
         style_names = self.name.split(",")
@@ -481,13 +564,23 @@ class StyleList(StyleRule):
         return ""
 
     def __setattr__(self, name, val):
-        """Override the setting of an attribute."""
+        """Override the setting of an attribute.
+
+        :param name: The attribute name
+        :param val: The value to set
+
+        """
         if name.startswith("_"):
             return super(StyleRule, self).__setattr__(name, val)
         return self._find_or_create_values_in_parent(name, val)
 
     def __setitem__(self, key, value, **kwargs):
-        """Override the setting of a value in ordered dict."""
+        """Override the setting of a value in ordered dict.
+
+        :param key: The hash key of the ordered dict
+        :param value: The value to map to hash key
+
+        """
         return self._find_or_create_values_in_parent(key, value)
 
     @property
