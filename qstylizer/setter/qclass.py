@@ -79,7 +79,7 @@ class ClassStyleSetter(qstylizer.setter.StyleRuleSetter):
     def get_attributes(cls):
         """Get all of the settable attributes of the StyleRule.
 
-        Remove the inherited style rules from the base class like
+        Remove the inherited attributes from the base class like
         "left", "top", etc.
 
         """
