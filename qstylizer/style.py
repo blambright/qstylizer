@@ -437,6 +437,7 @@ class StyleSheet(StyleRule,
         A StyleSheet is global scope if it has no substyles.
         Resulting string should contain no brackets.
         ::
+
             background-color: red;
             border: none;
 
@@ -511,9 +512,11 @@ class ChildClassRule(ClassRule):
 
     Example object style name: " QFrame".
     Inherits from ClassRule.
-    QWidget QFrame {
-        property: value
-    }
+    ::
+
+        QWidget QFrame {
+            property: value
+        }
 
     """
     @property
