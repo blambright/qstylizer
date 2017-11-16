@@ -44,7 +44,7 @@ Adding a sub-style rule will result in a different syntax for the global variabl
         background-color: blue;
     }
 
-It is important to note that any name can be used as an attribute.
+Any name can be used as an attribute.
 
 .. code-block:: python
 
@@ -55,12 +55,76 @@ It is important to note that any name can be used as an attribute.
         some-unknown-prop: none;
     }
 
+Not Operator (!)
+----------------
 
+There are two ways to handle the *!* operator.
 
-Not Operator
-------------
+.. code-block:: python
+
+    css.QTabBar["!focus"].background = "none"
+
+ or
+
+.. code-block:: python
+
+    css.QTabBar.not_focus.background = "none"
 
 
 Parser
 ------
+
+An existing stylesheet can be converted to a StyleSheet instance as a starting
+point.
+
+.. code-block:: python
+
+    >>> import qstylizer.parser
+    >>> stylesheet = """
+    ... QTabBar {
+    ...     border-radius: 3px;
+    ...     background-color: green;
+    ... }
+    ... QTabBar:focus {
+    ...     border: 0px transparent black;
+    ...     background-color: red;
+    ... }
+    ... QTabBar::close-button {
+    ...     background: transparent;
+    ... }
+    ... """
+    >>> css = qstylizer.parser.parse_stylesheet(stylesheet)
+    >>> print(css.QTabBar.focus.to_string())
+    QTabBar:focus {
+        border: 0px transparent black;
+        background-color: red;
+    }
+
+String Output
+-------------
+
+The *StyleRule.to_string()* function call with no parameters will just output
+the property:values of that style rule in css format. The
+*StyleRule.to_string(cascade=True)* function call will output the style rule
+and all of the sub-style rules in the hierarchy.
+
+.. code-block:: python
+
+    >>> print(css.QTabBar.to_string())
+    QTabBar {
+        border-radius: 3px;
+        background-color: green;
+    }
+    >>> print(css.QTabBar.to_string(cascade=True))
+    QTabBar {
+        border-radius: 3px;
+        background-color: green;
+    }
+    QTabBar:focus {
+        border: 0px transparent black;
+        background-color: red;
+    }
+    QTabBar::close-button {
+        background: transparent;
+    }
 
