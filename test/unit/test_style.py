@@ -134,7 +134,7 @@ def test_sanitize_value(css, value, expected):
         (
             "QComboBox, QCheckBox",
             None,
-            "StyleList",
+            "StyleRuleList",
             1,
             0
         ),
@@ -167,7 +167,7 @@ def test_find_or_create_value(
         style_class, "find_value", return_value=found_value
     )
     mocked_create_substyle_list = mocker.patch.object(
-        style_class, "create_substyle_list", return_value="StyleList"
+        style_class, "create_substyle_list", return_value="StyleRuleList"
     )
     mocked_create_substyles = mocker.patch.object(
         style_class, "create_substyles", return_value=expected
@@ -196,7 +196,7 @@ def test_create_substyle_list(mocker, style_class, css):
     import qstylizer.style
     style_list = "StyleListInstance"
     name = "test"
-    mocker.patch.object(qstylizer.style, "StyleList", return_value=style_list)
+    mocker.patch.object(qstylizer.style, "StyleRuleList", return_value=style_list)
     mocked_add_value = mocker.patch.object(style_class, "_add_value")
     assert css.create_substyle_list(name) == style_list
     mocked_add_value.called_once_with(name, style_list)

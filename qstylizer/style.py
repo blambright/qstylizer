@@ -144,7 +144,7 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         """Find or create a value from a string key.
 
         If the key value already exists, return the value.
-        If there is a comma in requested key, return a StyleList object.
+        If there is a comma in requested key, return a StyleRuleList object.
         Otherwise create substyles from the style names in the key and return
         the top level substyle or property.
 
@@ -169,12 +169,12 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return self.get(key)
 
     def create_substyle_list(self, name):
-        """Create a StyleList object and add it to ordered dict.
+        """Create a StyleRuleList object and add it to ordered dict.
 
         :param name: String name
 
         """
-        style_list = StyleList(name=name, parent=self)
+        style_list = StyleRuleList(name=name, parent=self)
         self._add_value(name, style_list)
         return style_list
 
@@ -535,8 +535,8 @@ class ObjectPropRule(StyleRule):
         return ""
 
 
-class StyleList(StyleRule):
-    """The StyleList definition.
+class StyleRuleList(StyleRule):
+    """The StyleRuleList definition.
 
     Example style list name: "QCheckBox, QComboBox".
 
