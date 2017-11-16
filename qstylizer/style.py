@@ -485,8 +485,8 @@ class StyleSheet(StyleRule,
 
 
 class ClassRule(StyleRule,
-                 qstylizer.setter.subcontrol.SubControlSetter,
-                 qstylizer.setter.pseudostate.PseudoStateSetter):
+                qstylizer.setter.subcontrol.SubControlSetter,
+                qstylizer.setter.pseudostate.PseudoStateSetter):
     """The ClassRule definition.
 
     Example class style name: "QCheckBox".
