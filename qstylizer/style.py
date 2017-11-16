@@ -304,9 +304,9 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         return stylesheet
 
     def to_string(self, cascade=False):
-        """Return the selector and properties as a single string.
+        """Convert to a single string in css format.
 
-        :param cascade: If True, loop through all substyles to generate a stylesheet.
+        :param cascade: If True, output all of the sub-styles in hierarchy.
 
         """
         if cascade:
