@@ -603,7 +603,7 @@ class SubControlRule(StyleRule, qstylizer.setter.pseudostate.PseudoStateSetter):
         return "::"
 
 
-class PseudoStateRule(StyleRule):
+class PseudoStateRule(SubControlRule):
     """The PseudoStateRule definition.
 
     Example pseudostate name: ":hover".
