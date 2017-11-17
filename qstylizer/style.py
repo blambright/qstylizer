@@ -15,14 +15,12 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
 
     A dictionary containing nested Styles and property:value pairs.
 
-    Example structure:
-
-    .. code-block:: xml
+    Example structure::
 
         <ClassRule name="QCheckBox" dict={
             "color": "red",
             "background-color": "black",
-            "indicator: <SubControlRule name="indicator" dict={
+            "indicator": <SubControlRule name="indicator" dict={
                 "border": "1px solid green",
                 "hover": <PseudoStateRule name="hover" dict={
                     "background-color": "green",
