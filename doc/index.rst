@@ -5,10 +5,11 @@ qstylizer is a Qt StyleSheet builder utility for PyQt4, PyQt5, PySide and PySide
 
 .. toctree::
    :maxdepth: 2
+   :glob:
 
    introduction
    tutorial
-   api/style
+   api/index
 
 
 Indices and tables

@@ -22,7 +22,7 @@ To create a style rule, simply assign an attribute in the instance.
     border: 1px solid red;
 
 Global scope vs "* {}"
-----------------------
+++++++++++++++++++++++
 
 Adding a sub-style rule will result in a different syntax for the global variables:
 
@@ -46,6 +46,7 @@ Adding a sub-style rule will result in a different syntax for the global variabl
 
 Any name can be used as an attribute.
 
+
 .. code-block:: python
 
     >>> css = qstylizer.style.StyleSheet()
@@ -56,7 +57,7 @@ Any name can be used as an attribute.
     }
 
 Not Operator (!)
-----------------
+++++++++++++++++
 
 There are two ways to handle the *!* operator.
 
@@ -72,7 +73,7 @@ There are two ways to handle the *!* operator.
 
 
 Parser
-------
+++++++
 
 An existing stylesheet can be converted to a StyleSheet instance as a starting
 point.
@@ -101,12 +102,12 @@ point.
     }
 
 String Output
--------------
++++++++++++++
 
 The *StyleRule.to_string()* function call with no parameters will just output
 the property:values of that style rule in css format. The
 *StyleRule.to_string(cascade=True)* function call will output the style rule
-and all of the sub-style rules in the hierarchy.
+and all of the sub-style rules in its hierarchy.
 
 .. code-block:: python
 

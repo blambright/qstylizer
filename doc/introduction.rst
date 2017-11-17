@@ -23,7 +23,7 @@ The typical way of setting a stylesheet in PyQt is like this:
         }
     """)
 
-This approach floods the PyQt code with ugly multi-line strings everywhere.
+This approach floods the python code with ugly multi-line strings everywhere.
 
 The *qstylizer* way:
 
@@ -60,8 +60,8 @@ The above example maps to this hierarchy::
     } />
 
 A StyleRule object is basically just an ordered dictionary with the keys as the
-style property names and the values as the style property values. Any attempt
-to get or set a public variable in the instance will add a key and value
+style rule property names and the values as the style rule property values. Any
+attempt to get or set a public variable in the instance will add a key and value
 into the dictionary (the style rule property:values).
 
 Because a StyleRule is a dictionary, the following is also valid:
@@ -79,4 +79,6 @@ a subcontrol, the colons can be specified in the key:
 
 What are the advantages? Ease of use and cleaner code. There is no need to
 worry about scope operators, brackets, and semi-colons.
+
+*qstylizer* makes it easy to query values of a stylesheet, if necessary.
 
