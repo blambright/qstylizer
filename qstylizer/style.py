@@ -314,19 +314,19 @@ class StyleRule(
         """
         if cascade:
             return self._stylesheet()
-        style_format = "{selector} {{\n{properties}}}\n"
-        prop_format = "    {}: {};\n"
+        style_template = "{selector} {{\n{properties}}}\n"
+        prop_template = "    {}: {};\n"
         properties = ""
         sheet = ""
         selector = self.selector
         for key, value in self.items():
             if (isinstance(value, PseudoPropRule)
                and value.prop_value is not None):
-                properties += prop_format.format(key, value.prop_value)
+                properties += prop_template.format(key, value.prop_value)
             elif not isinstance(value, StyleRule):
-                properties += prop_format.format(key, value)
+                properties += prop_template.format(key, value)
         if properties:
-            sheet = style_format.format(**locals())
+            sheet = style_template.format(**locals())
         return sheet
 
     def __getitem__(self, key):
@@ -458,12 +458,12 @@ class StyleSheet(StyleRule,
         """
         if cascade:
             return self._stylesheet()
-        style_format = "{selector} {{\n{properties}}}\n"
-        prop_format = "    {}: {};\n"
+        style_template = "{selector} {{\n{properties}}}\n"
+        prop_template = "    {}: {};\n"
         selector = self.selector
         if self.is_global_scope():
-            style_format = "{properties}"
-            prop_format = "{}: {};\n"
+            style_template = "{properties}"
+            prop_template = "{}: {};\n"
         else:
             selector = "*"
         properties = ""
@@ -471,11 +471,11 @@ class StyleSheet(StyleRule,
         for key, value in self.items():
             if (isinstance(value, PseudoPropRule)
                and value.prop_value is not None):
-                properties += prop_format.format(key, value.prop_value)
+                properties += prop_template.format(key, value.prop_value)
             elif not isinstance(value, StyleRule):
-                properties += prop_format.format(key, value)
+                properties += prop_template.format(key, value)
         if properties:
-            sheet = style_format.format(**locals())
+            sheet = style_template.format(**locals())
         return sheet
 
     @property
