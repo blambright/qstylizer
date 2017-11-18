@@ -12,8 +12,7 @@ import qstylizer.setter.qclass
 
 
 class StyleRule(
-    collections.OrderedDict,
-    qstylizer.setter.prop.PropSetter,
+    collections.OrderedDict, qstylizer.setter.prop.PropSetter,
     qstylizer.setter.pseudoprop.PseudoPropSetter
 ):
     """StyleRule Object.
@@ -430,8 +429,7 @@ class StyleRule(
         return self.to_string()
 
 
-class StyleSheet(StyleRule,
-                 qstylizer.setter.qclass.ClassStyleSetter):
+class StyleSheet(StyleRule, qstylizer.setter.qclass.ClassStyleSetter):
     """The StyleSheet definition.
 
     Contains descriptors for all class and property options.
@@ -493,9 +491,10 @@ class StyleSheet(StyleRule,
         )
 
 
-class ClassRule(StyleRule,
-                qstylizer.setter.subcontrol.SubControlSetter,
-                qstylizer.setter.pseudostate.PseudoStateSetter):
+class ClassRule(
+    StyleRule, qstylizer.setter.subcontrol.SubControlSetter,
+    qstylizer.setter.pseudostate.PseudoStateSetter
+):
     """The ClassRule definition.
 
     Example class style name: "QCheckBox".
