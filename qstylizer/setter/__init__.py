@@ -32,11 +32,6 @@ class StyleRuleSetter(object):
 
     _descriptor_cls = StyleRuleSet
 
-    left = _descriptor_cls("left")
-    right = _descriptor_cls("right")
-    top = _descriptor_cls("top")
-    bottom = _descriptor_cls("bottom")
-
     @classmethod
     def get_attributes(cls):
         """Get all of the settable attributes of the StyleRule."""

@@ -7,10 +7,15 @@ import collections
 import qstylizer.setter.prop
 import qstylizer.setter.subcontrol
 import qstylizer.setter.pseudostate
+import qstylizer.setter.pseudoprop
 import qstylizer.setter.qclass
 
 
-class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
+class StyleRule(
+    collections.OrderedDict,
+    qstylizer.setter.prop.PropSetter,
+    qstylizer.setter.pseudoprop.PseudoPropSetter
+):
     """StyleRule Object.
 
     A dictionary containing nested Styles and property:value pairs.
@@ -315,7 +320,10 @@ class StyleRule(collections.OrderedDict, qstylizer.setter.prop.PropSetter):
         sheet = ""
         selector = self.selector
         for key, value in self.items():
-            if not isinstance(value, StyleRule):
+            if (isinstance(value, PseudoPropRule)
+               and value.prop_value is not None):
+                properties += prop_format.format(key, value.prop_value)
+            elif not isinstance(value, StyleRule):
                 properties += prop_format.format(key, value)
         if properties:
             sheet = style_format.format(**locals())
@@ -461,7 +469,10 @@ class StyleSheet(StyleRule,
         properties = ""
         sheet = ""
         for key, value in self.items():
-            if not isinstance(value, StyleRule):
+            if (isinstance(value, PseudoPropRule)
+               and value.prop_value is not None):
+                properties += prop_format.format(key, value.prop_value)
+            elif not isinstance(value, StyleRule):
                 properties += prop_format.format(key, value)
         if properties:
             sheet = style_format.format(**locals())
@@ -612,5 +623,39 @@ class PseudoStateRule(SubControlRule):
         return ":"
 
 
+class PseudoPropRule(PseudoStateRule):
+    """The PseudoPropRule definition.
+
+    The PseudoPropRule covers PseudoStates and properties that have the same
+    name like "top", "bottom", "left", and "right".
+
+    It is basically a PseudoStateRule that also stores a property value.
+    In the following example, *top* is the PseudoPropRule.
+
+    .. code-block:: python
+
+        >>> css.QWidget.tab.top = "0"
+        >>> css.QWidget.tab.top.color = "green"
+        >>> print(css.to_string())
+        QWidget::tab {
+            top: 0;
+        }
+        QWidget::tab:top {
+            color: green;
+        }
+
+    """
+    def __init__(self, *args, **kwargs):
+        """Initialize the PseudoPropRule dictionary."""
+        super(PseudoPropRule, self).__init__(*args, **kwargs)
+        self._prop_value = None
+
+    @property
+    def prop_value(self):
+        return self._prop_value
+
+    @prop_value.setter
+    def prop_value(self, value):
+        self._prop_value = self._sanitize_value(value)
 
 

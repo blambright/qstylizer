@@ -316,3 +316,18 @@ def test_pseudostate_prop_same_name(css):
         }
         """
     )[1:]
+
+
+def test_pseudoprop_set(css):
+    css.QWidget.tab.top = "0"
+    css.QWidget.tab.top.color = "green"
+    assert css.to_string() == textwrap.dedent(
+        """
+        QWidget::tab {
+            top: 0;
+        }
+        QWidget::tab:top {
+            color: green;
+        }
+        """
+    )[1:]
