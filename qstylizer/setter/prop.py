@@ -2,7 +2,9 @@
 
 import qstylizer.setter
 
-_property_values = {
+
+PROPERTY_VALUES = {
+    "absolute",
     "active",
     "alternate-base",
     "always",
@@ -24,6 +26,7 @@ _property_values = {
     "dot-dot-dash",
     "dotted",
     "double",
+    "fixed",
     "groove",
     "highlight",
     "highlighted-text",
@@ -43,6 +46,7 @@ _property_values = {
     "middle",
     "midlight",
     "native",
+    "no-repeat",
     "none",
     "normal",
     "nowrap",
@@ -53,14 +57,23 @@ _property_values = {
     "overline",
     "pre",
     "pre-wrap",
+    "relative",
+    "repeat",
+    "repeat-x",
+    "repeat-xy",
+    "repeat-y",
     "ridge",
     "right",
+    "round",
+    "scroll",
     "selected",
     "shadow",
     "small",
     "small-caps",
     "solid",
     "square",
+    "static",
+    "stretch",
     "sub",
     "super",
     "text",
@@ -76,72 +89,6 @@ _property_values = {
     "x-large",
     "xx-large",
 }
-
-_origins = {
-    "border",
-    "content",
-    "margin",
-    "padding",
-}
-
-_repeats = {
-    "no-repeat",
-    "repeat-x",
-    "repeat-xy",
-    "repeat-y",
-}
-
-_tile_modes = {
-    "repeat",
-    "round",
-    "stretch",
-}
-
-_positions = {
-    "absolute",
-    "fixed",
-    "relative",
-    "static",
-}
-
-_attachments = {
-    "fixed",
-    "scroll",
-}
-
-_style_features = {
-    "background-color",
-    "background-gradient",
-    "none",
-}
-
-
-def get_origins():
-    return _origins
-
-
-def get_repeats():
-    return _repeats
-
-
-def get_tile_modes():
-    return _tile_modes
-
-
-def get_positions():
-    return _positions
-
-
-def get_attachments():
-    return _attachments
-
-
-def get_style_features():
-    return _style_features
-
-
-def get_property_values():
-    return _property_values
 
 
 class PropSet(qstylizer.setter.StyleRuleSet):
