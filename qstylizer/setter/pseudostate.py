@@ -23,7 +23,6 @@ class PseudoStateSet(qstylizer.setter.StyleRuleSet):
         if not isinstance(value, qstylizer.style.PseudoStateRule):
             raise ValueError("Can only assign a PseudoStateRule style.")
         value = copy.deepcopy(value)
-        value._is_root = False
         value._parent = instance
         instance._add_value(self.name, value)
 
