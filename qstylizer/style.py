@@ -11,6 +11,13 @@ import qstylizer.setter.pseudoprop
 import qstylizer.setter.qclass
 
 
+QPROPERTIES = qstylizer.setter.prop.PropSetter.get_attr_options()
+QSUBCONTROLS = qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()
+QPSEUDOSTATES = qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
+QPSEUDOPROPS = qstylizer.setter.pseudoprop.PseudoPropSetter.get_attr_options()
+QCLASSES = qstylizer.setter.qclass.ClassStyleSetter.get_attr_options()
+
+
 class StyleRule(
     collections.OrderedDict, qstylizer.setter.prop.PropSetter,
     qstylizer.setter.pseudoprop.PseudoPropSetter
@@ -57,33 +64,6 @@ class StyleRule(
 
     """
     _split_regex = "\[[A-Za-z0-9='\"]+\]|\W*\w*"
-    qproperties = qstylizer.setter.prop.PropSetter.get_attr_options()
-    qsubcontrols = qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()
-    qpseudostates = qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
-    qclasses = qstylizer.setter.qclass.ClassStyleSetter.get_attr_options()
-
-    @classmethod
-    def subclass(cls, name):
-        """Determine StyleRule subclass from string name.
-
-        :param name: name of type string
-
-        """
-        name = name.replace("not_", "").replace("!", "")
-        class_ = StyleRule
-        if name.startswith("::") or name in cls.qsubcontrols:
-            class_ = SubControlRule
-        elif name.startswith(":") or name in cls.qpseudostates:
-            class_ = PseudoStateRule
-        elif name.startswith("#"):
-            class_ = ObjectRule
-        elif name.startswith(" "):
-            class_ = ChildClassRule
-        elif name in cls.qclasses or name.startswith("Q"):
-            class_ = ClassRule
-        elif "=" in name:
-            class_ = ObjectPropRule
-        return class_
 
     @classmethod
     def split_selector(cls, selector):
@@ -211,7 +191,7 @@ class StyleRule(
         :param name: String name
 
         """
-        class_ = self.subclass(name)
+        class_ = style_rule_class(name)
         style = class_(name=name, parent=self)
         self._add_value(name, style)
         return style
@@ -658,3 +638,24 @@ class PseudoPropRule(PseudoStateRule):
         self._prop_value = self._sanitize_value(value)
 
 
+def style_rule_class(name):
+    """Determine StyleRule subclass from string name.
+
+    :param name: name of type string
+
+    """
+    name = name.replace("not_", "").replace("!", "")
+    class_ = StyleRule
+    if name.startswith("::") or name in QSUBCONTROLS:
+        class_ = SubControlRule
+    elif name.startswith(":") or name in QPSEUDOSTATES:
+        class_ = PseudoStateRule
+    elif name.startswith("#"):
+        class_ = ObjectRule
+    elif name.startswith(" "):
+        class_ = ChildClassRule
+    elif name in QCLASSES or name.startswith("Q"):
+        class_ = ClassRule
+    elif "=" in name:
+        class_ = ObjectPropRule
+    return class_

@@ -4,33 +4,6 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "name, expected",
-    [
-        ("indicator", "SubControlRule"),
-        ("has-children", "PseudoStateRule"),
-        ("::subcontrol", "SubControlRule"),
-        (":pseudostate", "PseudoStateRule"),
-        ("#objectName", "ObjectRule"),
-        ("[echoMode=2]", "ObjectPropRule"),
-        (" QFrame", "ChildClassRule"),
-        ("QObject", "ClassRule")
-    ],
-    ids=[
-        "with-known-subcontrol",
-        "with-known-pseudostate",
-        "with-subcontrol-scope-op",
-        "with-pseudostate-scope-op",
-        "with-object",
-        "with-object-property",
-        "with-child-class",
-        "with-known-class",
-    ]
-)
-def test_subclass(mocker, style_class, css, name, expected):
-    assert css.subclass(name).__name__ == expected
-
-
-@pytest.mark.parametrize(
     "selector, expected",
     [
         (
@@ -247,11 +220,12 @@ def test_create_substyles(
 
 
 def test_create_substyle(mocker, style_class, css):
+    import qstylizer.style
     name = "::indicator"
     style = mocker.MagicMock()
     class_ = mocker.MagicMock(return_value=style)
     mocked_subclass_function = mocker.patch.object(
-        style_class, "subclass", return_value=class_
+        qstylizer.style, "style_rule_class", return_value=class_
     )
     mocked_add_value = mocker.patch.object(
         style_class, "_add_value"
@@ -302,5 +276,30 @@ def test_str(css):
     pass
 
 
-
+@pytest.mark.parametrize(
+    "name, expected",
+    [
+        ("indicator", "SubControlRule"),
+        ("has-children", "PseudoStateRule"),
+        ("::subcontrol", "SubControlRule"),
+        (":pseudostate", "PseudoStateRule"),
+        ("#objectName", "ObjectRule"),
+        ("[echoMode=2]", "ObjectPropRule"),
+        (" QFrame", "ChildClassRule"),
+        ("QObject", "ClassRule")
+    ],
+    ids=[
+        "with-known-subcontrol",
+        "with-known-pseudostate",
+        "with-subcontrol-scope-op",
+        "with-pseudostate-scope-op",
+        "with-object",
+        "with-object-property",
+        "with-child-class",
+        "with-known-class",
+    ]
+)
+def test_style_rule_class(mocker, style_class, css, name, expected):
+    import qstylizer.style
+    assert qstylizer.style.style_rule_class(name).__name__ == expected
 
