@@ -191,7 +191,7 @@ class StyleRule(
         :param name: String name
 
         """
-        class_ = style_rule_class(name)
+        class_ = rule_class(name)
         style = class_(name=name, parent=self)
         self._add_value(name, style)
         return style
@@ -638,7 +638,7 @@ class PseudoPropRule(PseudoStateRule):
         self._prop_value = self._sanitize_value(value)
 
 
-def style_rule_class(name):
+def rule_class(name):
     """Determine StyleRule subclass from string name.
 
     :param name: name of type string

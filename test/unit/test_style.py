@@ -225,7 +225,7 @@ def test_create_substyle(mocker, style_class, css):
     style = mocker.MagicMock()
     class_ = mocker.MagicMock(return_value=style)
     mocked_subclass_function = mocker.patch.object(
-        qstylizer.style, "style_rule_class", return_value=class_
+        qstylizer.style, "rule_class", return_value=class_
     )
     mocked_add_value = mocker.patch.object(
         style_class, "_add_value"
@@ -301,5 +301,5 @@ def test_str(css):
 )
 def test_style_rule_class(mocker, style_class, css, name, expected):
     import qstylizer.style
-    assert qstylizer.style.style_rule_class(name).__name__ == expected
+    assert qstylizer.style.rule_class(name).__name__ == expected
 
