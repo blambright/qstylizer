@@ -70,12 +70,31 @@ Because a StyleRule is a dictionary, the following is also valid:
 
     css["QTabBar"]["close-button"]["background"] = "transparent"
 
-If *qstylizer* incorrectly determines that close-button is a pseudostate instead of
-a subcontrol, the colons can be specified in the key:
+If *qstylizer* incorrectly determines that close-button is a pseudostate instead
+of a subcontrol, the colons can be specified in the key:
 
 .. code-block:: python
 
     css.QTabBar["::close-button"].background = "transparent"
+
+How Does it Work?
++++++++++++++++++
+
+How does *qstylizer* determine what is a QClass, subcontrol, or pseudostate?
+The package itself stores a list of known options for each type.
+
+.. code-block:: python
+
+    >>> qstylizer.style.rule_class("QTabBar")
+    <class 'qstylizer.style.ClassRule'>
+    >>> qstylizer.style.rule_class("close-button")
+    <class 'qstylizer.style.SubControlRule'>
+    >>> qstylizer.style.rule_class("hover")
+    <class 'qstylizer.style.PseudoStateRule'>
+
+
+Advantages
+++++++++++
 
 What are the advantages? Ease of use and cleaner code. There is no need to
 worry about scope operators, brackets, and semi-colons.
