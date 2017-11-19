@@ -46,7 +46,7 @@ class ClassStyleSet(qstylizer.setter.StyleRuleSet):
 
 
 class ClassStyleSetter(qstylizer.setter.StyleRuleSetter):
-    """QClass Setter.
+    """QClass setter.
 
     Contains descriptors for all known QClasses.
 

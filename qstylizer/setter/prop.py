@@ -106,7 +106,7 @@ class PropSet(qstylizer.setter.StyleRuleSet):
 
 
 class PropSetter(qstylizer.setter.StyleRuleSetter):
-    """Property Setter.
+    """Property setter.
 
     Contains descriptors for all known properties.
 

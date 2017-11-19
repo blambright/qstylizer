@@ -53,7 +53,7 @@ class PseudoPropSet(qstylizer.setter.StyleRuleSet):
 
 
 class PseudoPropSetter(qstylizer.setter.StyleRuleSetter):
-    """Pseudo-Property Setter.
+    """Pseudo-property setter.
 
     Contains descriptors for all known pseudo-properties.
 

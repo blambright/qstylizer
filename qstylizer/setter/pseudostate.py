@@ -46,7 +46,7 @@ class PseudoStateSet(qstylizer.setter.StyleRuleSet):
 
 
 class PseudoStateSetter(qstylizer.setter.StyleRuleSetter):
-    """Pseudostate Setter.
+    """Pseudostate setter.
 
     Contains descriptors for all known pseudostates.
 

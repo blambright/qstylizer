@@ -46,7 +46,7 @@ class SubControlSet(qstylizer.setter.StyleRuleSet):
 
 
 class SubControlSetter(qstylizer.setter.StyleRuleSetter):
-    """Subcontrol Setter.
+    """Subcontrol setter.
 
     Contains descriptors for all known subcontrols.
 

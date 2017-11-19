@@ -51,7 +51,7 @@ class StyleRuleSet(object):
 
 
 class StyleRuleSetter(object):
-    """StyleRule Setter.
+    """StyleRule setter.
 
     Contains functions for getting all known attributes of the StyleRule.
 
