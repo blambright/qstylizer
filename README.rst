@@ -21,7 +21,7 @@ PyQt/PySide stylesheets.
     css.QToolButton.padding = "3px"
     css.QToolButton.menu_button.pressed.border = "1px solid #333333"
     css.QToolButton.menu_button.pressed.padding = "5px"
-    css.QToolButton.menu_button.background_color = "#333333"
+    css.QToolButton.menu_button.pressed.background_color = "#333333"
 
     widget = QtWidgets.QWidget()
     widget.setStyleSheet(css.to_string())
