@@ -94,7 +94,7 @@ point.
     ...     background: transparent;
     ... }
     ... """
-    >>> css = qstylizer.parser.parse_stylesheet(stylesheet)
+    >>> css = qstylizer.parser.parse(stylesheet)
     >>> print(css.QTabBar.focus.to_string())
     QTabBar:focus {
         border: 0px transparent black;

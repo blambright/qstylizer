@@ -5,7 +5,7 @@ import tinycss
 import qstylizer.style
 
 
-def parse_stylesheet(stylesheet):
+def parse(stylesheet):
     """Parse a stylesheet using tinycss and return a StyleSheet instance.
 
     :param stylesheet: A string of an existing stylesheet.
