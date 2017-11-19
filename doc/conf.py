@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 #
 # qstylizer documentation build configuration file, created by
 # sphinx-quickstart on Sat Nov  4 21:16:20 2017.
