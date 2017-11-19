@@ -6,22 +6,38 @@ import qstylizer.setter
 
 
 class PseudoPropSet(qstylizer.setter.StyleRuleSet):
+    """Pseudo-property descriptor."""
 
-    def __init__(self, name):
-        self.name = name
+    def __get__(self, instance, *args, **kwargs):
+        """Get the value from the StyleRule's ordered dict.
 
-    def __get__(self, instance, owner):
+        If value doesn't exist, create a new PseudoPropRule instance and add it
+        to the StyleRule's ordered dict.
+
+        :param instance: The StyleRule instance
+
+        """
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
-            new_style = qstylizer.style.PseudoPropRule(
+            style_rule = qstylizer.style.PseudoPropRule(
                 name=self.name,
                 parent=instance,
             )
-            instance._add_value(self.name, new_style)
+            instance._add_value(self.name, style_rule)
         return instance.find_value(self.name)
 
     def __set__(self, instance, value):
+        """Set the value in the StyleRule's ordered dict.
+
+        If the value is a PseudoPropRule, simply add it to the ordered dict.
+        Otherwise create a new PseudoPropRule instance, set its prop_value
+        attribute to the value, and add it to the ordered dict.
+
+        :param instance: The StyleRule instance
+        :param value: The value to set in StyleRule instance
+
+        """
         import qstylizer.style
         if isinstance(value, qstylizer.style.PseudoPropRule):
             value = copy.deepcopy(value)
@@ -37,7 +53,11 @@ class PseudoPropSet(qstylizer.setter.StyleRuleSet):
 
 
 class PseudoPropSetter(qstylizer.setter.StyleRuleSetter):
+    """Pseudo-Property Setter.
 
+    Contains descriptors for all known pseudo-properties.
+
+    """
     _descriptor_cls = PseudoPropSet
 
     left = _descriptor_cls("left")

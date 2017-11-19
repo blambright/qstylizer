@@ -92,15 +92,25 @@ PROPERTY_VALUES = {
 
 
 class PropSet(qstylizer.setter.StyleRuleSet):
+    """Property descriptor."""
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, *args, **kwargs):
+        """Return the value from the StyleRule's ordered dict.
+
+        :param instance: The StyleRule instance
+
+        """
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         return instance.find_value(self.name)
 
 
 class PropSetter(qstylizer.setter.StyleRuleSetter):
+    """Property Setter.
 
+    Contains descriptors for all known properties.
+
+    """
     _descriptor_cls = PropSet
 
     qt_background_role = _descriptor_cls("-qt-background-role")

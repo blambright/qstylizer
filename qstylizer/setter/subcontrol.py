@@ -6,8 +6,17 @@ import qstylizer.setter
 
 
 class SubControlSet(qstylizer.setter.StyleRuleSet):
+    """Subcontrol descriptor."""
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, *args, **kwargs):
+        """Get the value from the StyleRule's ordered dict.
+
+        If value doesn't exist, create a new SubControlRule instance and add it
+        to the StyleRule's ordered dict.
+
+        :param instance: The StyleRule instance
+
+        """
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
@@ -19,6 +28,15 @@ class SubControlSet(qstylizer.setter.StyleRuleSet):
         return instance.find_value(self.name)
 
     def __set__(self, instance, value):
+        """Set the value in the StyleRule's ordered dict.
+
+        If the value is a SubControlRule, simply add it to the ordered dict.
+        Otherwise raise a ValueError.
+
+        :param instance: The StyleRule instance
+        :param value: The value to set in StyleRule instance
+
+        """
         import qstylizer.style
         if not isinstance(value, qstylizer.style.SubControlRule):
             raise ValueError("Can only assign a SubControlRule style.")
@@ -28,7 +46,11 @@ class SubControlSet(qstylizer.setter.StyleRuleSet):
 
 
 class SubControlSetter(qstylizer.setter.StyleRuleSetter):
+    """Subcontrol Setter.
 
+    Contains descriptors for all known subcontrols.
+
+    """
     _descriptor_cls = SubControlSet
 
     add_line = _descriptor_cls("add-line")

@@ -6,8 +6,17 @@ import qstylizer.setter
 
 
 class ClassStyleSet(qstylizer.setter.StyleRuleSet):
+    """QClass descriptor."""
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, *args, **kwargs):
+        """Get the value from the StyleRule's ordered dict.
+
+        If value doesn't exist, create a new PseudoStateRule instance and add it
+        to the StyleRule's ordered dict.
+
+        :param instance: The StyleRule instance
+
+        """
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
@@ -19,6 +28,15 @@ class ClassStyleSet(qstylizer.setter.StyleRuleSet):
         return instance.find_value(self.name)
 
     def __set__(self, instance, value):
+        """Set the value in the StyleRule's ordered dict.
+
+        If the value is a PseudoStateRule, simply add it to the ordered dict.
+        Otherwise raise a ValueError.
+
+        :param instance: The StyleRule instance
+        :param value: The value to set in StyleRule instance
+
+        """
         import qstylizer.style
         if not isinstance(value, qstylizer.style.ClassRule):
             raise ValueError("Can only assign a ClassRule style.")
@@ -28,7 +46,11 @@ class ClassStyleSet(qstylizer.setter.StyleRuleSet):
 
 
 class ClassStyleSetter(qstylizer.setter.StyleRuleSetter):
+    """QClass Setter.
 
+    Contains descriptors for all known QClasses.
+
+    """
     _descriptor_cls = ClassStyleSet
 
     QAbstractScrollArea = _descriptor_cls("QAbstractScrollArea")
