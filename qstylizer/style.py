@@ -167,8 +167,8 @@ class StyleRule(
         and recursively build the StyleRule hierarchy looping through
         the components.
 
-        If selector is "QClass::subcontrol::pseudostate",
-        first_key is "QClass" and remaining is "::subcontrol::pseudostate"
+        If selector is "QClass::subcontrol:pseudostate",
+        curr_name is "QClass" and remaining is "::subcontrol:pseudostate"
 
         :param name: String to split
 
