@@ -45,9 +45,5 @@ The stylesheet generated above looks like this when passed to setStyleSheet()::
         background-color: #333333;
     }
 
-The main advantage of *qstylizer* is cleaner code. No need to flood PyQt/PySide
-code with multi-line strings of css. Another advantage is ease of use. There is
-no need to care about scope operators, brackets, and colons.
-
 More information to come...
 
