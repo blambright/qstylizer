@@ -32,14 +32,14 @@ The *qstylizer* way:
     import qstylizer.style
 
     css = qstylizer.style.StyleSheet()
-    css.QTabBar.border_radius = "3px"
-    css.QTabBar.background_color = "green"
+    css.QTabBar.borderRadius = "3px"
+    css.QTabBar.backgroundColor = "green"
     css.QTabBar.focus.border = "0px transparent black"
-    css.QTabBar.focus.background_color = "red"
-    css.QTabBar.close_button.background = "transparent"
+    css.QTabBar.focus.backgroundColor = "red"
+    css.QTabBar.closeButton.background = "transparent"
 
     widget = QtWidgets.QMainWindow()
-    widget.setStyleSheet(css.to_string())
+    widget.setStyleSheet(css.toString())
 
 *qstylizer* stores style rule objects in a dictionary hierarchy.
 

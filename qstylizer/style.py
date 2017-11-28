@@ -3,6 +3,7 @@
 import re
 import copy
 import collections
+import inflection
 
 import qstylizer.setter.prop
 import qstylizer.setter.subcontrol
@@ -104,8 +105,11 @@ class StyleRule(
         :param key: A string variable
 
         """
+        key = str(key)
+        if key and key[0] not in ["Q", "#", "[", " "] and not key.istitle():
+            key = inflection.underscore(key)
         return (
-            str(key)
+            key
             .replace("not_", "!")
             .replace(":", "")
             .replace("_", "-")
@@ -279,13 +283,13 @@ class StyleRule(
         Loop through all of the substyles and generate a stylesheet string.
 
         """
-        stylesheet = self.to_string(cascade=False)
+        stylesheet = self.toString(cascade=False)
         for key, value in self.items():
             if isinstance(value, StyleRule):
-                stylesheet += value.to_string(cascade=True)
+                stylesheet += value.toString(cascade=True)
         return stylesheet
 
-    def to_string(self, cascade=False):
+    def _to_string(self, cascade=False):
         """Convert to a single string in css format.
 
         :param cascade: If True, output all of the sub-styles in hierarchy.
@@ -307,6 +311,14 @@ class StyleRule(
         if properties:
             sheet = style_template.format(**locals())
         return sheet
+
+    def toString(self, *args, **kwargs):
+        """Convert to a single string in css format.
+
+        Use camelcase for function name to match PyQt/PySide.
+
+        """
+        return self._to_string(*args, **kwargs)
 
     def __getitem__(self, key):
         """Override the retrieving of a value from dictionary.
@@ -370,8 +382,14 @@ class StyleRule(
         :param value: The value to map to hash key
 
         """
+        print key
+        if "exclusive" in key.lower():
+            print "nonExclusive", key
         if key in self._attr_options:
-            key = key.replace("-", "_")
+            if "-" in key:
+                key = key.replace("-", "_")
+                key = inflection.camelize(key)
+                key = key[0].lower() + key[1:]
             try:
                 return self._attributes[key].__set__(self, value)
             except KeyError:
@@ -405,8 +423,8 @@ class StyleRule(
         )
 
     def __str__(self):
-        """Call to_string if StyleRule is cast to string."""
-        return self.to_string()
+        """Call toString if StyleRule is cast to string."""
+        return self.toString()
 
 
 class StyleSheet(StyleRule, qstylizer.setter.qclass.ClassStyleSetter):
@@ -428,7 +446,7 @@ class StyleSheet(StyleRule, qstylizer.setter.qclass.ClassStyleSetter):
         """
         return self.is_leaf()
 
-    def to_string(self, cascade=True):
+    def _to_string(self, cascade=True):
         """Return the selector and properties as a single string.
 
         :param cascade: If True, loop through all substyles to generate a stylesheet.
@@ -615,7 +633,7 @@ class PseudoPropRule(PseudoStateRule):
 
         >>> css.QWidget.tab.top = "0"
         >>> css.QWidget.tab.top.color = "green"
-        >>> print(css.to_string())
+        >>> print(css.toString())
         QWidget::tab {
             top: 0;
         }
@@ -644,7 +662,9 @@ def rule_class(name):
     :param name: name of type string
 
     """
-    name = name.replace("not_", "").replace("!", "")
+    if name.startswith("not") or "!" in name:
+        name = name.split("not", 1)[-1].replace("!", "")
+        name = name[0].lower() + name[1:]
     class_ = StyleRule
     if name.startswith("::") or name in QSUBCONTROLS:
         class_ = SubControlRule

@@ -17,7 +17,7 @@ To create a style rule, simply assign an attribute in the instance.
 
     >>> css.color = "green"
     >>> css.border = "1px solid red"
-    >>> print(css.to_string())
+    >>> print(css.toString())
     color: green;
     border: 1px solid red;
 
@@ -30,12 +30,12 @@ Adding a sub-style rule will result in a different syntax for the global variabl
 
     >>> css.color = "green"
     >>> css.border = "1px solid red"
-    >>> print(css.to_string())
+    >>> print(css.toString())
     color: green;
     border: 1px solid red;
 
-    >>> css.QWidget.background_color = "blue"
-    >>> print(css.to_string())
+    >>> css.QWidget.backgroundColor = "blue"
+    >>> print(css.toString())
     * {
         color: green;
         border: 1px solid red;
@@ -50,8 +50,8 @@ Any name can be used as an attribute.
 .. code-block:: python
 
     >>> css = qstylizer.style.StyleSheet()
-    >>> css.QUnknownClass.some_unknown_prop = "none"
-    >>> print(css.to_string())
+    >>> css.QUnknownClass.someUnknownProp = "none"
+    >>> print(css.toString())
     QUnknownClass {
         some-unknown-prop: none;
     }
@@ -69,7 +69,7 @@ There are two ways to handle the *!* operator.
 
 .. code-block:: python
 
-    css.QTabBar.not_focus.background = "none"
+    css.QTabBar.notFocus.background = "none"
 
 
 Parser
@@ -95,7 +95,7 @@ point.
     ... }
     ... """
     >>> css = qstylizer.parser.parse(stylesheet)
-    >>> print(css.QTabBar.focus.to_string())
+    >>> print(css.QTabBar.focus.toString())
     QTabBar:focus {
         border: 0px transparent black;
         background-color: red;
@@ -104,19 +104,19 @@ point.
 String Output
 +++++++++++++
 
-The *StyleRule.to_string()* function call with no parameters will just output
+The *StyleRule.toString()* function call with no parameters will just output
 the property:values of that style rule in css format. The
-*StyleRule.to_string(cascade=True)* function call will output the style rule
+*StyleRule.toString(cascade=True)* function call will output the style rule
 and all of the sub-style rules in its hierarchy.
 
 .. code-block:: python
 
-    >>> print(css.QTabBar.to_string())
+    >>> print(css.QTabBar.toString())
     QTabBar {
         border-radius: 3px;
         background-color: green;
     }
-    >>> print(css.QTabBar.to_string(cascade=True))
+    >>> print(css.QTabBar.toString(cascade=True))
     QTabBar {
         border-radius: 3px;
         background-color: green;

@@ -12,19 +12,19 @@ PyQt/PySide stylesheets.
     import qstylizer.style
 
     css = qstylizer.style.StyleSheet()
-    css.background_color = "green"
+    css.backgroundColor = "green"
     css.color = "#F0F0F0"
-    css.margin_left = "2px"
+    css.marginLeft = "2px"
     css.QToolButton.border = "1px transparent lightblue"
-    css.QToolButton.border_radius = "3px"
+    css.QToolButton.borderRadius = "3px"
     css.QToolButton.margin = "1px"
     css.QToolButton.padding = "3px"
-    css.QToolButton.menu_button.pressed.border = "1px solid #333333"
-    css.QToolButton.menu_button.pressed.padding = "5px"
-    css.QToolButton.menu_button.pressed.background_color = "#333333"
+    css.QToolButton.menuButton.pressed.border = "1px solid #333333"
+    css.QToolButton.menuButton.pressed.padding = "5px"
+    css.QToolButton.menuButton.pressed.backgroundColor = "#333333"
 
     widget = QtWidgets.QWidget()
-    widget.setStyleSheet(css.to_string())
+    widget.setStyleSheet(css.toString())
 
 The stylesheet generated above looks like this when passed to setStyleSheet()::
 
