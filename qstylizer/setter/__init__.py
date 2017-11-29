@@ -30,7 +30,7 @@ class StyleRuleSet(object):
                 name=self.name,
                 parent=instance,
             )
-            instance._add_value(self.name, new_style)
+            instance.set_value(self.name, new_style)
         return instance.find_value(self.name)
 
     def __set__(self, instance, value):
@@ -46,14 +46,14 @@ class StyleRuleSet(object):
         if isinstance(value, qstylizer.style.StyleRule):
             value = copy.deepcopy(value)
             value._parent = instance
-            instance._add_value(self.name, value)
+            instance.set_value(self.name, value)
         else:
             new_style = qstylizer.style.StyleRule(
                 name=self.name,
                 parent=instance,
             )
             new_style._prop_value = value
-            instance._add_value(self.name, new_style)
+            instance.set_value(self.name, new_style)
 
 
 class StyleRuleSetter(object):

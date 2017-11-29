@@ -170,9 +170,9 @@ def test_create_substyle_list(mocker, style_class, css):
     style_list = "StyleListInstance"
     name = "test"
     mocker.patch.object(qstylizer.style, "StyleRuleList", return_value=style_list)
-    mocked_add_value = mocker.patch.object(style_class, "_add_value")
+    mocked_set_value = mocker.patch.object(style_class, "set_value")
     assert css.create_substyle_list(name) == style_list
-    mocked_add_value.called_once_with(name, style_list)
+    mocked_set_value.called_once_with(name, style_list)
 
 
 @pytest.mark.parametrize(
@@ -228,7 +228,7 @@ def test_create_substyle(mocker, style_class, css):
         qstylizer.style, "rule_class", return_value=class_
     )
     mocked_add_value = mocker.patch.object(
-        style_class, "_add_value"
+        style_class, "set_value"
     )
     css.create_substyle(name)
     mocked_add_value.assert_called_with(name, style)

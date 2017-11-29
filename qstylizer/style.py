@@ -162,7 +162,7 @@ class StyleRule(
 
         """
         style_list = StyleRuleList(name=name, parent=self)
-        self._add_value(name, style_list)
+        self.set_value(name, style_list)
         return style_list
 
     def create_substyles(self, selector):
@@ -198,15 +198,14 @@ class StyleRule(
         """
         class_ = rule_class(name)
         style = class_(name=name, parent=self)
-        self._add_value(name, style)
+        self.set_value(name, style)
         return style
 
-    def _add_value(self, key, value, **kwargs):
-        """Add item to ordered dictionary."""
+    def set_value(self, key, value, **kwargs):
+        """Set item to ordered dictionary."""
         key = self._sanitize_key(key)
         value = self._sanitize_value(value)
-        super(StyleRule, self).__setitem__(key, value, **kwargs)
-        return self.find_value(key)
+        return super(StyleRule, self).__setitem__(key, value, **kwargs)
 
     @property
     def selector(self):
@@ -378,7 +377,7 @@ class StyleRule(
             return super(StyleRule, self).__setattr__(name, val)
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
-        return self._add_value(name, val)
+        return self.set_value(name, val)
 
     def __setitem__(self, key, value, **kwargs):
         """Override the setting of an attribute in ordered dict.
@@ -399,7 +398,7 @@ class StyleRule(
                 return self._attributes[key].__set__(self, value)
             except KeyError:
                 pass
-        return self._add_value(key, value, **kwargs)
+        return self.set_value(key, value, **kwargs)
 
     def __deepcopy__(self, memo):
         """Override deepcopy.
@@ -417,7 +416,7 @@ class StyleRule(
         for k, v in self.items():
             if isinstance(v, StyleRule):
                 v._parent = result
-            result._add_value(k, copy.deepcopy(v, memo))
+            result.set_value(k, copy.deepcopy(v, memo))
         result._parent = self._parent
         return result
 

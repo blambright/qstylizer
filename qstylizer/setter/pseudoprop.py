@@ -24,7 +24,7 @@ class PseudoPropSet(qstylizer.setter.StyleRuleSet):
                 name=self.name,
                 parent=instance,
             )
-            instance._add_value(self.name, style_rule)
+            instance.set_value(self.name, style_rule)
         return instance.find_value(self.name)
 
     def __set__(self, instance, value):
@@ -42,14 +42,14 @@ class PseudoPropSet(qstylizer.setter.StyleRuleSet):
         if isinstance(value, qstylizer.style.PseudoPropRule):
             value = copy.deepcopy(value)
             value._parent = instance
-            instance._add_value(self.name, value)
+            instance.set_value(self.name, value)
         else:
             new_style = qstylizer.style.PseudoPropRule(
                 name=self.name,
                 parent=instance,
             )
             new_style._prop_value = value
-            instance._add_value(self.name, new_style)
+            instance.set_value(self.name, new_style)
 
 
 class PseudoPropSetter(qstylizer.setter.StyleRuleSetter):

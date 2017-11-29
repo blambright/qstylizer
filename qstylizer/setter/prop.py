@@ -116,7 +116,7 @@ class PropSet(qstylizer.setter.StyleRuleSet):
 
         """
         value = copy.deepcopy(value)
-        instance._add_value(self.name, value)
+        instance.set_value(self.name, value)
 
 
 class PropSetter(qstylizer.setter.StyleRuleSetter):
