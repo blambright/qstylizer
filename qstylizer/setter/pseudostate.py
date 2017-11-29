@@ -31,18 +31,25 @@ class PseudoStateSet(qstylizer.setter.StyleRuleSet):
         """Set the value in the StyleRule's ordered dict.
 
         If the value is a PseudoStateRule, simply add it to the ordered dict.
-        Otherwise raise a ValueError.
+        Otherwise create a new PseudoStateRule instance, set its prop_value
+        attribute to the value, and add it to the ordered dict.
 
         :param instance: The StyleRule instance
         :param value: The value to set in StyleRule instance
 
         """
         import qstylizer.style
-        if not isinstance(value, qstylizer.style.PseudoStateRule):
-            raise ValueError("Can only assign a PseudoStateRule style.")
-        value = copy.deepcopy(value)
-        value._parent = instance
-        instance._add_value(self.name, value)
+        if isinstance(value, qstylizer.style.PseudoStateRule):
+            value = copy.deepcopy(value)
+            value._parent = instance
+            instance._add_value(self.name, value)
+        else:
+            new_style = qstylizer.style.PseudoStateRule(
+                name=self.name,
+                parent=instance,
+            )
+            new_style._prop_value = value
+            instance._add_value(self.name, new_style)
 
 
 class PseudoStateSetter(qstylizer.setter.StyleRuleSetter):

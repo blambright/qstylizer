@@ -149,36 +149,6 @@ def test_empty_style(css):
     assert css.QCheckBox.toString() == ""
 
 
-def test_subcontrol_set():
-    import qstylizer.style
-    qclass_style = qstylizer.style.ClassRule("QObject")
-    with pytest.raises(ValueError):
-        qclass_style.text = "test"
-    qclass_style.text.color = "red"
-    assert qclass_style.toString(cascade=True) == textwrap.dedent(
-        """
-        QObject::text {
-            color: red;
-        }
-        """
-    )[1:]
-
-
-def test_pseudostate_set():
-    import qstylizer.style
-    indicator_style = qstylizer.style.SubControlRule("indicator")
-    with pytest.raises(ValueError):
-        indicator_style.pressed = "test"
-    indicator_style.pressed.color = "red"
-    assert indicator_style.toString(cascade=True) == textwrap.dedent(
-        """
-        indicator:pressed {
-            color: red;
-        }
-        """
-    )[1:]
-
-
 def test_subcontrol_options():
     import qstylizer.setter.subcontrol
     assert 'add-line' in qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()

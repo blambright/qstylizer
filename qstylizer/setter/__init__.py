@@ -42,12 +42,18 @@ class StyleRuleSet(object):
         :param value: The value to set in StyleRule instance
 
         """
-        value = copy.deepcopy(value)
-        try:
+        import qstylizer.style
+        if isinstance(value, qstylizer.style.StyleRule):
+            value = copy.deepcopy(value)
             value._parent = instance
-        except AttributeError:
-            pass
-        instance._add_value(self.name, value)
+            instance._add_value(self.name, value)
+        else:
+            new_style = qstylizer.style.StyleRule(
+                name=self.name,
+                parent=instance,
+            )
+            new_style._prop_value = value
+            instance._add_value(self.name, new_style)
 
 
 class StyleRuleSetter(object):

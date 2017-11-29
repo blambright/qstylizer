@@ -97,6 +97,7 @@ class StyleRule(
         self._parent = parent
         self._attributes = self.get_attributes()
         self._attr_options = self.get_attr_options()
+        self._prop_value = None
 
     @staticmethod
     def _sanitize_key(key):
@@ -303,11 +304,10 @@ class StyleRule(
         sheet = ""
         selector = self.selector
         for key, value in self.items():
-            if (isinstance(value, PseudoPropRule)
-               and value.prop_value is not None):
-                properties += prop_template.format(key, value.prop_value)
-            elif not isinstance(value, StyleRule):
+            if not isinstance(value, StyleRule):
                 properties += prop_template.format(key, value)
+            elif value.prop_value is not None:
+                properties += prop_template.format(key, value.prop_value)
         if properties:
             sheet = style_template.format(**locals())
         return sheet
@@ -319,6 +319,14 @@ class StyleRule(
 
         """
         return self._to_string(*args, **kwargs)
+
+    @property
+    def prop_value(self):
+        return self._prop_value
+
+    @prop_value.setter
+    def prop_value(self, value):
+        self._prop_value = self._sanitize_value(value)
 
     def __getitem__(self, key):
         """Override the retrieving of a value from dictionary.
@@ -382,9 +390,6 @@ class StyleRule(
         :param value: The value to map to hash key
 
         """
-        print key
-        if "exclusive" in key.lower():
-            print "nonExclusive", key
         if key in self._attr_options:
             if "-" in key:
                 key = key.replace("-", "_")
@@ -465,11 +470,10 @@ class StyleSheet(StyleRule, qstylizer.setter.qclass.ClassStyleSetter):
         properties = ""
         sheet = ""
         for key, value in self.items():
-            if (isinstance(value, PseudoPropRule)
-               and value.prop_value is not None):
-                properties += prop_template.format(key, value.prop_value)
-            elif not isinstance(value, StyleRule):
+            if not isinstance(value, StyleRule):
                 properties += prop_template.format(key, value)
+            elif value.prop_value is not None:
+                properties += prop_template.format(key, value.prop_value)
         if properties:
             sheet = style_template.format(**locals())
         return sheet
@@ -642,18 +646,6 @@ class PseudoPropRule(PseudoStateRule):
         }
 
     """
-    def __init__(self, *args, **kwargs):
-        """Initialize the PseudoPropRule dictionary."""
-        super(PseudoPropRule, self).__init__(*args, **kwargs)
-        self._prop_value = None
-
-    @property
-    def prop_value(self):
-        return self._prop_value
-
-    @prop_value.setter
-    def prop_value(self, value):
-        self._prop_value = self._sanitize_value(value)
 
 
 def rule_class(name):

@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import copy
+
 import qstylizer.setter
 
 
@@ -103,6 +105,18 @@ class PropSet(qstylizer.setter.StyleRuleSet):
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         return instance.find_value(self.name)
+
+    def __set__(self, instance, value):
+        """Set the value in the StyleRule's ordered dict.
+
+        Simply add the value to the ordered dict.
+
+        :param instance: The StyleRule instance
+        :param value: The value to set in StyleRule instance
+
+        """
+        value = copy.deepcopy(value)
+        instance._add_value(self.name, value)
 
 
 class PropSetter(qstylizer.setter.StyleRuleSetter):
