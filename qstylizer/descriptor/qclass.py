@@ -2,20 +2,20 @@
 
 import copy
 
-import qstylizer.setter
+import qstylizer.descriptor
 
 
-class ClassStyleSet(qstylizer.setter.StyleRuleSet):
+class ClassStyleDescriptor(qstylizer.descriptor.StyleRuleDescriptor):
     """QClass descriptor."""
 
 
-class ClassStyleSetter(qstylizer.setter.StyleRuleSetter):
+class ClassStyleSetter(qstylizer.descriptor.StyleRuleSetter):
     """QClass setter.
 
     Contains descriptors for all known QClasses.
 
     """
-    _descriptor_cls = ClassStyleSet
+    _descriptor_cls = ClassStyleDescriptor
 
     QAbstractScrollArea = _descriptor_cls("QAbstractScrollArea")
     QCheckBox = _descriptor_cls("QCheckBox")

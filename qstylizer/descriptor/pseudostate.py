@@ -2,20 +2,20 @@
 
 import copy
 
-import qstylizer.setter
+import qstylizer.descriptor
 
 
-class PseudoStateSet(qstylizer.setter.StyleRuleSet):
+class PseudoStateDescriptor(qstylizer.descriptor.StyleRuleDescriptor):
     """Pseudo-state descriptor."""
 
 
-class PseudoStateSetter(qstylizer.setter.StyleRuleSetter):
+class PseudoStateSetter(qstylizer.descriptor.StyleRuleSetter):
     """Pseudostate setter.
 
     Contains descriptors for all known pseudostates.
 
     """
-    _descriptor_cls = PseudoStateSet
+    _descriptor_cls = PseudoStateDescriptor
 
     active = _descriptor_cls("active")
     adjoinsItem = _descriptor_cls("adjoins-item")

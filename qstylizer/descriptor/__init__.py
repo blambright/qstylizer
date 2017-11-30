@@ -3,13 +3,13 @@
 import copy
 
 
-class StyleRuleSet(object):
+class StyleRuleDescriptor(object):
     """StyleRule descriptor."""
 
     rule_cls = None
 
     def __init__(self, name):
-        """Initialize the StyleRuleSet instance.
+        """Initialize the StyleRuleDescriptor instance.
 
         :param name: The attribute name of type string
 
@@ -60,12 +60,12 @@ class StyleRuleSet(object):
 
 
 class StyleRuleSetter(object):
-    """StyleRule setter.
+    """StyleRule descriptor.
 
     Contains functions for getting all known attributes of the StyleRule.
 
     """
-    _descriptor_cls = StyleRuleSet
+    _descriptor_cls = StyleRuleDescriptor
 
     @classmethod
     def get_attributes(cls):

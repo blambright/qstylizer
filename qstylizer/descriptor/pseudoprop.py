@@ -2,20 +2,20 @@
 
 import copy
 
-import qstylizer.setter
+import qstylizer.descriptor
 
 
-class PseudoPropSet(qstylizer.setter.StyleRuleSet):
+class PseudoPropDescriptor(qstylizer.descriptor.StyleRuleDescriptor):
     """Pseudo-property descriptor."""
 
 
-class PseudoPropSetter(qstylizer.setter.StyleRuleSetter):
+class PseudoPropSetter(qstylizer.descriptor.StyleRuleSetter):
     """Pseudo-property setter.
 
     Contains descriptors for all known pseudo-properties.
 
     """
-    _descriptor_cls = PseudoPropSet
+    _descriptor_cls = PseudoPropDescriptor
 
     left = _descriptor_cls("left")
     right = _descriptor_cls("right")

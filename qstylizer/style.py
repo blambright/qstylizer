@@ -5,23 +5,23 @@ import copy
 import collections
 import inflection
 
-import qstylizer.setter.prop
-import qstylizer.setter.subcontrol
-import qstylizer.setter.pseudostate
-import qstylizer.setter.pseudoprop
-import qstylizer.setter.qclass
+import qstylizer.descriptor.prop
+import qstylizer.descriptor.subcontrol
+import qstylizer.descriptor.pseudostate
+import qstylizer.descriptor.pseudoprop
+import qstylizer.descriptor.qclass
 
 
-QPROPERTIES = qstylizer.setter.prop.PropSetter.get_attr_options()
-QSUBCONTROLS = qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()
-QPSEUDOSTATES = qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
-QPSEUDOPROPS = qstylizer.setter.pseudoprop.PseudoPropSetter.get_attr_options()
-QCLASSES = qstylizer.setter.qclass.ClassStyleSetter.get_attr_options()
+QPROPERTIES = qstylizer.descriptor.prop.PropSetter.get_attr_options()
+QSUBCONTROLS = qstylizer.descriptor.subcontrol.SubControlSetter.get_attr_options()
+QPSEUDOSTATES = qstylizer.descriptor.pseudostate.PseudoStateSetter.get_attr_options()
+QPSEUDOPROPS = qstylizer.descriptor.pseudoprop.PseudoPropSetter.get_attr_options()
+QCLASSES = qstylizer.descriptor.qclass.ClassStyleSetter.get_attr_options()
 
 
 class StyleRule(
-    collections.OrderedDict, qstylizer.setter.prop.PropSetter,
-    qstylizer.setter.pseudoprop.PseudoPropSetter
+    collections.OrderedDict, qstylizer.descriptor.prop.PropSetter,
+    qstylizer.descriptor.pseudoprop.PseudoPropSetter
 ):
     """StyleRule Object.
 
@@ -431,7 +431,7 @@ class StyleRule(
         return self.toString()
 
 
-class StyleSheet(StyleRule, qstylizer.setter.qclass.ClassStyleSetter):
+class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleSetter):
     """The StyleSheet definition.
 
     Contains descriptors for all class and property options.
@@ -493,8 +493,8 @@ class StyleSheet(StyleRule, qstylizer.setter.qclass.ClassStyleSetter):
 
 
 class ClassRule(
-    StyleRule, qstylizer.setter.subcontrol.SubControlSetter,
-    qstylizer.setter.pseudostate.PseudoStateSetter
+    StyleRule, qstylizer.descriptor.subcontrol.SubControlSetter,
+    qstylizer.descriptor.pseudostate.PseudoStateSetter
 ):
     """The ClassRule definition.
 
@@ -601,7 +601,7 @@ class StyleRuleList(StyleRule):
         return self._name.replace(" ", "")
 
 
-class SubControlRule(StyleRule, qstylizer.setter.pseudostate.PseudoStateSetter):
+class SubControlRule(StyleRule, qstylizer.descriptor.pseudostate.PseudoStateSetter):
     """The SubControlRule definition.
 
     Example subcontrol name: "::indicator".
@@ -672,8 +672,8 @@ def rule_class(name):
     return class_
 
 
-qstylizer.setter.StyleRuleSet.rule_cls = StyleRule
-qstylizer.setter.qclass.ClassStyleSet.rule_cls = ClassRule
-qstylizer.setter.subcontrol.SubControlSet.rule_cls = SubControlRule
-qstylizer.setter.pseudostate.PseudoStateSet.rule_cls = PseudoStateRule
-qstylizer.setter.pseudoprop.PseudoPropSet.rule_cls = PseudoPropRule
+qstylizer.descriptor.StyleRuleDescriptor.rule_cls = StyleRule
+qstylizer.descriptor.qclass.ClassStyleDescriptor.rule_cls = ClassRule
+qstylizer.descriptor.subcontrol.SubControlDescriptor.rule_cls = SubControlRule
+qstylizer.descriptor.pseudostate.PseudoStateDescriptor.rule_cls = PseudoStateRule
+qstylizer.descriptor.pseudoprop.PseudoPropDescriptor.rule_cls = PseudoPropRule

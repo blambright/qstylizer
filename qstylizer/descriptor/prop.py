@@ -2,7 +2,7 @@
 
 import copy
 
-import qstylizer.setter
+import qstylizer.descriptor
 
 
 PROPERTY_VALUES = {
@@ -93,7 +93,7 @@ PROPERTY_VALUES = {
 }
 
 
-class PropSet(qstylizer.setter.StyleRuleSet):
+class PropDescriptor(qstylizer.descriptor.StyleRuleDescriptor):
     """Property descriptor."""
 
     def __get__(self, instance, *args, **kwargs):
@@ -119,13 +119,13 @@ class PropSet(qstylizer.setter.StyleRuleSet):
         instance.set_value(self.name, value)
 
 
-class PropSetter(qstylizer.setter.StyleRuleSetter):
+class PropSetter(qstylizer.descriptor.StyleRuleSetter):
     """Property setter.
 
     Contains descriptors for all known properties.
 
     """
-    _descriptor_cls = PropSet
+    _descriptor_cls = PropDescriptor
 
     qtBackgroundRole = _descriptor_cls("-qt-background-role")
     qtBlockIndent = _descriptor_cls("-qt-block-indent")

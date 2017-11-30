@@ -150,13 +150,13 @@ def test_empty_style(css):
 
 
 def test_subcontrol_options():
-    import qstylizer.setter.subcontrol
-    assert 'add-line' in qstylizer.setter.subcontrol.SubControlSetter.get_attr_options()
+    import qstylizer.descriptor.subcontrol
+    assert 'add-line' in qstylizer.descriptor.subcontrol.SubControlSetter.get_attr_options()
 
 
 def test_pseudostate_options():
-    import qstylizer.setter.pseudostate
-    assert 'minimized' in qstylizer.setter.pseudostate.PseudoStateSetter.get_attr_options()
+    import qstylizer.descriptor.pseudostate
+    assert 'minimized' in qstylizer.descriptor.pseudostate.PseudoStateSetter.get_attr_options()
 
 
 def test_prop_semicolon(css):

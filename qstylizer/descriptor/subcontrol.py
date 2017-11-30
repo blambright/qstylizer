@@ -2,20 +2,20 @@
 
 import copy
 
-import qstylizer.setter
+import qstylizer.descriptor
 
 
-class SubControlSet(qstylizer.setter.StyleRuleSet):
+class SubControlDescriptor(qstylizer.descriptor.StyleRuleDescriptor):
     """Subcontrol descriptor."""
 
 
-class SubControlSetter(qstylizer.setter.StyleRuleSetter):
+class SubControlSetter(qstylizer.descriptor.StyleRuleSetter):
     """Subcontrol setter.
 
     Contains descriptors for all known subcontrols.
 
     """
-    _descriptor_cls = SubControlSet
+    _descriptor_cls = SubControlDescriptor
 
     addLine = _descriptor_cls("add-line")
     addPage = _descriptor_cls("add-page")
