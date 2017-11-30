@@ -6,6 +6,8 @@ import copy
 class StyleRuleSet(object):
     """StyleRule descriptor."""
 
+    rule_cls = None
+
     def __init__(self, name):
         """Initialize the StyleRuleSet instance.
 
@@ -26,7 +28,7 @@ class StyleRuleSet(object):
         import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
-            new_style = qstylizer.style.StyleRule(
+            new_style = self.rule_cls(
                 name=self.name,
                 parent=instance,
             )
@@ -36,19 +38,20 @@ class StyleRuleSet(object):
     def __set__(self, instance, value):
         """Set the value in the StyleRule's ordered dict.
 
-        Simply add the value to the ordered dict.
+        If the value is a StyleRule, simply add it to the ordered dict.
+        Otherwise create a new StyleRule instance, set its prop_value
+        attribute to the value, and add it to the ordered dict.
 
         :param instance: The StyleRule instance
         :param value: The value to set in StyleRule instance
 
         """
-        import qstylizer.style
-        if isinstance(value, qstylizer.style.StyleRule):
+        if isinstance(value, self.rule_cls):
             value = copy.deepcopy(value)
             value._parent = instance
             instance.set_value(self.name, value)
         else:
-            new_style = qstylizer.style.StyleRule(
+            new_style = self.rule_cls(
                 name=self.name,
                 parent=instance,
             )
