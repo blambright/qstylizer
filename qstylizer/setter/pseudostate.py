@@ -94,7 +94,7 @@ class PseudoStateSetter(qstylizer.setter.StyleRuleSetter):
     onlyOne = _descriptor_cls("only-one")
     open = _descriptor_cls("open")
     pressed = _descriptor_cls("pressed")
-    previous_selected = _descriptor_cls("previous-selected")
+    previousSelected = _descriptor_cls("previous-selected")
     readOnly = _descriptor_cls("read-only")
     selected = _descriptor_cls("selected")
     unchecked = _descriptor_cls("unchecked")
