@@ -2,14 +2,14 @@
 
 import copy
 
-import qstylizer.descriptor
+import qstylizer.descriptor.stylerule
 
 
-class PseudoStateDescriptor(qstylizer.descriptor.StyleRuleDescriptor):
+class PseudoStateDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
     """Pseudo-state descriptor."""
 
 
-class PseudoStateSetter(qstylizer.descriptor.StyleRuleSetter):
+class PseudoStateSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):
     """Pseudostate setter.
 
     Contains descriptors for all known pseudostates.

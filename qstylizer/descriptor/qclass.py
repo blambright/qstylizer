@@ -2,14 +2,14 @@
 
 import copy
 
-import qstylizer.descriptor
+import qstylizer.descriptor.stylerule
 
 
-class ClassStyleDescriptor(qstylizer.descriptor.StyleRuleDescriptor):
+class ClassStyleDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
     """QClass descriptor."""
 
 
-class ClassStyleSetter(qstylizer.descriptor.StyleRuleSetter):
+class ClassStyleSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):
     """QClass setter.
 
     Contains descriptors for all known QClasses.

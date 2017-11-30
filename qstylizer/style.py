@@ -10,6 +10,7 @@ import qstylizer.descriptor.subcontrol
 import qstylizer.descriptor.pseudostate
 import qstylizer.descriptor.pseudoprop
 import qstylizer.descriptor.qclass
+import qstylizer.descriptor.stylerule
 
 
 QPROPERTIES = qstylizer.descriptor.prop.PropSetter.get_attr_options()
@@ -672,7 +673,7 @@ def rule_class(name):
     return class_
 
 
-qstylizer.descriptor.StyleRuleDescriptor.rule_cls = StyleRule
+qstylizer.descriptor.stylerule.StyleRuleDescriptor.rule_cls = StyleRule
 qstylizer.descriptor.qclass.ClassStyleDescriptor.rule_cls = ClassRule
 qstylizer.descriptor.subcontrol.SubControlDescriptor.rule_cls = SubControlRule
 qstylizer.descriptor.pseudostate.PseudoStateDescriptor.rule_cls = PseudoStateRule

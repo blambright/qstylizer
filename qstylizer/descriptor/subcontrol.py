@@ -1,15 +1,13 @@
 # coding: utf-8
 
-import copy
-
-import qstylizer.descriptor
+import qstylizer.descriptor.stylerule
 
 
-class SubControlDescriptor(qstylizer.descriptor.StyleRuleDescriptor):
+class SubControlDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
     """Subcontrol descriptor."""
 
 
-class SubControlSetter(qstylizer.descriptor.StyleRuleSetter):
+class SubControlSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):
     """Subcontrol setter.
 
     Contains descriptors for all known subcontrols.
