@@ -12,7 +12,7 @@ class SubControlDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
         return qstylizer.style.SubControlRule
 
 
-class SubControlSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):
+class SubControlParent(qstylizer.descriptor.stylerule.StyleRuleParent):
     """Subcontrol setter.
 
     Contains descriptors for all known subcontrols.

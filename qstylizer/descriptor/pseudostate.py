@@ -12,7 +12,7 @@ class PseudoStateDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
         return qstylizer.style.PseudoStateRule
 
 
-class PseudoStateSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):
+class PseudoStateParent(qstylizer.descriptor.stylerule.StyleRuleParent):
     """Pseudostate setter.
 
     Contains descriptors for all known pseudostates.

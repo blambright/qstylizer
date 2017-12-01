@@ -119,7 +119,7 @@ class PropDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
         instance.set_value(self.name, value)
 
 
-class PropSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):
+class PropParent(qstylizer.descriptor.stylerule.StyleRuleParent):
     """Property setter.
 
     Contains descriptors for all known properties.

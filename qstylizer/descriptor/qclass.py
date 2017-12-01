@@ -12,7 +12,7 @@ class ClassStyleDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
         return qstylizer.style.ClassRule
 
 
-class ClassStyleSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):
+class ClassStyleParent(qstylizer.descriptor.stylerule.StyleRuleParent):
     """QClass setter.
 
     Contains descriptors for all known QClasses.

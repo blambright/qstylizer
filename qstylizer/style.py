@@ -13,16 +13,16 @@ import qstylizer.descriptor.qclass
 import qstylizer.descriptor.stylerule
 
 
-QPROPERTIES = qstylizer.descriptor.prop.PropSetter.get_attr_options()
-QSUBCONTROLS = qstylizer.descriptor.subcontrol.SubControlSetter.get_attr_options()
-QPSEUDOSTATES = qstylizer.descriptor.pseudostate.PseudoStateSetter.get_attr_options()
-QPSEUDOPROPS = qstylizer.descriptor.pseudoprop.PseudoPropSetter.get_attr_options()
-QCLASSES = qstylizer.descriptor.qclass.ClassStyleSetter.get_attr_options()
+QPROPERTIES = qstylizer.descriptor.prop.PropParent.get_attr_options()
+QSUBCONTROLS = qstylizer.descriptor.subcontrol.SubControlParent.get_attr_options()
+QPSEUDOSTATES = qstylizer.descriptor.pseudostate.PseudoStateParent.get_attr_options()
+QPSEUDOPROPS = qstylizer.descriptor.pseudoprop.PseudoPropParent.get_attr_options()
+QCLASSES = qstylizer.descriptor.qclass.ClassStyleParent.get_attr_options()
 
 
 class StyleRule(
-    collections.OrderedDict, qstylizer.descriptor.prop.PropSetter,
-    qstylizer.descriptor.pseudoprop.PseudoPropSetter
+    collections.OrderedDict, qstylizer.descriptor.prop.PropParent,
+    qstylizer.descriptor.pseudoprop.PseudoPropParent
 ):
     """StyleRule Object.
 
@@ -432,7 +432,7 @@ class StyleRule(
         return self.toString()
 
 
-class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleSetter):
+class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
     """The StyleSheet definition.
 
     Contains descriptors for all class and property options.
@@ -494,8 +494,8 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleSetter):
 
 
 class ClassRule(
-    StyleRule, qstylizer.descriptor.subcontrol.SubControlSetter,
-    qstylizer.descriptor.pseudostate.PseudoStateSetter
+    StyleRule, qstylizer.descriptor.subcontrol.SubControlParent,
+    qstylizer.descriptor.pseudostate.PseudoStateParent
 ):
     """The ClassRule definition.
 
@@ -602,7 +602,7 @@ class StyleRuleList(StyleRule):
         return self._name.replace(" ", "")
 
 
-class SubControlRule(StyleRule, qstylizer.descriptor.pseudostate.PseudoStateSetter):
+class SubControlRule(StyleRule, qstylizer.descriptor.pseudostate.PseudoStateParent):
     """The SubControlRule definition.
 
     Example subcontrol name: "::indicator".

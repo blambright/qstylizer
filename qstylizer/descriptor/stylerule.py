@@ -63,7 +63,7 @@ class StyleRuleDescriptor(object):
         return qstylizer.style.StyleRule
 
 
-class StyleRuleSetter(object):
+class StyleRuleParent(object):
     """StyleRule descriptor.
 
     Contains functions for getting all known attributes of the StyleRule.
@@ -82,7 +82,7 @@ class StyleRuleSetter(object):
         """
         attributes = {}
         for class_ in cls.__bases__:
-            if not issubclass(class_, StyleRuleSetter):
+            if not issubclass(class_, StyleRuleParent):
                 continue
             attributes.update({
                 key: value for key, value in class_.__dict__.items()

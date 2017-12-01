@@ -12,7 +12,7 @@ class PseudoPropDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
         return qstylizer.style.PseudoPropRule
 
 
-class PseudoPropSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):
+class PseudoPropParent(qstylizer.descriptor.stylerule.StyleRuleParent):
     """Pseudo-property setter.
 
     Contains descriptors for all known pseudo-properties.
