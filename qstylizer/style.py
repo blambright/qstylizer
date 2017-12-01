@@ -671,10 +671,3 @@ def rule_class(name):
     elif "=" in name:
         class_ = ObjectPropRule
     return class_
-
-
-qstylizer.descriptor.stylerule.StyleRuleDescriptor.rule_cls = StyleRule
-qstylizer.descriptor.qclass.ClassStyleDescriptor.rule_cls = ClassRule
-qstylizer.descriptor.subcontrol.SubControlDescriptor.rule_cls = SubControlRule
-qstylizer.descriptor.pseudostate.PseudoStateDescriptor.rule_cls = PseudoStateRule
-qstylizer.descriptor.pseudoprop.PseudoPropDescriptor.rule_cls = PseudoPropRule

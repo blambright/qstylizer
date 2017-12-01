@@ -1,10 +1,15 @@
 # coding: utf-8
 
+import qstylizer.style
 import qstylizer.descriptor.stylerule
 
 
 class PseudoStateDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
     """Pseudo-state descriptor."""
+
+    @property
+    def rule_cls(self):
+        return qstylizer.style.PseudoStateRule
 
 
 class PseudoStateSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):

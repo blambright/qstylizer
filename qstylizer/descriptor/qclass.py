@@ -1,10 +1,15 @@
 # coding: utf-8
 
+import qstylizer.style
 import qstylizer.descriptor.stylerule
 
 
 class ClassStyleDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
     """QClass descriptor."""
+
+    @property
+    def rule_cls(self):
+        return qstylizer.style.ClassRule
 
 
 class ClassStyleSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):

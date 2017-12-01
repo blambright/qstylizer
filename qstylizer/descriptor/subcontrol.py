@@ -1,10 +1,15 @@
 # coding: utf-8
 
+import qstylizer.style
 import qstylizer.descriptor.stylerule
 
 
 class SubControlDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
     """Subcontrol descriptor."""
+
+    @property
+    def rule_cls(self):
+        return qstylizer.style.SubControlRule
 
 
 class SubControlSetter(qstylizer.descriptor.stylerule.StyleRuleSetter):

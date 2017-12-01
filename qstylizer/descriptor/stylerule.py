@@ -2,11 +2,11 @@
 
 import copy
 
+import qstylizer.style
+
 
 class StyleRuleDescriptor(object):
     """StyleRule descriptor."""
-
-    rule_cls = None
 
     def __init__(self, name):
         """Initialize the StyleRuleDescriptor instance.
@@ -25,7 +25,6 @@ class StyleRuleDescriptor(object):
         :param instance: The StyleRule instance
 
         """
-        import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_value(self.name) is None:
             new_style = self.rule_cls(
@@ -57,6 +56,11 @@ class StyleRuleDescriptor(object):
             )
             new_style._prop_value = value
             instance.set_value(self.name, new_style)
+
+    @property
+    def rule_cls(self):
+        #import qstylizer.style
+        return qstylizer.style.StyleRule
 
 
 class StyleRuleSetter(object):
