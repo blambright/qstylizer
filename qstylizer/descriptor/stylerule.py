@@ -59,7 +59,6 @@ class StyleRuleDescriptor(object):
 
     @property
     def rule_cls(self):
-        #import qstylizer.style
         return qstylizer.style.StyleRule
 
 
