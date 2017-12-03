@@ -99,6 +99,7 @@ class StyleRule(
         self._attributes = self.get_attributes()
         self._attr_options = self.get_attr_options()
         self._prop_value = None
+        self._rules = collections.OrderedDict()
 
     @staticmethod
     def _sanitize_key(key):
@@ -206,7 +207,22 @@ class StyleRule(
         """Set item to ordered dictionary."""
         key = self._sanitize_key(key)
         value = self._sanitize_value(value)
+        if isinstance(value, StyleRule):
+            self._add_rule(value)
         return super(StyleRule, self).__setitem__(key, value, **kwargs)
+
+    def _add_rule(self, rule):
+        """Add a rule to the _rules dictionary.
+
+        :param rule: A StyleRule object.
+
+        """
+        if isinstance(rule, StyleRule):
+            if rule.selector not in self._rules:
+                self._rules[rule.selector] = rule
+            if self._parent is not None:
+                self._parent._add_rule(rule)
+        return rule
 
     @property
     def selector(self):
@@ -217,7 +233,7 @@ class StyleRule(
             Object::subcontrol:pseudostate
 
         """
-        if not self._parent:
+        if self._parent is None:
             return self.name if self.name else ""
         return self._parent.selector + self.scope_operator + self.name
 
@@ -285,9 +301,8 @@ class StyleRule(
 
         """
         stylesheet = self.toString(cascade=False)
-        for key, value in self.items():
-            if isinstance(value, StyleRule):
-                stylesheet += value.toString(cascade=True)
+        for rule in self._rules.values():
+            stylesheet += rule.toString(cascade=False)
         return stylesheet
 
     def _to_string(self, cascade=False):
@@ -410,6 +425,8 @@ class StyleRule(
         """
         cls = self.__class__
         result = cls.__new__(cls)
+        result._parent = None
+        result._rules = collections.OrderedDict()
         memo[id(self)] = result
         for k, v in self.__dict__.items():
             setattr(result, k, copy.deepcopy(v, memo))

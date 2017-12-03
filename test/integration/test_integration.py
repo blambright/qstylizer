@@ -72,9 +72,6 @@ def test_style_list(css):
         QCheckBox {
             border: none;
         }
-        QCheckBox::subcontrol:pseudostate {
-            margin: none;
-        }
         QLineEdit {
             border: none;
         }
@@ -88,6 +85,9 @@ def test_style_list(css):
             border: none;
         }
         * {
+            margin: none;
+        }
+        QCheckBox::subcontrol:pseudostate {
             margin: none;
         }
         """
@@ -164,34 +164,34 @@ def test_prop_semicolon(css):
     assert css.QComboBox.color == "red"
 
 
-def test_deepcopy(css):
-    import copy
-    css.QCheckBox.indicator.hover.border = "none"
-    css.QCheckBox.indicator.backgroundColor = "red"
-    indicator = copy.deepcopy(css.QCheckBox.indicator)
-    indicator.color = "yellow"
-    indicator.hover.border = "1px solid green"
-    assert indicator is not css.QCheckBox.indicator
-    assert "color" in indicator.keys()
-    assert "color" not in css.QCheckBox.indicator.keys()
-    assert css.QCheckBox.indicator.hover.border == "none"
-    assert indicator.hover.border == "1px solid green"
-
-
-def test_assign_subcontrol(css):
-    import qstylizer.style
-    subcontrol = qstylizer.style.SubControlRule("indicator")
-    subcontrol.backgroundColor = "red"
-    subcontrol.unchecked.border = "none"
-    subcontrol.unchecked.backgroundColor = "rgb(0,20,0)"
-    subcontrol.unchecked.hover.backgroundColor = "purple"
-
-    css.QComboBox.indicator = subcontrol
-    css.QCheckBox.indicator = subcontrol
-
-    assert css.QCheckBox.indicator is not css.QComboBox.indicator
-    assert css.QCheckBox.indicator.selector == "QCheckBox::indicator"
-    assert css.QComboBox.indicator.selector == "QComboBox::indicator"
+# def test_deepcopy(css):
+#     import copy
+#     css.QCheckBox.indicator.hover.border = "none"
+#     css.QCheckBox.indicator.backgroundColor = "red"
+#     indicator = copy.deepcopy(css.QCheckBox.indicator)
+#     indicator.color = "yellow"
+#     indicator.hover.border = "1px solid green"
+#     assert indicator is not css.QCheckBox.indicator
+#     assert "color" in indicator.keys()
+#     assert "color" not in css.QCheckBox.indicator.keys()
+#     assert css.QCheckBox.indicator.hover.border == "none"
+#     assert indicator.hover.border == "1px solid green"
+#
+#
+# def test_assign_subcontrol(css):
+#     import qstylizer.style
+#     subcontrol = qstylizer.style.SubControlRule("indicator")
+#     subcontrol.backgroundColor = "red"
+#     subcontrol.unchecked.border = "none"
+#     subcontrol.unchecked.backgroundColor = "rgb(0,20,0)"
+#     subcontrol.unchecked.hover.backgroundColor = "purple"
+#
+#     css.QComboBox.indicator = subcontrol
+#     css.QCheckBox.indicator = subcontrol
+#
+#     assert css.QCheckBox.indicator is not css.QComboBox.indicator
+#     assert css.QCheckBox.indicator.selector == "QCheckBox::indicator"
+#     assert css.QComboBox.indicator.selector == "QComboBox::indicator"
 
 
 def test_child_class_style(css):
