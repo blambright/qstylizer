@@ -276,14 +276,10 @@ class StyleRule(
     def is_leaf(self):
         """Determine if StyleRule is a leaf.
 
-        StyleRule is a leaf if its dictionary values
-        contain no Styles (only properties).
+        StyleRule is a leaf its _rules dictionary is empty.
 
         """
-        for value in self.values():
-            if isinstance(value, StyleRule):
-                return False
-        return True
+        return not self._rules
 
     def is_top_level(self):
         """Determine if StyleRule is top level.
