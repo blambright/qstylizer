@@ -9,7 +9,7 @@ def test_style(css):
     assert css.QWidget == css.QWidget.item._parent
 
 
-def test_style_cascade(css):
+def test_style_recursive(css):
     css.value = 2
     assert css.value == 2
     assert css["value"] == 2

@@ -295,18 +295,18 @@ class StyleRule(
         Loop through all of the substyles and generate a stylesheet string.
 
         """
-        stylesheet = self.toString(cascade=False)
+        stylesheet = self.toString(recursive=False)
         for rule in self._rules.values():
-            stylesheet += rule.toString(cascade=False)
+            stylesheet += rule.toString(recursive=False)
         return stylesheet
 
-    def _to_string(self, cascade=False):
+    def _to_string(self, recursive=False):
         """Convert to a single string in css format.
 
-        :param cascade: If True, output all of the sub-styles in hierarchy.
+        :param recursive: Output all of the sub-style rules.
 
         """
-        if cascade:
+        if recursive:
             return self._stylesheet()
         style_template = "{selector} {{\n{properties}}}\n"
         prop_template = "    {}: {};\n"
@@ -463,13 +463,13 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
         """
         return self.is_leaf()
 
-    def _to_string(self, cascade=True):
+    def _to_string(self, recursive=True):
         """Return the selector and properties as a single string.
 
-        :param cascade: If True, loop through all substyles to generate a stylesheet.
+        :param recursive: If True, loop through all substyles to generate a stylesheet.
 
         """
-        if cascade:
+        if recursive:
             return self._stylesheet()
         style_template = "{selector} {{\n{properties}}}\n"
         prop_template = "    {}: {};\n"

@@ -106,7 +106,7 @@ String Output
 
 The *StyleRule.toString()* function call with no parameters will just output
 the property:values of that style rule in css format. The
-*StyleRule.toString(cascade=True)* function call will output the style rule
+*StyleRule.toString(recursive=True)* function call will output the style rule
 and all of the sub-style rules in its hierarchy.
 
 .. code-block:: python
@@ -116,7 +116,7 @@ and all of the sub-style rules in its hierarchy.
         border-radius: 3px;
         background-color: green;
     }
-    >>> print(css.QTabBar.toString(cascade=True))
+    >>> print(css.QTabBar.toString(recursive=True))
     QTabBar {
         border-radius: 3px;
         background-color: green;
