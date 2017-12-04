@@ -222,7 +222,6 @@ class StyleRule(
                 self._rules[rule.selector] = rule
             if self._parent is not None:
                 self._parent._add_rule(rule)
-        return rule
 
     @property
     def selector(self):
