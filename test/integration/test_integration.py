@@ -301,3 +301,10 @@ def test_pseudoprop_set(css):
         }
         """
     )[1:]
+
+
+def test_add_rule(css):
+    css.QCheckBox.indicator.backgroundColor = "red"
+    assert len(css._rules) == 2
+    assert css.QCheckBox in css._rules.values()
+    assert css.QCheckBox.indicator in css._rules.values()
