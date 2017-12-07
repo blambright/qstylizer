@@ -466,7 +466,7 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
     def _to_string(self, recursive=True):
         """Return the selector and properties as a single string.
 
-        :param recursive: If True, loop through all substyles to generate a stylesheet.
+        :param recursive: Loop through all substyles to generate a stylesheet.
 
         """
         if recursive:
