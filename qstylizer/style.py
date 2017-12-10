@@ -134,8 +134,8 @@ class StyleRule(
 
         If the key value already exists, return the value.
         If there is a comma in requested key, return a StyleRuleList object.
-        Otherwise create substyles from the style names in the key and return
-        the top level substyle or property.
+        Otherwise create rules from the style names in the key and return
+        the top level rule or property.
 
         :param name: The dictionary key
 
@@ -144,9 +144,9 @@ class StyleRule(
         if value is not None:
             return value
         if "," in name:
-            style_list = self.create_substyle_list(name)
-            return style_list
-        return self.create_substyles(name)
+            rule_list = self.create_rule_list(name)
+            return rule_list
+        return self.create_rules(name)
 
     def find_value(self, key):
         """Find value from key.
@@ -157,18 +157,18 @@ class StyleRule(
         key = self._sanitize_key(key)
         return self.get(key)
 
-    def create_substyle_list(self, name):
+    def create_rule_list(self, name):
         """Create a StyleRuleList object and add it to ordered dict.
 
         :param name: String name
 
         """
-        style_list = StyleRuleList(name=name, parent=self)
-        self.set_value(name, style_list)
-        return style_list
+        rule_list = StyleRuleList(name=name, parent=self)
+        self.set_value(name, rule_list)
+        return rule_list
 
-    def create_substyles(self, selector):
-        """Create substyles from selector.
+    def create_rules(self, selector):
+        """Create rules from selector.
 
         Split the selector into individual components based on the _split_regex
         and recursively build the StyleRule hierarchy looping through
@@ -182,15 +182,15 @@ class StyleRule(
         """
         curr_name = self.split_selector(selector)[0]
         remaining = selector.split(curr_name, 1)[-1].replace("-", "_")
-        style = self.find_value(curr_name)
-        if style is None:
-            style = self.create_substyle(curr_name)
+        rule = self.find_value(curr_name)
+        if rule is None:
+            rule = self.create_rule(curr_name)
         if remaining and remaining != curr_name:
-            return style.find_or_create_value(remaining)
-        return style
+            return rule.find_or_create_value(remaining)
+        return rule
 
-    def create_substyle(self, name):
-        """Create substyle from name.
+    def create_rule(self, name):
+        """Create rule from name.
 
         Determine subclass from name, create an instance of the subclass,
         then add it to ordered dict.
@@ -199,9 +199,9 @@ class StyleRule(
 
         """
         class_ = rule_class(name)
-        style = class_(name=name, parent=self)
-        self.set_value(name, style)
-        return style
+        rule = class_(name=name, parent=self)
+        self.set_value(name, rule)
+        return rule
 
     def set_value(self, key, value, **kwargs):
         """Set item to ordered dictionary."""
@@ -292,7 +292,7 @@ class StyleRule(
     def _stylesheet(self):
         """Return the stylesheet.
 
-        Loop through all of the substyles and generate a stylesheet string.
+        Loop through all of the rules and generate a stylesheet string.
 
         """
         stylesheet = self.toString(recursive=False)
@@ -308,7 +308,7 @@ class StyleRule(
         """
         if recursive:
             return self._stylesheet()
-        style_template = "{selector} {{\n{properties}}}\n"
+        rule_template = "{selector} {{\n{properties}}}\n"
         prop_template = "    {}: {};\n"
         properties = ""
         sheet = ""
@@ -319,7 +319,7 @@ class StyleRule(
             elif value.prop_value is not None:
                 properties += prop_template.format(key, value.prop_value)
         if properties:
-            sheet = style_template.format(**locals())
+            sheet = rule_template.format(**locals())
         return sheet
 
     def toString(self, *args, **kwargs):
@@ -341,7 +341,7 @@ class StyleRule(
     def __getitem__(self, key):
         """Override the retrieving of a value from dictionary.
 
-        Find or create style in the key's hash location.
+        Find or create rule in the key's hash location.
 
         :param key: The dictionary key
 
@@ -414,7 +414,7 @@ class StyleRule(
     def __deepcopy__(self, memo):
         """Override deepcopy.
 
-        Make a deepcopy of all member attributes as well as all substyle rules
+        Make a deepcopy of all member attributes as well as all rule rules
         in ordered dictionary.
 
         """
@@ -451,9 +451,9 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
 
     """
     def is_global_scope(self):
-        """Determine if style is global scope.
+        """Determine if stylesheet is global scope.
 
-        A StyleSheet is global scope if it has no substyles.
+        A StyleSheet is global scope if it has no rules.
         Resulting string should contain no brackets.
         ::
 
@@ -466,16 +466,16 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
     def _to_string(self, recursive=True):
         """Return the selector and properties as a single string.
 
-        :param recursive: Loop through all substyles to generate a stylesheet.
+        :param recursive: Loop through all rules to generate a stylesheet.
 
         """
         if recursive:
             return self._stylesheet()
-        style_template = "{selector} {{\n{properties}}}\n"
+        rule_template = "{selector} {{\n{properties}}}\n"
         prop_template = "    {}: {};\n"
         selector = self.selector
         if self.is_global_scope():
-            style_template = "{properties}"
+            rule_template = "{properties}"
             prop_template = "{}: {};\n"
         else:
             selector = "*"
@@ -487,7 +487,7 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
             elif value.prop_value is not None:
                 properties += prop_template.format(key, value.prop_value)
         if properties:
-            sheet = style_template.format(**locals())
+            sheet = rule_template.format(**locals())
         return sheet
 
     @property
@@ -511,7 +511,7 @@ class ClassRule(
 ):
     """The ClassRule definition.
 
-    Example class style name: "QCheckBox".
+    Example class rule name: "QCheckBox".
     Contains descriptors for all subcontrols and pseudostates.
 
     """
@@ -520,7 +520,7 @@ class ClassRule(
 class ObjectRule(ClassRule):
     """The ObjectRule definition.
 
-    Example object style name: "#objectName".
+    Example object rule name: "#objectName".
     Inherits from ClassRule. Only difference is "#" is the scope operator.
 
     """
@@ -532,7 +532,7 @@ class ObjectRule(ClassRule):
 class ChildClassRule(ClassRule):
     """The ChildClassRule definition.
 
-    Example object style name: " QFrame".
+    Example object rule name: " QFrame".
     Inherits from ClassRule.
     ::
 
@@ -549,7 +549,7 @@ class ChildClassRule(ClassRule):
 class ObjectPropRule(StyleRule):
     """The ObjectPropRule definition.
 
-    Example object property style name: "[echoMode="2"]".
+    Example object property rule name: "[echoMode="2"]".
 
     """
     @property
@@ -560,7 +560,7 @@ class ObjectPropRule(StyleRule):
 class StyleRuleList(StyleRule):
     """The StyleRuleList definition.
 
-    Example style list name: "QCheckBox, QComboBox".
+    Example rule list name: "QCheckBox, QComboBox".
 
     """
 
@@ -573,15 +573,15 @@ class StyleRuleList(StyleRule):
         """Find or create value in parent StyleRule
 
         Will loop through all components in name separated by a comma and set the
-        property in each of the substyles in the parent StyleRule.
+        property in each of the rules in the parent StyleRule.
 
         :param name: The attribute name
         :param val: The value
 
         """
-        style_names = self.name.split(",")
-        for style_name in style_names:
-            self._parent.find_or_create_value(style_name).__setattr__(name, val)
+        rule_names = self.name.split(",")
+        for rule_name in rule_names:
+            self._parent.find_or_create_value(rule_name).__setattr__(name, val)
         return None
 
     @property

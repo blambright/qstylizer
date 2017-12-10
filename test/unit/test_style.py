@@ -101,8 +101,8 @@ def test_sanitize_value(css, value, expected):
     "name, "
     "found_value, "
     "expected, "
-    "substyle_list_call_count, "
-    "substyles_call_count",
+    "rule_list_call_count, "
+    "rules_call_count",
     [
         (
             "QComboBox, QCheckBox",
@@ -127,28 +127,28 @@ def test_sanitize_value(css, value, expected):
         ),
     ],
     ids=[
-        "with-substyle-list",
+        "with-rule-list",
         "with-existing-class",
         "with-new-class",
     ]
 )
 def test_find_or_create_value(
     mocker, css, style_class, name, found_value, expected,
-    substyle_list_call_count, substyles_call_count
+    rule_list_call_count, rules_call_count
 ):
     mocked_find_value = mocker.patch.object(
         style_class, "find_value", return_value=found_value
     )
-    mocked_create_substyle_list = mocker.patch.object(
-        style_class, "create_substyle_list", return_value="StyleRuleList"
+    mocked_create_rule_list = mocker.patch.object(
+        style_class, "create_rule_list", return_value="StyleRuleList"
     )
-    mocked_create_substyles = mocker.patch.object(
-        style_class, "create_substyles", return_value=expected
+    mocked_create_rules = mocker.patch.object(
+        style_class, "create_rules", return_value=expected
     )
     assert css.find_or_create_value(name) == expected
     mocked_find_value.assert_called_once_with(name)
-    assert mocked_create_substyle_list.call_count == substyle_list_call_count
-    assert mocked_create_substyles.call_count == substyles_call_count
+    assert mocked_create_rule_list.call_count == rule_list_call_count
+    assert mocked_create_rules.call_count == rules_call_count
 
 
 def test_find_value(mocker, style_class, css):
@@ -165,13 +165,13 @@ def test_find_value(mocker, style_class, css):
     mocked_get.assert_called_once_with(key)
 
 
-def test_create_substyle_list(mocker, style_class, css):
+def test_create_rule_list(mocker, style_class, css):
     import qstylizer.style
     style_list = "StyleListInstance"
     name = "test"
     mocker.patch.object(qstylizer.style, "StyleRuleList", return_value=style_list)
     mocked_set_value = mocker.patch.object(style_class, "set_value")
-    assert css.create_substyle_list(name) == style_list
+    assert css.create_rule_list(name) == style_list
     mocked_set_value.called_once_with(name, style_list)
 
 
@@ -196,7 +196,7 @@ def test_create_substyle_list(mocker, style_class, css):
         "with-multiple-style",
     ]
 )
-def test_create_substyles(
+def test_create_rules(
     mocker, style_class, css, selector, curr_name,
     find_or_create_value_call_count
 ):
@@ -208,18 +208,18 @@ def test_create_substyles(
         style_class, "find_value", return_value=mocked_style
     )
     mocker.patch.object(
-        style_class, "create_substyle", return_value=mocked_style
+        style_class, "create_rule", return_value=mocked_style
     )
     mocker.patch.object(
         style_class, "find_or_create_value", return_value=mocked_style
     )
-    css.create_substyles(selector)
+    css.create_rules(selector)
     mocked_split_selector.assert_called_once_with(selector)
     mocked_find_value.assert_called_once_with(curr_name)
     assert mocked_style.find_or_create_value.call_count == find_or_create_value_call_count
 
 
-def test_create_substyle(mocker, style_class, css):
+def test_create_rule(mocker, style_class, css):
     import qstylizer.style
     name = "::indicator"
     style = mocker.MagicMock()
@@ -230,7 +230,7 @@ def test_create_substyle(mocker, style_class, css):
     mocked_add_value = mocker.patch.object(
         style_class, "set_value"
     )
-    css.create_substyle(name)
+    css.create_rule(name)
     mocked_add_value.assert_called_with(name, style)
     mocked_subclass_function.assert_called_once_with(name)
     class_.assert_called_with(name=name, parent=css)
