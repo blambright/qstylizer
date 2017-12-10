@@ -244,7 +244,7 @@ def test_style(css):
     pass
 
 
-def test_stylesheet(css):
+def test_to_string_recursive(css):
     pass
 
 

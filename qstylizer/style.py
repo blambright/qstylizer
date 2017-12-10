@@ -289,8 +289,8 @@ class StyleRule(
         """
         return isinstance(self._parent, StyleSheet)
 
-    def _stylesheet(self):
-        """Return the stylesheet.
+    def _to_string_recursive(self):
+        """Convert all rules into a single stirng in css format.
 
         Loop through all of the rules and generate a stylesheet string.
 
@@ -307,7 +307,7 @@ class StyleRule(
 
         """
         if recursive:
-            return self._stylesheet()
+            return self._to_string_recursive()
         rule_template = "{selector} {{\n{properties}}}\n"
         prop_template = "    {}: {};\n"
         properties = ""
@@ -470,7 +470,7 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
 
         """
         if recursive:
-            return self._stylesheet()
+            return self._to_string_recursive()
         rule_template = "{selector} {{\n{properties}}}\n"
         prop_template = "    {}: {};\n"
         selector = self.selector

@@ -101,7 +101,7 @@ def test_style_style(css):
            "QCheckBox::indicator:unchecked:hover {\n    border: none;\n    color: green;\n}\n"
 
 
-def test_stylesheet(css):
+def test_to_string_recursive(css):
     css.border = "none"
     css.QFrame.border = "1px solid green"
     css.QFrame.color = "green"
