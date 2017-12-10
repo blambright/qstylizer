@@ -205,7 +205,7 @@ class StyleRule(
         return rule
 
     def set_child_rule(self, key, value, **kwargs):
-        """Set rule to ordered dictionary."""
+        """Set rule in ordered dictionary."""
         key = self._sanitize_key(key)
         if not isinstance(value, StyleRule):
             value = self._sanitize_value(value)
