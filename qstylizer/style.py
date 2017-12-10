@@ -436,8 +436,14 @@ class StyleRule(
 
     def __repr__(self, *args, **kwargs):
         """Set the representation to look like xml syntax."""
-        return "<{0} name='{1}' />".format(
-            self.__class__.__name__, self.name
+        value_attr = ""
+        name_attr = ""
+        if self.value is not None:
+            value_attr = "value={0!r} ".format(self.value)
+        if self.name is not None:
+            name_attr = "name={0!r} ".format(self.name)
+        return "<{0} {1}{2}/>".format(
+            self.__class__.__name__, name_attr, value_attr
         )
 
     def __str__(self):
@@ -495,15 +501,6 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
     def name(self):
         """Return the name of the StyleSheet."""
         return self._name
-
-    def __repr__(self, *args, **kwargs):
-        """Set the representation to look like xml syntax."""
-        template = "<{0} />"
-        if self.name:
-            template = "<{0} name='{1}' />"
-        return template.format(
-            self.__class__.__name__, self.name
-        )
 
 
 class ClassRule(
