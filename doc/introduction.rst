@@ -47,14 +47,14 @@ The above example maps to this hierarchy::
 
     <StyleSheet dict={
         "QTabBar": <ClassRule name="QTabBar" dict={
-            "border-radius": "3px",
-            "background-color": "green",
+            "border-radius": <PropRule name="border-radius" value="3px" />,
+            "background-color": <PropRule name="background-color" value="green" />,
             "focus": <PseudoStateRule name="focus" dict={
-                "border": "0px transparent black"
-                "background-color": "red"
+                "border": <PropRule name="border" value="0px transparent black" />,
+                "background-color": <PropRule name="background-color" value="red" />,
             } />
             "close-button": <SubControlRule name="close-button" dict={
-                "background": "transparent"
+                "background": <PropRule name="background" value="transparent" />,
             }/>
          } />
     } />
