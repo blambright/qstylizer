@@ -99,7 +99,7 @@ class StyleRule(
         self._parent = parent
         self._attributes = self.get_attributes()
         self._attr_options = self.get_attr_options()
-        self._value = value
+        self._value = self._sanitize_value(value)
         self._child_rules = collections.OrderedDict()
 
     @staticmethod
