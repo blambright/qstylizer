@@ -31,13 +31,13 @@ class StyleRule(
     Example structure::
 
         <ClassRule name="QCheckBox" dict={
-            "color": "red",
-            "background-color": "black",
+            "color": <PropRule name="color" value="red" />,
+            "background-color": <PropRule name="background-color" value="black" />,
             "indicator": <SubControlRule name="indicator" dict={
-                "border": "1px solid green",
+                "border": <PropRule name="border" value="1px solid green" />,
                 "hover": <PseudoStateRule name="hover" dict={
-                    "background-color": "green",
-                    "border": "0px transparent black"
+                    "background-color": <PropRule name="background-color" value="green" />,
+                    "border": <PropRule name="border value="0px transparent black" />
                 } />
             } />
         } />
@@ -83,12 +83,13 @@ class StyleRule(
         selector = selector.replace("-", "_")
         return re.findall(cls._split_regex, selector)[:-1]
 
-    def __init__(self, name=None, parent=None):
+    def __init__(self, name=None, value=None, parent=None):
         """Initialize the StyleRule dictionary.
 
         .. note:: All public variables will be put into ordered dictionary.
 
         :param name: The name of the StyleRule
+        :param value: The property value
         :param parent:  The parent StyleRule
 
         """
@@ -98,7 +99,7 @@ class StyleRule(
         self._parent = parent
         self._attributes = self.get_attributes()
         self._attr_options = self.get_attr_options()
-        self._prop_value = None
+        self._value = value
         self._rules = collections.OrderedDict()
 
     @staticmethod
@@ -129,18 +130,18 @@ class StyleRule(
             return value.replace(";", "")
         return value
 
-    def find_or_create_value(self, name):
-        """Find or create a value from a string key.
+    def find_or_create_rule(self, name):
+        """Find or create a rule from a string key.
 
-        If the key value already exists, return the value.
+        If the key rule already exists, return the rule.
         If there is a comma in requested key, return a StyleRuleList object.
-        Otherwise create rules from the style names in the key and return
+        Otherwise create rules from the style rule names in the key and return
         the top level rule or property.
 
         :param name: The dictionary key
 
         """
-        value = self.find_value(name)
+        value = self.find_rule(name)
         if value is not None:
             return value
         if "," in name:
@@ -148,8 +149,8 @@ class StyleRule(
             return rule_list
         return self.create_rules(name)
 
-    def find_value(self, key):
-        """Find value from key.
+    def find_rule(self, key):
+        """Find rule from key.
 
         Return the sanitized key's hash value in the ordered dict.
 
@@ -164,7 +165,7 @@ class StyleRule(
 
         """
         rule_list = StyleRuleList(name=name, parent=self)
-        self.set_value(name, rule_list)
+        self.set_rule(name, rule_list)
         return rule_list
 
     def create_rules(self, selector):
@@ -182,11 +183,11 @@ class StyleRule(
         """
         curr_name = self.split_selector(selector)[0]
         remaining = selector.split(curr_name, 1)[-1].replace("-", "_")
-        rule = self.find_value(curr_name)
+        rule = self.find_rule(curr_name)
         if rule is None:
             rule = self.create_rule(curr_name)
         if remaining and remaining != curr_name:
-            return rule.find_or_create_value(remaining)
+            return rule.find_or_create_rule(remaining)
         return rule
 
     def create_rule(self, name):
@@ -200,15 +201,16 @@ class StyleRule(
         """
         class_ = rule_class(name)
         rule = class_(name=name, parent=self)
-        self.set_value(name, rule)
+        self.set_rule(name, rule)
         return rule
 
-    def set_value(self, key, value, **kwargs):
-        """Set item to ordered dictionary."""
+    def set_rule(self, key, value, **kwargs):
+        """Set rule to ordered dictionary."""
         key = self._sanitize_key(key)
-        value = self._sanitize_value(value)
-        if isinstance(value, StyleRule):
-            self._add_rule(value)
+        if not isinstance(value, StyleRule):
+            value = self._sanitize_value(value)
+            value = PropRule(name=key, value=value, parent=self)
+        self._add_rule(value)
         return super(StyleRule, self).__setitem__(key, value, **kwargs)
 
     def _add_rule(self, rule):
@@ -217,11 +219,10 @@ class StyleRule(
         :param rule: A StyleRule object.
 
         """
-        if isinstance(rule, StyleRule):
-            if rule.selector not in self._rules:
-                self._rules[rule.selector] = rule
-            if self._parent is not None:
-                self._parent._add_rule(rule)
+        if rule.selector not in self._rules:
+            self._rules[rule.selector] = rule
+        if self._parent is not None:
+            self._parent._add_rule(rule)
 
     @property
     def selector(self):
@@ -276,10 +277,13 @@ class StyleRule(
     def is_leaf(self):
         """Determine if StyleRule is a leaf.
 
-        StyleRule is a leaf its _rules dictionary is empty.
+        StyleRule is a leaf its rules dictionary contains only PropRules.
 
         """
-        return not self._rules
+        for rule in self._rules.values():
+            if not isinstance(rule, PropRule):
+                return False
+        return True
 
     def is_top_level(self):
         """Determine if StyleRule is top level.
@@ -313,11 +317,9 @@ class StyleRule(
         properties = ""
         sheet = ""
         selector = self.selector
-        for key, value in self.items():
-            if not isinstance(value, StyleRule):
-                properties += prop_template.format(key, value)
-            elif value.prop_value is not None:
-                properties += prop_template.format(key, value.prop_value)
+        for key, rule in self.items():
+            if rule.value is not None:
+                properties += prop_template.format(key, rule.value)
         if properties:
             sheet = rule_template.format(**locals())
         return sheet
@@ -331,12 +333,11 @@ class StyleRule(
         return self._to_string(*args, **kwargs)
 
     @property
-    def prop_value(self):
-        return self._prop_value
+    def value(self):
+        return self._value
 
-    @prop_value.setter
-    def prop_value(self, value):
-        self._prop_value = self._sanitize_value(value)
+    def set_value(self, value):
+        self._value = self._sanitize_value(value)
 
     def __getitem__(self, key):
         """Override the retrieving of a value from dictionary.
@@ -346,7 +347,7 @@ class StyleRule(
         :param key: The dictionary key
 
         """
-        return self.find_or_create_value(key)
+        return self.find_or_create_rule(key)
 
     def __getattr__(self, name):
         """Override the retrieving of an attribute.
@@ -359,7 +360,7 @@ class StyleRule(
         """
         if name.startswith("_"):
             return self.__getattribute__(name)
-        return self.find_or_create_value(name)
+        return self.find_or_create_rule(name)
 
     def __delattr__(self, name):
         """Override the deletion of an attribute.
@@ -388,7 +389,7 @@ class StyleRule(
             return super(StyleRule, self).__setattr__(name, val)
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
-        return self.set_value(name, val)
+        return self.set_rule(name, val)
 
     def __setitem__(self, key, value, **kwargs):
         """Override the setting of an attribute in ordered dict.
@@ -409,7 +410,7 @@ class StyleRule(
                 return self._attributes[key].__set__(self, value)
             except KeyError:
                 pass
-        return self.set_value(key, value, **kwargs)
+        return self.set_rule(key, value, **kwargs)
 
     def __deepcopy__(self, memo):
         """Override deepcopy.
@@ -429,7 +430,7 @@ class StyleRule(
         for k, v in self.items():
             if isinstance(v, StyleRule):
                 v._parent = result
-            result.set_value(k, copy.deepcopy(v, memo))
+            result.set_rule(k, copy.deepcopy(v, memo))
         result._parent = self._parent
         return result
 
@@ -484,8 +485,8 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
         for key, value in self.items():
             if not isinstance(value, StyleRule):
                 properties += prop_template.format(key, value)
-            elif value.prop_value is not None:
-                properties += prop_template.format(key, value.prop_value)
+            elif value.value is not None:
+                properties += prop_template.format(key, value.value)
         if properties:
             sheet = rule_template.format(**locals())
         return sheet
@@ -569,7 +570,7 @@ class StyleRuleList(StyleRule):
         """Strip the key of newlines only."""
         return str(key).replace("\n", "")
 
-    def _find_or_create_values_in_parent(self, name, val):
+    def _find_or_create_rules_in_parent(self, name, val):
         """Find or create value in parent StyleRule
 
         Will loop through all components in name separated by a comma and set the
@@ -581,7 +582,7 @@ class StyleRuleList(StyleRule):
         """
         rule_names = self.name.split(",")
         for rule_name in rule_names:
-            self._parent.find_or_create_value(rule_name).__setattr__(name, val)
+            self._parent.find_or_create_rule(rule_name).__setattr__(name, val)
         return None
 
     @property
@@ -597,7 +598,7 @@ class StyleRuleList(StyleRule):
         """
         if name.startswith("_"):
             return super(StyleRule, self).__setattr__(name, val)
-        return self._find_or_create_values_in_parent(name, val)
+        return self._find_or_create_rules_in_parent(name, val)
 
     def __setitem__(self, key, value, **kwargs):
         """Override the setting of a value in ordered dict.
@@ -606,7 +607,7 @@ class StyleRuleList(StyleRule):
         :param value: The value to map to hash key
 
         """
-        return self._find_or_create_values_in_parent(key, value)
+        return self._find_or_create_rules_in_parent(key, value)
 
     @property
     def name(self):
@@ -656,6 +657,14 @@ class PseudoPropRule(PseudoStateRule):
         QWidget::tab:top {
             color: green;
         }
+
+    """
+
+
+class PropRule(StyleRule):
+    """The PropRule definition.
+
+    Example prop rule name: "background-color".
 
     """
 

@@ -10,18 +10,18 @@ def test_style(css):
 
 
 def test_style_recursive(css):
-    css.value = 2
-    assert css.value == 2
-    assert css["value"] == 2
-    css["value"] = 3
-    assert css["value"] == 3
-    assert css.value == 3
+    css.test = 2
+    assert css.test.value == 2
+    assert css["test"].value == 2
+    css["test"] = 3
+    assert css["test"].value == 3
+    assert css.test.value == 3
     css.QWidget.color = "green"
-    assert css.QWidget.color == "green"
-    assert css["QWidget"]["color"] == "green"
+    assert css.QWidget.color.value == "green"
+    assert css["QWidget"]["color"].value == "green"
     css["QWidget"]["color"] = "blue"
-    assert css["QWidget"]["color"] == "blue"
-    assert css.QWidget.color == "blue"
+    assert css["QWidget"]["color"].value == "blue"
+    assert css.QWidget.color.value == "blue"
 
 
 def test_delete_style(css):
@@ -161,7 +161,7 @@ def test_pseudostate_options():
 
 def test_prop_semicolon(css):
     css.QComboBox.color = "red;"
-    assert css.QComboBox.color == "red"
+    assert css.QComboBox.color.value == "red"
 
 
 # def test_deepcopy(css):
@@ -305,6 +305,6 @@ def test_pseudoprop_set(css):
 
 def test_add_rule(css):
     css.QCheckBox.indicator.backgroundColor = "red"
-    assert len(css._rules) == 2
+    assert len(css._rules) == 3
     assert css.QCheckBox in css._rules.values()
     assert css.QCheckBox.indicator in css._rules.values()

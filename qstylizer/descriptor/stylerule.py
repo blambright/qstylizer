@@ -26,19 +26,19 @@ class StyleRuleDescriptor(object):
 
         """
         assert isinstance(instance, qstylizer.style.StyleRule)
-        if instance.find_value(self.name) is None:
+        if instance.find_rule(self.name) is None:
             new_style = self.rule_cls(
                 name=self.name,
                 parent=instance,
             )
-            instance.set_value(self.name, new_style)
-        return instance.find_value(self.name)
+            instance.set_rule(self.name, new_style)
+        return instance.find_rule(self.name)
 
     def __set__(self, instance, value):
         """Set the value in the StyleRule's ordered dict.
 
         If the value is a StyleRule, simply add it to the ordered dict.
-        Otherwise create a new StyleRule instance, set its prop_value
+        Otherwise create a new StyleRule instance, set its value
         attribute to the value, and add it to the ordered dict.
 
         :param instance: The StyleRule instance
@@ -48,14 +48,14 @@ class StyleRuleDescriptor(object):
         if isinstance(value, self.rule_cls):
             value = copy.deepcopy(value)
             value._parent = instance
-            instance.set_value(self.name, value)
+            instance.set_rule(self.name, value)
         else:
             new_style = self.rule_cls(
                 name=self.name,
                 parent=instance,
             )
-            new_style._prop_value = value
-            instance.set_value(self.name, new_style)
+            new_style.set_value(value)
+            instance.set_rule(self.name, new_style)
 
     @property
     def rule_cls(self):

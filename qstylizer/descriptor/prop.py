@@ -2,6 +2,7 @@
 
 import copy
 
+import qstylizer.style
 import qstylizer.descriptor.stylerule
 
 
@@ -96,27 +97,9 @@ PROPERTY_VALUES = {
 class PropDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
     """Property descriptor."""
 
-    def __get__(self, instance, *args, **kwargs):
-        """Return the value from the StyleRule's ordered dict.
-
-        :param instance: The StyleRule instance
-
-        """
-        import qstylizer.style
-        assert isinstance(instance, qstylizer.style.StyleRule)
-        return instance.find_value(self.name)
-
-    def __set__(self, instance, value):
-        """Set the value in the StyleRule's ordered dict.
-
-        Simply add the value to the ordered dict.
-
-        :param instance: The StyleRule instance
-        :param value: The value to set in StyleRule instance
-
-        """
-        value = copy.deepcopy(value)
-        instance.set_value(self.name, value)
+    @property
+    def rule_cls(self):
+        return qstylizer.style.PropRule
 
 
 class PropParent(qstylizer.descriptor.stylerule.StyleRuleParent):
