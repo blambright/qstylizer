@@ -100,7 +100,7 @@ class StyleRule(
         self._attributes = self.get_attributes()
         self._attr_options = self.get_attr_options()
         self._value = value
-        self._rules = collections.OrderedDict()
+        self._child_rules = collections.OrderedDict()
 
     @staticmethod
     def _sanitize_key(key):
@@ -130,8 +130,8 @@ class StyleRule(
             return value.replace(";", "")
         return value
 
-    def find_or_create_rule(self, name):
-        """Find or create a rule from a string key.
+    def find_or_create_child_rule(self, name):
+        """Find or create a child rule from a string key.
 
         If the key rule already exists, return the rule.
         If there is a comma in requested key, return a StyleRuleList object.
@@ -141,15 +141,15 @@ class StyleRule(
         :param name: The dictionary key
 
         """
-        value = self.find_rule(name)
+        value = self.find_child_rule(name)
         if value is not None:
             return value
         if "," in name:
-            rule_list = self.create_rule_list(name)
+            rule_list = self.create_child_rule_list(name)
             return rule_list
-        return self.create_rules(name)
+        return self.create_child_rules(name)
 
-    def find_rule(self, key):
+    def find_child_rule(self, key):
         """Find rule from key.
 
         Return the sanitized key's hash value in the ordered dict.
@@ -158,18 +158,18 @@ class StyleRule(
         key = self._sanitize_key(key)
         return self.get(key)
 
-    def create_rule_list(self, name):
+    def create_child_rule_list(self, name):
         """Create a StyleRuleList object and add it to ordered dict.
 
         :param name: String name
 
         """
         rule_list = StyleRuleList(name=name, parent=self)
-        self.set_rule(name, rule_list)
+        self.set_child_rule(name, rule_list)
         return rule_list
 
-    def create_rules(self, selector):
-        """Create rules from selector.
+    def create_child_rules(self, selector):
+        """Create child rules from selector string.
 
         Split the selector into individual components based on the _split_regex
         and recursively build the StyleRule hierarchy looping through
@@ -183,15 +183,15 @@ class StyleRule(
         """
         curr_name = self.split_selector(selector)[0]
         remaining = selector.split(curr_name, 1)[-1].replace("-", "_")
-        rule = self.find_rule(curr_name)
+        rule = self.find_child_rule(curr_name)
         if rule is None:
-            rule = self.create_rule(curr_name)
+            rule = self.create_child_rule(curr_name)
         if remaining and remaining != curr_name:
-            return rule.find_or_create_rule(remaining)
+            return rule.find_or_create_child_rule(remaining)
         return rule
 
-    def create_rule(self, name):
-        """Create rule from name.
+    def create_child_rule(self, name):
+        """Create child rule from name.
 
         Determine subclass from name, create an instance of the subclass,
         then add it to ordered dict.
@@ -201,28 +201,28 @@ class StyleRule(
         """
         class_ = rule_class(name)
         rule = class_(name=name, parent=self)
-        self.set_rule(name, rule)
+        self.set_child_rule(name, rule)
         return rule
 
-    def set_rule(self, key, value, **kwargs):
+    def set_child_rule(self, key, value, **kwargs):
         """Set rule to ordered dictionary."""
         key = self._sanitize_key(key)
         if not isinstance(value, StyleRule):
             value = self._sanitize_value(value)
             value = PropRule(name=key, value=value, parent=self)
-        self._add_rule(value)
+        self._add_child_rule(value)
         return super(StyleRule, self).__setitem__(key, value, **kwargs)
 
-    def _add_rule(self, rule):
-        """Add a rule to the _rules dictionary.
+    def _add_child_rule(self, rule):
+        """Add a rule to the _child_rules dictionary.
 
         :param rule: A StyleRule object.
 
         """
-        if rule.selector not in self._rules:
-            self._rules[rule.selector] = rule
+        if rule.selector not in self._child_rules:
+            self._child_rules[rule.selector] = rule
         if self._parent is not None:
-            self._parent._add_rule(rule)
+            self._parent._add_child_rule(rule)
 
     @property
     def selector(self):
@@ -277,10 +277,10 @@ class StyleRule(
     def is_leaf(self):
         """Determine if StyleRule is a leaf.
 
-        StyleRule is a leaf its rules dictionary contains only PropRules.
+        StyleRule is a leaf its child rules dictionary contains only PropRules.
 
         """
-        for rule in self._rules.values():
+        for rule in self._child_rules.values():
             if not isinstance(rule, PropRule):
                 return False
         return True
@@ -294,13 +294,13 @@ class StyleRule(
         return isinstance(self._parent, StyleSheet)
 
     def _to_string_recursive(self):
-        """Convert all rules into a single stirng in css format.
+        """Convert all child rules into a single stirng in css format.
 
         Loop through all of the rules and generate a stylesheet string.
 
         """
         stylesheet = self.toString(recursive=False)
-        for rule in self._rules.values():
+        for rule in self._child_rules.values():
             stylesheet += rule.toString(recursive=False)
         return stylesheet
 
@@ -347,7 +347,7 @@ class StyleRule(
         :param key: The dictionary key
 
         """
-        return self.find_or_create_rule(key)
+        return self.find_or_create_child_rule(key)
 
     def __getattr__(self, name):
         """Override the retrieving of an attribute.
@@ -360,7 +360,7 @@ class StyleRule(
         """
         if name.startswith("_"):
             return self.__getattribute__(name)
-        return self.find_or_create_rule(name)
+        return self.find_or_create_child_rule(name)
 
     def __delattr__(self, name):
         """Override the deletion of an attribute.
@@ -389,7 +389,7 @@ class StyleRule(
             return super(StyleRule, self).__setattr__(name, val)
         elif name in self._attributes:
             return self._attributes[name].__set__(self, val)
-        return self.set_rule(name, val)
+        return self.set_child_rule(name, val)
 
     def __setitem__(self, key, value, **kwargs):
         """Override the setting of an attribute in ordered dict.
@@ -410,7 +410,7 @@ class StyleRule(
                 return self._attributes[key].__set__(self, value)
             except KeyError:
                 pass
-        return self.set_rule(key, value, **kwargs)
+        return self.set_child_rule(key, value, **kwargs)
 
     def __deepcopy__(self, memo):
         """Override deepcopy.
@@ -422,7 +422,7 @@ class StyleRule(
         cls = self.__class__
         result = cls.__new__(cls)
         result._parent = None
-        result._rules = collections.OrderedDict()
+        result._child_rules = collections.OrderedDict()
         memo[id(self)] = result
         for k, v in self.__dict__.items():
             setattr(result, k, copy.deepcopy(v, memo))
@@ -430,7 +430,7 @@ class StyleRule(
         for k, v in self.items():
             if isinstance(v, StyleRule):
                 v._parent = result
-            result.set_rule(k, copy.deepcopy(v, memo))
+            result.set_child_rule(k, copy.deepcopy(v, memo))
         result._parent = self._parent
         return result
 
@@ -570,7 +570,7 @@ class StyleRuleList(StyleRule):
         """Strip the key of newlines only."""
         return str(key).replace("\n", "")
 
-    def _find_or_create_rules_in_parent(self, name, val):
+    def _find_or_create_child_rules_in_parent(self, name, val):
         """Find or create value in parent StyleRule
 
         Will loop through all components in name separated by a comma and set the
@@ -582,7 +582,7 @@ class StyleRuleList(StyleRule):
         """
         rule_names = self.name.split(",")
         for rule_name in rule_names:
-            self._parent.find_or_create_rule(rule_name).__setattr__(name, val)
+            self._parent.find_or_create_child_rule(rule_name).__setattr__(name, val)
         return None
 
     @property
@@ -598,7 +598,7 @@ class StyleRuleList(StyleRule):
         """
         if name.startswith("_"):
             return super(StyleRule, self).__setattr__(name, val)
-        return self._find_or_create_rules_in_parent(name, val)
+        return self._find_or_create_child_rules_in_parent(name, val)
 
     def __setitem__(self, key, value, **kwargs):
         """Override the setting of a value in ordered dict.
@@ -607,7 +607,7 @@ class StyleRuleList(StyleRule):
         :param value: The value to map to hash key
 
         """
-        return self._find_or_create_rules_in_parent(key, value)
+        return self._find_or_create_child_rules_in_parent(key, value)
 
     @property
     def name(self):

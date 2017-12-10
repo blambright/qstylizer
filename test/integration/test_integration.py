@@ -303,8 +303,8 @@ def test_pseudoprop_set(css):
     )[1:]
 
 
-def test_add_rule(css):
+def test_add_child_rule(css):
     css.QCheckBox.indicator.backgroundColor = "red"
-    assert len(css._rules) == 3
-    assert css.QCheckBox in css._rules.values()
-    assert css.QCheckBox.indicator in css._rules.values()
+    assert len(css._child_rules) == 3
+    assert css.QCheckBox in css._child_rules.values()
+    assert css.QCheckBox.indicator in css._child_rules.values()
