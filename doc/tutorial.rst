@@ -59,17 +59,9 @@ Any name can be used as an attribute.
 Not Operator (!)
 ++++++++++++++++
 
-There are two ways to handle the *!* operator.
-
 .. code-block:: python
 
     css.QTabBar["!focus"].background = "none"
-
- or
-
-.. code-block:: python
-
-    css.QTabBar.notFocus.background = "none"
 
 
 Parser

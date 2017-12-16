@@ -349,19 +349,6 @@ class StyleRule(
         """
         return self.find_or_create_child_rule(key)
 
-    def __getattr__(self, name):
-        """Override the retrieving of an attribute.
-
-        If attribute starts with an underscore, return the attribute from
-        the object's __dict__ otherwise retrieve or create it in the ordered dict.
-
-        :param name: String name of attribute to retrieve
-
-        """
-        if name.startswith("_"):
-            return self.__getattribute__(name)
-        return self.find_or_create_child_rule(name)
-
     def __delattr__(self, name):
         """Override the deletion of an attribute.
 
@@ -672,8 +659,8 @@ def rule_class(name):
     :param name: name of type string
 
     """
-    if name.startswith("not") or "!" in name:
-        name = name.split("not", 1)[-1].replace("!", "")
+    if "!" in name:
+        name = name.replace("!", "")
         name = name[0].lower() + name[1:]
     class_ = StyleRule
     if name.startswith("::") or name in QSUBCONTROLS:

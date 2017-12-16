@@ -10,12 +10,8 @@ def test_style(css):
 
 
 def test_style_recursive(css):
-    css.test = 2
-    assert css.test.value == 2
-    assert css["test"].value == 2
     css["test"] = 3
     assert css["test"].value == 3
-    assert css.test.value == 3
     css.QWidget.color = "green"
     assert css.QWidget.color.value == "green"
     assert css["QWidget"]["color"].value == "green"
@@ -49,10 +45,10 @@ def test_selector(css):
     assert css.QCheckBox.indicator.selector == "QCheckBox::indicator"
     assert css.QCheckBox.indicator.unchecked.selector == "QCheckBox::indicator:unchecked"
     assert css.QCheckBox.indicator.unchecked.hover.selector == "QCheckBox::indicator:unchecked:hover"
-    assert css.Object.subcontrol.pseudostate.selector == "Object::subcontrol:pseudostate"
+    assert css["Object"]["subcontrol"]["pseudostate"].selector == "Object::subcontrol:pseudostate"
     assert css["Object::subcontrol:pseudostate"].selector == "Object::subcontrol:pseudostate"
     assert css.QLineEdit['[echoMode="2"]'].selector == "QLineEdit[echoMode=\"2\"]"
-    assert css.Object["::subcontrol"][":pseudostate"].selector == "Object::subcontrol:pseudostate"
+    assert css["Object"]["::subcontrol"][":pseudostate"].selector == "Object::subcontrol:pseudostate"
     assert css["QWidget#objectName"].selector == "QWidget#objectName"
 
 
@@ -245,19 +241,6 @@ def test_not_operator(css):
     import qstylizer.style
     css.QWidget.indicator["!selected"].color = "green"
     assert type(css.QWidget.indicator["!selected"]) == qstylizer.style.PseudoStateRule
-    assert css.toString() == textwrap.dedent(
-        """
-        QWidget::indicator:!selected {
-            color: green;
-        }
-        """
-    )[1:]
-
-
-def test_getattr_not(css):
-    import qstylizer.style
-    css.QWidget.indicator.notSelected.color = "green"
-    assert type(css.QWidget.indicator.notSelected) == qstylizer.style.PseudoStateRule
     assert css.toString() == textwrap.dedent(
         """
         QWidget::indicator:!selected {
