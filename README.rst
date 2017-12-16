@@ -38,19 +38,19 @@ PyQt/PySide stylesheets.
 The stylesheet generated above looks like this when passed to setStyleSheet()::
 
     * {
-        background-color: green;
         color: #F0F0F0;
         margin-left: 2px;
+        background-color: green;
     }
     QToolButton {
-        border: 1px transparent lightblue;
         border-radius: 3px;
-        margin: 1px;
         padding: 3px;
+        border: 1px transparent lightblue;
+        margin: 1px;
     }
     QToolButton::menu-button:pressed {
-        border: 1px solid #333333;
         padding: 5px;
+        border: 1px solid #333333;
         background-color: #333333;
     }
     QCheckBox:disabled {
