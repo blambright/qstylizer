@@ -57,5 +57,38 @@ The stylesheet generated above looks like this when passed to setStyleSheet()::
         background-color: #797979;
     }
 
-More information to come...
+The true power comes from parsing an existing stylesheet and tweaking individual
+property values.
+
+.. code-block:: python
+
+    import qstylizer.parser
+
+    css = qstylizer.parser.parse(
+        """
+        QToolButton::menu-button:pressed {
+            padding: 5px;
+            border: 1px solid #333333;
+            background-color: #333333;
+        }
+        QCheckBox:disabled {
+            background-color: #797979;
+        }
+        """
+    )
+    css.QToolButton.menuButton.pressed.padding.setValue("10px")
+    css.QCheckBox.disabled.backgroundColor.setValue("#222222")
+
+    print(css.toString())
+
+Output::
+
+    QToolButton::menu-button:pressed {
+        padding: 10px;
+        border: 1px solid #333333;
+        background-color: #333333;
+    }
+    QCheckBox:disabled {
+        background-color: #222222;
+    }
 
