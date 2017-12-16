@@ -15,8 +15,8 @@ To create a style rule, simply assign an attribute in the instance.
 
 .. code-block:: python
 
-    >>> css.color = "green"
-    >>> css.border = "1px solid red"
+    >>> css.color.setValue("green")
+    >>> css.border.setValue("1px solid red")
     >>> print(css.toString())
     color: green;
     border: 1px solid red;
@@ -28,13 +28,13 @@ Adding a sub-style rule will result in a different syntax for the global variabl
 
 .. code-block:: python
 
-    >>> css.color = "green"
-    >>> css.border = "1px solid red"
+    >>> css.color.setValue("green")
+    >>> css.border.setValue("1px solid red")
     >>> print(css.toString())
     color: green;
     border: 1px solid red;
 
-    >>> css.QWidget.backgroundColor = "blue"
+    >>> css.QWidget.backgroundColor.setValue("blue")
     >>> print(css.toString())
     * {
         color: green;
@@ -44,16 +44,16 @@ Adding a sub-style rule will result in a different syntax for the global variabl
         background-color: blue;
     }
 
-Any name can be used as an attribute.
+Any name can be used as an attribute using brackets.
 
 
 .. code-block:: python
 
     >>> css = qstylizer.style.StyleSheet()
-    >>> css.QUnknownClass.someUnknownProp = "none"
+    >>> css["QUnknownClass"]["::unknown-subcontrol"]["unknown-prop"].setValue("none")
     >>> print(css.toString())
-    QUnknownClass {
-        some-unknown-prop: none;
+    QUnknownClass::unknown-subcontrol {
+        unknown-prop: none;
     }
 
 Not Operator (!)
@@ -61,7 +61,7 @@ Not Operator (!)
 
 .. code-block:: python
 
-    css.QTabBar["!focus"].background = "none"
+    css.QTabBar["!focus"].background.setValue("none")
 
 
 Parser

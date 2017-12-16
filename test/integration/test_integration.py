@@ -10,22 +10,22 @@ def test_style(css):
 
 
 def test_style_recursive(css):
-    css["test"] = 3
+    css["test"].setValue(3)
     assert css["test"].value == 3
-    css.QWidget.color = "green"
+    css.QWidget.color.setValue("green")
     assert css.QWidget.color.value == "green"
     assert css["QWidget"]["color"].value == "green"
-    css["QWidget"]["color"] = "blue"
+    css["QWidget"]["color"].setValue("blue")
     assert css["QWidget"]["color"].value == "blue"
     assert css.QWidget.color.value == "blue"
 
 
 def test_delete_style(css):
-    css.QWidget.color = "blue"
+    css.QWidget.color.setValue("blue")
     assert "color" in css.QWidget.keys()
     del css.QWidget.color
     assert "color" not in css.QWidget.keys()
-    css.QWidget["color"] = "blue"
+    css.QWidget["color"].setValue("blue")
     assert "color" in css.QWidget.keys()
     del css.QWidget["color"]
     assert "color" not in css.QWidget.keys()
@@ -91,24 +91,24 @@ def test_style_list(css):
 
 
 def test_style_style(css):
-    css.QCheckBox.indicator.unchecked.hover.border = "none"
-    css.QCheckBox.indicator.unchecked.hover.color = "green"
+    css.QCheckBox.indicator.unchecked.hover.border.setValue("none")
+    css.QCheckBox.indicator.unchecked.hover.color.setValue("green")
     assert css.QCheckBox.indicator.unchecked.hover.toString() == \
            "QCheckBox::indicator:unchecked:hover {\n    border: none;\n    color: green;\n}\n"
 
 
 def test_to_string_recursive(css):
-    css.border = "none"
-    css.QFrame.border = "1px solid green"
-    css.QFrame.color = "green"
-    css.QCheckBox.border = "1px solid green"
-    css.QCheckBox.color = "green"
-    css.QCheckBox.indicator.backgroundColor = "red"
-    css.QCheckBox.indicator.unchecked.border = "none"
-    css.QCheckBox.indicator.unchecked.backgroundColor = "rgb(0,20,0)"
-    css.QCheckBox.indicator.unchecked.hover.backgroundColor = "purple"
-    css.QLineEdit['[echoMode="2"]'].lineeditPasswordCharacter = 9679
-    css["QCheckBox::indicator:unchecked"].margin = 0
+    css.border.setValue("none")
+    css.QFrame.border.setValue("1px solid green")
+    css.QFrame.color.setValue("green")
+    css.QCheckBox.border.setValue("1px solid green")
+    css.QCheckBox.color.setValue("green")
+    css.QCheckBox.indicator.backgroundColor.setValue("red")
+    css.QCheckBox.indicator.unchecked.border.setValue("none")
+    css.QCheckBox.indicator.unchecked.backgroundColor.setValue("rgb(0,20,0)")
+    css.QCheckBox.indicator.unchecked.hover.backgroundColor.setValue("purple")
+    css.QLineEdit['[echoMode="2"]']["lineedit-password-character"].setValue(9679)
+    css["QCheckBox::indicator:unchecked"].margin.setValue(0)
     assert css.toString() == textwrap.dedent(
         """
         * {
@@ -141,7 +141,7 @@ def test_to_string_recursive(css):
 
 
 def test_empty_style(css):
-    css.QCheckBox.indicator.border = "none"
+    css.QCheckBox.indicator.border.setValue("none")
     assert css.QCheckBox.toString() == ""
 
 
@@ -156,17 +156,17 @@ def test_pseudostate_options():
 
 
 def test_prop_semicolon(css):
-    css.QComboBox.color = "red;"
+    css.QComboBox.color.setValue("red;")
     assert css.QComboBox.color.value == "red"
 
 
 # def test_deepcopy(css):
 #     import copy
-#     css.QCheckBox.indicator.hover.border = "none"
-#     css.QCheckBox.indicator.backgroundColor = "red"
-#     indicator = copy.deepcopy(css.QCheckBox.indicator)
-#     indicator.color = "yellow"
-#     indicator.hover.border = "1px solid green"
+#     css.QCheckBox.indicator.hover.border.setValue("none"
+#     css.QCheckBox.indicator.backgroundColor.setValue("red"
+#     indicator.setValue(copy.deepcopy(css.QCheckBox.indicator)
+#     indicator.color.setValue("yellow"
+#     indicator.hover.border.setValue("1px solid green"
 #     assert indicator is not css.QCheckBox.indicator
 #     assert "color" in indicator.keys()
 #     assert "color" not in css.QCheckBox.indicator.keys()
@@ -176,14 +176,14 @@ def test_prop_semicolon(css):
 #
 # def test_assign_subcontrol(css):
 #     import qstylizer.style
-#     subcontrol = qstylizer.style.SubControlRule("indicator")
-#     subcontrol.backgroundColor = "red"
-#     subcontrol.unchecked.border = "none"
-#     subcontrol.unchecked.backgroundColor = "rgb(0,20,0)"
-#     subcontrol.unchecked.hover.backgroundColor = "purple"
+#     subcontrol.setValue(qstylizer.style.SubControlRule("indicator")
+#     subcontrol.backgroundColor.setValue("red"
+#     subcontrol.unchecked.border.setValue("none"
+#     subcontrol.unchecked.backgroundColor.setValue("rgb(0,20,0)"
+#     subcontrol.unchecked.hover.backgroundColor.setValue("purple"
 #
-#     css.QComboBox.indicator = subcontrol
-#     css.QCheckBox.indicator = subcontrol
+#     css.QComboBox.indicator.setValue(subcontrol
+#     css.QCheckBox.indicator.setValue(subcontrol
 #
 #     assert css.QCheckBox.indicator is not css.QComboBox.indicator
 #     assert css.QCheckBox.indicator.selector == "QCheckBox::indicator"
@@ -191,9 +191,9 @@ def test_prop_semicolon(css):
 
 
 def test_child_class_style(css):
-    css.QWidget.color = "red"
-    css["QWidget QFrame"].backgroundColor = "green"
-    css.QFrame.color = "black"
+    css.QWidget.color.setValue("red")
+    css["QWidget QFrame"].backgroundColor.setValue("green")
+    css.QFrame.color.setValue("black")
     assert css.toString() == textwrap.dedent(
         """
         QWidget {
@@ -210,8 +210,8 @@ def test_child_class_style(css):
 
 
 def test_unscoped_style(css):
-    css.backgroundColor = "red"
-    css.border = "none"
+    css.backgroundColor.setValue("red")
+    css.border.setValue("none")
     assert css.toString() == textwrap.dedent(
         """
         background-color: red;
@@ -221,9 +221,9 @@ def test_unscoped_style(css):
 
 
 def test_global_style(css):
-    css.backgroundCcolor = "red"
-    css.border = "none"
-    css.QWidget.indicator.border = "1px solid green"
+    css.backgroundColor.setValue("red")
+    css.border.setValue("none")
+    css.QWidget.indicator.border.setValue("1px solid green")
     print css.toString() == textwrap.dedent(
         """
         * {
@@ -239,7 +239,7 @@ def test_global_style(css):
 
 def test_not_operator(css):
     import qstylizer.style
-    css.QWidget.indicator["!selected"].color = "green"
+    css.QWidget.indicator["!selected"].color.setValue("green")
     assert type(css.QWidget.indicator["!selected"]) == qstylizer.style.PseudoStateRule
     assert css.toString() == textwrap.dedent(
         """
@@ -251,11 +251,11 @@ def test_not_operator(css):
 
 
 def test_pseudostate_prop_same_name(css):
-    css.QWidget.top = 0
-    css.QWidget.right = 0
-    css.QWidget.bottom = 0
-    css.QWidget.left = 0
-    css.QTabBar.tab.top.color = "red"
+    css.QWidget.top.setValue(0)
+    css.QWidget.right.setValue(0)
+    css.QWidget.bottom.setValue(0)
+    css.QWidget.left.setValue(0)
+    css.QTabBar.tab.top.color.setValue("red")
     assert css.toString() == textwrap.dedent(
         """
         QWidget {
@@ -272,8 +272,8 @@ def test_pseudostate_prop_same_name(css):
 
 
 def test_pseudoprop_set(css):
-    css.QWidget.tab.top = "0"
-    css.QWidget.tab.top.color = "green"
+    css.QWidget.tab.top.setValue("0")
+    css.QWidget.tab.top.color.setValue("green")
     assert css.toString() == textwrap.dedent(
         """
         QWidget::tab {
@@ -287,7 +287,17 @@ def test_pseudoprop_set(css):
 
 
 def test_add_child_rule(css):
-    css.QCheckBox.indicator.backgroundColor = "red"
+    css.QCheckBox.indicator.backgroundColor.setValue("red")
     assert len(css._child_rules) == 3
     assert css.QCheckBox in css._child_rules.values()
     assert css.QCheckBox.indicator in css._child_rules.values()
+
+
+def test_set_values(css):
+    css.QToolButton.setValues(
+        border="1px transparent lightblue",
+        borderRadius="3px",
+        margin="1px",
+        padding="3px",
+    )
+    assert css.QToolButton.border.value == "1px transparent lightblue"

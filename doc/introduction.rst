@@ -32,11 +32,15 @@ The *qstylizer* way:
     import qstylizer.style
 
     css = qstylizer.style.StyleSheet()
-    css.QTabBar.borderRadius = "3px"
-    css.QTabBar.backgroundColor = "green"
-    css.QTabBar.focus.border = "0px transparent black"
-    css.QTabBar.focus.backgroundColor = "red"
-    css.QTabBar.closeButton.background = "transparent"
+    css.QTabBar.setValues(
+        borderRadius="3px",
+        backgroundColor="green"
+    )
+    css.QTabBar.focus.setValues(
+        border="0px transparent black",
+        backgroundColor="red"
+    )
+    css.QTabBar.closeButton.background.setValue("transparent")
 
     widget = QtWidgets.QMainWindow()
     widget.setStyleSheet(css.toString())
@@ -68,14 +72,14 @@ Because a StyleRule is a dictionary, the following is also valid:
 
 .. code-block:: python
 
-    css["QTabBar"]["close-button"]["background"] = "transparent"
+    css["QTabBar"]["close-button"]["background"].setValue("transparent")
 
 If *qstylizer* incorrectly determines that close-button is a pseudostate instead
 of a subcontrol, the colons can be specified in the key:
 
 .. code-block:: python
 
-    css.QTabBar["::close-button"].background = "transparent"
+    css.QTabBar["::close-button"].background.setValue("transparent")
 
 How Does it Work?
 +++++++++++++++++

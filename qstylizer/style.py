@@ -332,12 +332,34 @@ class StyleRule(
         """
         return self._to_string(*args, **kwargs)
 
+    def _set_values(self, *args, **kwargs):
+        """Set property values in the style rule."""
+        for key, value in kwargs.items():
+            self.__getattribute__(key).setValue(value)
+
+    def setValues(self, *args, **kwargs):
+        """Set property values in the style rule.
+
+        Use camelcase for function name to match PyQt/PySide.
+
+        """
+        self._set_values(*args, **kwargs)
+
+    def _set_value(self, value):
+        """Set property value."""
+        self._value = self._sanitize_value(value)
+
+    def setValue(self, value):
+        """Set property value.
+
+        Use camelcase for function name to match PyQt/PySide.
+
+        """
+        self._set_value(value)
+
     @property
     def value(self):
         return self._value
-
-    def set_value(self, value):
-        self._value = self._sanitize_value(value)
 
     def __getitem__(self, key):
         """Override the retrieving of a value from dictionary.
@@ -554,7 +576,7 @@ class StyleRuleList(StyleRule):
         """Strip the key of newlines only."""
         return str(key).replace("\n", "")
 
-    def _find_or_create_child_rules_in_parent(self, name, val):
+    def _create_child_rules_in_parent(self, name, val):
         """Find or create value in parent StyleRule
 
         Will loop through all components in name separated by a comma and set the
@@ -566,7 +588,9 @@ class StyleRuleList(StyleRule):
         """
         rule_names = self.name.split(",")
         for rule_name in rule_names:
-            self._parent.find_or_create_child_rule(rule_name).__setattr__(name, val)
+            self._parent.find_or_create_child_rule(rule_name).__setattr__(
+                name, val
+            )
         return None
 
     @property

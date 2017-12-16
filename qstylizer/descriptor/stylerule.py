@@ -54,7 +54,7 @@ class StyleRuleDescriptor(object):
                 name=self.name,
                 parent=instance,
             )
-            new_style.set_value(value)
+            new_style.setValue(value)
             instance.set_child_rule(self.name, new_style)
 
     @property

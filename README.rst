@@ -12,16 +12,23 @@ PyQt/PySide stylesheets.
     import qstylizer.style
 
     css = qstylizer.style.StyleSheet()
-    css.backgroundColor = "green"
-    css.color = "#F0F0F0"
-    css.marginLeft = "2px"
-    css.QToolButton.border = "1px transparent lightblue"
-    css.QToolButton.borderRadius = "3px"
-    css.QToolButton.margin = "1px"
-    css.QToolButton.padding = "3px"
-    css.QToolButton.menuButton.pressed.border = "1px solid #333333"
-    css.QToolButton.menuButton.pressed.padding = "5px"
-    css.QToolButton.menuButton.pressed.backgroundColor = "#333333"
+    css.setValues(
+        backgroundColor="green",
+        color="#F0F0F0",
+        marginLeft="2px"
+    )
+    css.QToolButton.setValues(
+        border="1px transparent lightblue",
+        borderRadius="3px",
+        margin="1px",
+        padding="3px"
+    )
+    css.QToolButton.menuButton.pressed.setValues(
+        border="1px solid #333333",
+        padding="5px",
+        backgroundColor="#333333"
+    )
+    QCheckBox.disabled.backgroundColor.setValue("#797979")
 
     widget = QtWidgets.QWidget()
     widget.setStyleSheet(css.toString())
@@ -43,6 +50,9 @@ The stylesheet generated above looks like this when passed to setStyleSheet()::
         border: 1px solid #333333;
         padding: 5px;
         background-color: #333333;
+    }
+    QCheckBox:disabled {
+        background-color: #797979;
     }
 
 More information to come...
