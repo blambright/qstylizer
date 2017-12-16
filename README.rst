@@ -2,8 +2,6 @@
 qstylizer
 *********
 
-.. note:: *qstylizer* is currently a WIP and is not officially released yet.
-
 *qstylizer* is a python package designed to help with the construction of
 PyQt/PySide stylesheets.
 
