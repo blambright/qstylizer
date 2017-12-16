@@ -30,7 +30,7 @@ PyQt/PySide stylesheets.
         padding="5px",
         backgroundColor="#333333"
     )
-    QCheckBox.disabled.backgroundColor.setValue("#797979")
+    css.QCheckBox.disabled.backgroundColor.setValue("#797979")
 
     widget = PyQt5.QtWidgets.QWidget()
     widget.setStyleSheet(css.toString())
