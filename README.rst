@@ -2,6 +2,15 @@
 qstylizer
 *********
 
+------------
+Installation
+------------
+
+.. code-block:: bash
+
+    pip install qstylizer
+
+
 *qstylizer* is a python package designed to help with the construction of
 PyQt/PySide stylesheets.
 
