@@ -10,6 +10,9 @@ Installation
 
     pip install qstylizer
 
+------------
+Introduction
+------------
 
 *qstylizer* is a python package designed to help with the construction of
 PyQt/PySide stylesheets.
