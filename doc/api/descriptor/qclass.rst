@@ -1,7 +1,7 @@
 ===========================
-qstylizer.setter.pseudoprop
+qstylizer.descriptor.qclass
 ===========================
 
-.. automodule:: qstylizer.setter.pseudoprop
+.. automodule:: qstylizer.descriptor.qclass
     :members:
     :undoc-members:
