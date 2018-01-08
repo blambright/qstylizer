@@ -606,7 +606,7 @@ class StyleRuleList(StyleRule):
         """
         if name.startswith("_"):
             return super(StyleRule, self).__setattr__(name, val)
-        return self._find_or_create_child_rules_in_parent(name, val)
+        return self._create_child_rules_in_parent(name, val)
 
     def __setitem__(self, key, value, **kwargs):
         """Override the setting of a value in ordered dict.
@@ -615,7 +615,7 @@ class StyleRuleList(StyleRule):
         :param value: The value to map to hash key
 
         """
-        return self._find_or_create_child_rules_in_parent(key, value)
+        return self._create_child_rules_in_parent(key, value)
 
     @property
     def name(self):
