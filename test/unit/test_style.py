@@ -2,6 +2,8 @@
 
 import pytest
 
+import qstylizer.style
+
 
 @pytest.mark.parametrize(
     "selector, expected",
@@ -169,7 +171,9 @@ def test_create_child_rule_list(mocker, style_class, css):
     import qstylizer.style
     style_list = "StyleListInstance"
     name = "test"
-    mocker.patch.object(qstylizer.style, "StyleRuleList", return_value=style_list)
+    mocker.patch.object(
+        qstylizer.style, "StyleRuleList", return_value=style_list
+    )
     mocked_set_child_rule = mocker.patch.object(style_class, "set_child_rule")
     assert css.create_child_rule_list(name) == style_list
     mocked_set_child_rule.called_once_with(name, style_list)
@@ -216,7 +220,10 @@ def test_create_child_rules(
     css.create_child_rules(selector)
     mocked_split_selector.assert_called_once_with(selector)
     mocked_find_child_rule.assert_called_once_with(curr_name)
-    assert mocked_style.find_or_create_child_rule.call_count == find_or_create_child_rule_call_count
+    assert (
+        mocked_style.find_or_create_child_rule.call_count ==
+        find_or_create_child_rule_call_count
+    )
 
 
 def test_create_child_rule(mocker, style_class, css):
@@ -236,44 +243,55 @@ def test_create_child_rule(mocker, style_class, css):
     class_.assert_called_with(name=name, parent=css)
 
 
+def test_set_child_rule(css):
+    rule = qstylizer.style.ClassRule("QUnknown")
+    css.set_child_rule("QUnknown", rule)
+    assert rule in css.values()
+    css.clear()
+    css.set_child_rule("Test", 20)
+    assert isinstance(css.values()[0], qstylizer.style.PropRule)
+    assert css.values()[0].value == 20
+
+
+def test_add_child_rule(css):
+    rule = qstylizer.style.ClassRule("QUnknown")
+    css._add_child_rule(rule)
+    assert rule in css._child_rules.values()
+
+
+def test_selector():
+    rule = qstylizer.style.ClassRule("QCheckBox")
+    child_rule = qstylizer.style.SubControlRule("indicator")
+    child_rule._parent = rule
+    assert child_rule.selector == "QCheckBox::indicator"
+    assert rule.selector == "QCheckBox"
+
+
+def test_name():
+    rule = qstylizer.style.SubControlRule("indicator")
+    rule._name = "::indicator"
+    assert rule.name == "indicator"
+
+
+def test_scope_operator(css):
+    rule = css["aaaaa"]
+    child_rule = css["aaaaa"]["bbbbb"]
+    child_child_rule = css["aaaaa"]["bbbbb"]["ccccc"]
+    assert rule.scope_operator == ""
+    assert child_rule.scope_operator == "::"
+    assert child_child_rule.scope_operator == ":"
+
+
+def test_is_leaf(css):
+    assert css["aaaaa"].is_leaf()
+    assert css["bbbbb"]["ccccc"].is_leaf()
+    assert not css["bbbbb"].is_leaf()
+
+
 def test_is_top_level(css):
-    pass
-
-
-def test_style(css):
-    pass
-
-
-def test_to_string_recursive(css):
-    pass
-
-
-def test_getitem(css):
-    pass
-
-
-def test_getattr(css):
-    pass
-
-
-def test_delattr(css):
-    pass
-
-
-def test_setattr(css):
-    pass
-
-
-def test_deepcopy(css):
-    pass
-
-
-def test_repr(css):
-    pass
-
-
-def test_str(css):
-    pass
+    assert css["aaaaa"].is_top_level()
+    assert not css["bbbbb"]["ccccc"].is_top_level()
+    assert css["bbbbb"].is_top_level()
 
 
 @pytest.mark.parametrize(
