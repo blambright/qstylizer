@@ -10,5 +10,5 @@ API Reference
     :maxdepth: 1
     :glob:
 
-    setter/index
+    descriptor/index
     *
