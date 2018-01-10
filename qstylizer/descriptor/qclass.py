@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import qstylizer.style
 import qstylizer.descriptor.stylerule
 
 
@@ -9,6 +8,7 @@ class ClassStyleDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
 
     @property
     def rule_cls(self):
+        import qstylizer.style
         return qstylizer.style.ClassRule
 
 

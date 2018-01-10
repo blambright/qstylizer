@@ -2,7 +2,6 @@
 
 import copy
 
-import qstylizer.style
 import qstylizer.descriptor.stylerule
 
 
@@ -99,6 +98,7 @@ class PropDescriptor(qstylizer.descriptor.stylerule.StyleRuleDescriptor):
 
     @property
     def rule_cls(self):
+        import qstylizer.style
         return qstylizer.style.PropRule
 
 

@@ -2,8 +2,6 @@
 
 import copy
 
-import qstylizer.style
-
 
 class StyleRuleDescriptor(object):
     """StyleRule descriptor."""
@@ -25,6 +23,7 @@ class StyleRuleDescriptor(object):
         :param instance: The StyleRule instance
 
         """
+        import qstylizer.style
         assert isinstance(instance, qstylizer.style.StyleRule)
         if instance.find_child_rule(self.name) is None:
             new_style = self.rule_cls(
@@ -59,6 +58,7 @@ class StyleRuleDescriptor(object):
 
     @property
     def rule_cls(self):
+        import qstylizer.style
         return qstylizer.style.StyleRule
 
 
