@@ -10,6 +10,12 @@ Installation
 
     pip install qstylizer
 
+-------------
+Documentation
+-------------
+
+`Read the Docs <http://qstylizer.readthedocs.io/en/latest/index.html>`_.
+
 ------------
 Introduction
 ------------
