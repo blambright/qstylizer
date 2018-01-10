@@ -2,6 +2,12 @@
 qstylizer
 *********
 
+.. image:: https://www.travis-ci.org/blambright/qstylizer.svg?branch=master
+    :target: https://www.travis-ci.org/blambright/qstylizer
+
+.. image:: https://readthedocs.org/projects/qstylizer/badge/?version=latest
+    :target: http://qstylizer.readthedocs.io/en/latest/?badge=latest
+
 ------------
 Installation
 ------------
