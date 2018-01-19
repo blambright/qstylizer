@@ -65,14 +65,8 @@ The above example maps to this hierarchy::
 
 A StyleRule object is basically just an ordered dictionary with the keys as the
 style rule property names and the values as the style rule property values. Any
-attempt to get or set a public variable in the instance will add a key and value
+attempt to get a dictionary value in the instance will add a key and value
 into the dictionary (the style rule property:values).
-
-Because a StyleRule is a dictionary, the following is also valid:
-
-.. code-block:: python
-
-    css["QTabBar"]["close-button"]["background"].setValue("transparent")
 
 If *qstylizer* incorrectly determines that close-button is a pseudostate instead
 of a subcontrol, the colons can be specified in the key:
@@ -80,6 +74,18 @@ of a subcontrol, the colons can be specified in the key:
 .. code-block:: python
 
     css.QTabBar["::close-button"].background.setValue("transparent")
+
+Because of the hierarchical nature, the following are all valid:
+
+.. code-block:: python
+
+    css.QTabBar.closeButton.background.setValue("transparent")
+    css["QTabBar"].closeButton.background.setValue("transparent")
+    css["QTabBar"]["close-button"].background.setValue("transparent")
+    css["QTabBar"]["close-button"]["background"].setValue("transparent")
+    css["QTabBar"]["::close-button"]["background"].setValue("transparent")
+    css["QTabBar::close-button"].background.setValue("transparent")
+    css["QTabBar::close-button"]["background"].setValue("transparent")
 
 How Does it Work?
 +++++++++++++++++
@@ -102,6 +108,3 @@ Advantages
 
 What are the advantages? Ease of use and cleaner code. There is no need to
 worry about scope operators, brackets, and semi-colons.
-
-*qstylizer* makes it easy to query values of a stylesheet, if necessary.
-

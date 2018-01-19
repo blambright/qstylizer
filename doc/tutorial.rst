@@ -11,7 +11,7 @@ To create a stylesheet, create a :class:`qstylizer.style.StyleSheet` instance.
     >>> import qstylizer.style
     >>> css = qstylizer.style.StyleSheet()
 
-To create a style rule, simply assign an attribute in the instance.
+To add global properties, simply start setting values for any attribute.
 
 .. code-block:: python
 
@@ -21,10 +21,40 @@ To create a style rule, simply assign an attribute in the instance.
     color: green;
     border: 1px solid red;
 
+Here is how to create a style rule for `QTabBar::close-button` and set the
+`background` property to `transparent`:
+
+.. code-block:: python
+
+    >>> css.QTabBar.closeButton.background.setValue("transparent")
+    >>> print(css.toString())
+    * {
+        color: green;
+        border: 1px solid red;
+    }
+    QTabBar::close-button {
+        background: transparent;
+    }
+
+There are actually multiple ways to set a property value. All of the following
+statements below are equivalent and valid. Take your pick.
+
+.. code-block:: python
+
+    >>> css.QTabBar.closeButton.background.setValue("transparent")
+    >>> css["QTabBar"].closeButton.background.setValue("transparent")
+    >>> css["QTabBar"]["close-button"].background.setValue("transparent")
+    >>> css["QTabBar"]["close-button"]["background"].setValue("transparent")
+    >>> css["QTabBar"]["::close-button"]["background"].setValue("transparent")
+    >>> css["QTabBar::close-button"].background.setValue("transparent")
+    >>> css["QTabBar::close-button"]["background"].setValue("transparent")
+
+
 Global scope vs "* {}"
 ++++++++++++++++++++++
 
-Adding a sub-style rule will result in a different syntax for the global variables:
+Adding a sub-style rule will result in a different syntax for the global
+property values:
 
 .. code-block:: python
 
@@ -44,13 +74,15 @@ Adding a sub-style rule will result in a different syntax for the global variabl
         background-color: blue;
     }
 
-Any name can be used as an attribute using brackets.
+Unknown Property Names
+++++++++++++++++++++++
 
+Any name can be used as an attribute with the use of strings and brackets.
 
 .. code-block:: python
 
     >>> css = qstylizer.style.StyleSheet()
-    >>> css["QUnknownClass"]["::unknown-subcontrol"]["unknown-prop"].setValue("none")
+    >>> css["QUnknownClass::unknown-subcontrol"]["unknown-prop"].setValue("none")
     >>> print(css.toString())
     QUnknownClass::unknown-subcontrol {
         unknown-prop: none;
@@ -59,16 +91,28 @@ Any name can be used as an attribute using brackets.
 Not Operator (!)
 ++++++++++++++++
 
+Here is an example of how to use the `!` operator:
+
 .. code-block:: python
 
     css.QTabBar["!focus"].background.setValue("none")
 
 
+Object Property
++++++++++++++++
+
+Here is an example of how to set an object property style rule:
+
+.. code-block:: python
+
+    css['QLineEdit[echoMode="2"]'].background.setValue("none")
+
 Parser
 ++++++
 
 An existing stylesheet can be converted to a StyleSheet instance as a starting
-point.
+point. This is handy if you need to change property values in an existing
+template stylesheet.
 
 .. code-block:: python
 
@@ -96,10 +140,10 @@ point.
 String Output
 +++++++++++++
 
-The *StyleRule.toString()* function call with no parameters will just output
-the property:values of that style rule in css format. The
-*StyleRule.toString(recursive=True)* function call will output the style rule
-and all of the sub-style rules in its hierarchy.
+The :meth:`qstylizer.style.StyleRule.toString()` function call with no
+parameters will just output the property:values of that style rule in css
+format. The *qstylizer.style.StyleRule.toString(recursive=True)* function call
+will output the style rule and all of the sub-style rules in its hierarchy.
 
 .. code-block:: python
 
