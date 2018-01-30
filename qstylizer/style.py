@@ -553,7 +553,7 @@ class ChildClassRule(ClassRule):
         return " "
 
 
-class ObjectPropRule(StyleRule):
+class ObjectPropRule(ClassRule):
     """The ObjectPropRule definition.
 
     Example object property rule name: "[echoMode="2"]".
