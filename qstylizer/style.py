@@ -65,7 +65,7 @@ class StyleRule(
         }
 
     """
-    _split_regex = "\[[A-Za-z0-9='\"]+\]|\W*\w*"
+    _split_regex = "\*|\[[A-Za-z0-9='\"]+\]|\W*\w*"
 
     @classmethod
     def split_selector(cls, selector):
@@ -479,6 +479,19 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
         """
         return self.is_leaf()
 
+    def _to_string_recursive(self):
+        """Convert all child rules into a single stirng in css format.
+
+        Loop through all of the rules and generate a stylesheet string.
+
+        """
+        stylesheet = self.toString(recursive=False)
+        for key, rule in self._child_rules.items():
+            if key == "*":
+                continue
+            stylesheet += rule.toString(recursive=False)
+        return stylesheet
+
     def _to_string(self, recursive=True):
         """Return the selector and properties as a single string.
 
@@ -487,6 +500,7 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
         """
         if recursive:
             return self._to_string_recursive()
+
         rule_template = "{selector} {{\n{properties}}}\n"
         prop_template = "    {}: {};\n"
         selector = self.selector
@@ -495,15 +509,31 @@ class StyleSheet(StyleRule, qstylizer.descriptor.qclass.ClassStyleParent):
             prop_template = "{}: {};\n"
         else:
             selector = "*"
+
         properties = ""
         sheet = ""
         for key, value in self.items():
+
+            # Output the "*" property values if applicable.
+            if key == "*":
+                for global_key, global_value in self.__getitem__("*").items():
+                    if not isinstance(global_value, StyleRule):
+                        properties += prop_template.format(
+                            global_key, global_value
+                        )
+                    elif global_value.value is not None:
+                        properties += prop_template.format(
+                            global_key, global_value.value
+                        )
+
             if not isinstance(value, StyleRule):
                 properties += prop_template.format(key, value)
             elif value.value is not None:
                 properties += prop_template.format(key, value.value)
+
         if properties:
             sheet = rule_template.format(**locals())
+
         return sheet
 
     @property

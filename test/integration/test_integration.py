@@ -65,6 +65,9 @@ def test_style_list(css):
     assert "margin" in css["QCheckBox::subcontrol:pseudostate"].keys()
     assert css.toString() == textwrap.dedent(
         """
+        * {
+            margin: none;
+        }
         QCheckBox {
             border: none;
         }
@@ -79,9 +82,6 @@ def test_style_list(css):
         }
         #objectName {
             border: none;
-        }
-        * {
-            margin: none;
         }
         QCheckBox::subcontrol:pseudostate {
             margin: none;
@@ -301,3 +301,31 @@ def test_set_values(css):
         padding="3px",
     )
     assert css.QToolButton.border.value == "1px transparent lightblue"
+
+
+def test_global_object_prop(css):
+    css["*"].color.setValue("green")
+    css["*[test=\"2\"]"].color.setValue("red")
+    assert css.toString() == textwrap.dedent(
+        """
+        * {
+            color: green;
+        }
+        *[test="2"] {
+            color: red;
+        }
+        """
+    )[1:]
+
+
+def test_global_scope(css):
+    css["*"].color.setValue("red")
+    css.backgroundColor.setValue("green")
+    assert css.toString() == textwrap.dedent(
+        """
+        * {
+            color: red;
+            background-color: green;
+        }
+        """
+    )[1:]
