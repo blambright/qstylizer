@@ -52,6 +52,13 @@ PyQt/PySide stylesheets.
         padding="5px",
         backgroundColor="#333333"
     )
+    # The following is also valid and is equivalent to the statement above.
+    css["QToolButton::menu-button:pressed"].setValues(**{
+        "border": "1px solid #333333",
+        "padding": "5px",
+        "background-color": "#333333",
+    })
+
     css.QCheckBox.disabled.backgroundColor.setValue("#797979")
 
     widget = PyQt5.QtWidgets.QWidget()
