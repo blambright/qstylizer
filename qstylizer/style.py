@@ -335,7 +335,10 @@ class StyleRule(
     def _set_values(self, *args, **kwargs):
         """Set property values in the style rule."""
         for key, value in kwargs.items():
-            self.__getattribute__(key).setValue(value)
+            if "-" in key:
+                self.__getitem__(key).setValue(value)
+            else:
+                self.__getattribute__(key).setValue(value)
 
     def setValues(self, *args, **kwargs):
         """Set property values in the style rule.
