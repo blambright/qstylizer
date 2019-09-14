@@ -126,8 +126,13 @@ class StyleRule(
         :param value: A value of any type
 
         """
-        if type(value) in [str, unicode]:
-            return value.replace(";", "")
+        try:
+            if type(value) in [str, unicode]:
+                return value.replace(";", "")
+        except NameError:
+            if type(value) in [str, bytes]:
+                return value.replace(";", "")
+
         return value
 
     def find_or_create_child_rule(self, name):
