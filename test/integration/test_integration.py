@@ -224,7 +224,7 @@ def test_global_style(css):
     css.backgroundColor.setValue("red")
     css.border.setValue("none")
     css.QWidget.indicator.border.setValue("1px solid green")
-    print css.toString() == textwrap.dedent(
+    assert css.toString() == textwrap.dedent(
         """
         * {
             background-color: red;

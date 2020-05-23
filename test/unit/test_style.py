@@ -249,8 +249,8 @@ def test_set_child_rule(css):
     assert rule in css.values()
     css.clear()
     css.set_child_rule("Test", 20)
-    assert isinstance(css.values()[0], qstylizer.style.PropRule)
-    assert css.values()[0].value == 20
+    assert isinstance(list(css.values())[0], qstylizer.style.PropRule)
+    assert list(css.values())[0].value == 20
 
 
 def test_add_child_rule(css):
