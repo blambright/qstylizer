@@ -110,7 +110,7 @@ class StyleRule(
 
         """
         key = str(key)
-        if key and key[0] not in ["Q", "#", "[", " "] and key != inflection.camelize(key):
+        if key and key[0] not in ["Q", "#", "[", " "] and key != inflection.camelize(key) and not key.startswith("qproperty-"):
             key = inflection.underscore(key)
         return (
             key
