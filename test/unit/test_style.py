@@ -68,12 +68,18 @@ def test_split_selector(css, selector, expected):
         (":checked", "checked"),
         ("background_color", "background-color"),
         (12345, "12345"),
+        ("QWidget", "QWidget"),
+        ("Custom", "Custom"),
+        ("CustomTabBar", "CustomTabBar")
     ],
     ids=[
         "with-normal-key",
         "with-semicolon",
         "with-underscore",
         "with-nonstring",
+        "with-qclassname",
+        "with-capital",
+        "with-camelize",
     ]
 )
 def test_sanitize_key(css, key, expected):
