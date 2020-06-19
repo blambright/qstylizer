@@ -70,7 +70,8 @@ def test_split_selector(css, selector, expected):
         (12345, "12345"),
         ("QWidget", "QWidget"),
         ("Custom", "Custom"),
-        ("CustomTabBar", "CustomTabBar")
+        ("CustomTabBar", "CustomTabBar"),
+        ("qproperty-drawBase", "qproperty-drawBase"),
     ],
     ids=[
         "with-normal-key",
@@ -80,6 +81,7 @@ def test_split_selector(css, selector, expected):
         "with-qclassname",
         "with-capital",
         "with-camelize",
+        "with-qproperty",
     ]
 )
 def test_sanitize_key(css, key, expected):
