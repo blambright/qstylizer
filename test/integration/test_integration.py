@@ -329,3 +329,106 @@ def test_global_scope(css):
         }
         """
     )[1:]
+
+
+def test_update_overwrite():
+    import qstylizer.parser
+
+    style1 = """
+    QWidget {
+        background-color: blue;
+    }
+    """
+    style2 = """
+    QWidget {
+        background-color: red;
+    }
+    """
+    qss1 = qstylizer.parser.parse(style1)
+    qss2 = qstylizer.parser.parse(style2)
+
+    qss1.update(qss2)
+
+    assert qss1.toString() == qss2.toString()
+
+
+def test_update_overwrite_and_append():
+    import qstylizer.parser
+
+    style1 = """
+    QWidget {
+        background-color: blue;
+    }
+    QMenuBar {
+        color: yellow;
+    }
+    """
+    style2 = """
+    QWidget {
+        background-color: red;
+    }
+    QTabBar {
+        color: green;
+    }
+    """
+    qss1 = qstylizer.parser.parse(style1)
+    qss2 = qstylizer.parser.parse(style2)
+
+    qss1.update(qss2)
+
+    assert qss1.toString() == textwrap.dedent(
+        """
+        QWidget {
+            background-color: red;
+        }
+        QMenuBar {
+            color: yellow;
+        }
+        QTabBar {
+            color: green;
+        }
+        """
+    )[1:]
+
+
+def test_update_nested():
+    import qstylizer.parser
+
+    style1 = """
+    QWidget {
+        color: yellow;
+    }
+    QWidget:item {
+        color: white;
+    }
+    """
+    style2 = """
+    QWidget {
+        background-color: red;
+    }
+    QWidget:item:selected {
+        background-color: blue;
+    }
+    """
+
+    qss1 = qstylizer.parser.parse(style1)
+    qss2 = qstylizer.parser.parse(style2)
+
+    qss1.update(qss2)
+
+    assert qss1.toString() == textwrap.dedent(
+        """
+        QWidget {
+            color: yellow;
+            background-color: red;
+        }
+        QWidget:item {
+            color: white;
+        }
+        QWidget:item:selected {
+            background-color: blue;
+        }
+        """
+    )[1:]
+
+    assert qss1.QWidget.color.value == "yellow"
