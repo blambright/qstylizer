@@ -345,6 +345,18 @@ class StyleRule(
             else:
                 self.__getattribute__(key).setValue(value)
 
+    def update(self, *args, **kwargs):
+        if isinstance(args[0], StyleRule):
+            for key, child_rule in args[0]._child_rules.items():
+                rule = self.find_or_create_child_rule(key)
+
+                for k, v in child_rule.items():
+                    if isinstance(v, StyleRule):
+                        v = copy.deepcopy(v)
+                        v._parent = rule
+
+                        rule[k] = v
+
     def setValues(self, *args, **kwargs):
         """Set property values in the style rule.
 
@@ -438,16 +450,23 @@ class StyleRule(
         """
         cls = self.__class__
         result = cls.__new__(cls)
+        result._name = self._name
+        result._value = self._value
         result._parent = None
         result._child_rules = collections.OrderedDict()
         memo[id(self)] = result
         for k, v in self.__dict__.items():
+            if k in ("_child_rules",):
+                continue
             setattr(result, k, copy.deepcopy(v, memo))
+
         result.clear()
         for k, v in self.items():
             if isinstance(v, StyleRule):
+                v = copy.deepcopy(v, memo)
                 v._parent = result
-            result.set_child_rule(k, copy.deepcopy(v, memo))
+                result.set_child_rule(k, v)
+
         result._parent = self._parent
         return result
 
