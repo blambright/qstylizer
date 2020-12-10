@@ -7,7 +7,7 @@ import qstylizer.style
 
 class QSSParser(CSS21Parser):
     def parse_declaration(self, tokens):
-        declaration = super().parse_declaration(tokens)
+        declaration = super(QSSParser, self).parse_declaration(tokens)
         if tokens:
             name = tokens[0].value
             if name.startswith("qproperty-"):
