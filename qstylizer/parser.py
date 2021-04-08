@@ -1,32 +1,43 @@
 # coding: utf-8
 
-from tinycss.css21 import CSS21Parser
+import tinycss2
 
 import qstylizer.style
 
 
-class QSSParser(CSS21Parser):
-    def parse_declaration(self, tokens):
-        declaration = super(QSSParser, self).parse_declaration(tokens)
-        if tokens:
-            name = tokens[0].value
-            if name.startswith("qproperty-"):
-                declaration.name = name
-        return declaration
+def _strip_whitespace_recursive(value):
+    for i, v in enumerate(value):
+        if isinstance(v, list):
+            value[i].value = _strip_whitespace_recursive(v)
+        else:
+            try:
+                value[i].value = v.value.strip()
+            except AttributeError:
+                pass
+    return value
 
 
 def parse(stylesheet):
-    """Parse a stylesheet using tinycss and return a StyleSheet instance.
+    """Parse a stylesheet using tinycss2 and return a StyleSheet instance.
 
     :param stylesheet: A string of an existing stylesheet.
 
     """
-    parsed_stylesheet = QSSParser().parse_stylesheet(stylesheet)
+    parsed_stylesheet = tinycss2.parse_stylesheet(
+        stylesheet, skip_comments=True, skip_whitespace=True
+    )
     css = qstylizer.style.StyleSheet()
-    for rule in parsed_stylesheet.rules:
-        selector = rule.selector.as_css()
-        for declaration in rule.declarations:
-            prop = declaration.name
-            value = declaration.value.as_css()
-            css[selector][prop] = value
+    for node in parsed_stylesheet:
+        if node.type == "error":
+            raise ValueError("Cannot parse Stylesheet: " + node.message)
+        selector = tinycss2.serialize(_strip_whitespace_recursive(node.prelude))
+        declaration_list = tinycss2.parse_declaration_list(
+            node.content, skip_comments=True, skip_whitespace=True
+        )
+        for declaration in declaration_list:
+            if declaration.type == "declaration":
+                prop = declaration.name.strip()
+                v = _strip_whitespace_recursive(declaration.value)
+                value = tinycss2.serialize(v)
+                css[selector][prop] = value
     return css
