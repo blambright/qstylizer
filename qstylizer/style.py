@@ -65,7 +65,7 @@ class StyleRule(
         }
 
     """
-    _split_regex = "\*|\[[A-Za-z0-9='\"]+\]|\W*\w*"
+    _split_regex = r"\*|\[[A-Za-z0-9='\"]+\]|\W*\w*"
 
     @classmethod
     def split_selector(cls, selector):
