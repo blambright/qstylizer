@@ -2,7 +2,7 @@
 qstylizer
 *********
 
-.. image:: https://www.travis-ci.org/blambright/qstylizer.svg?branch=master
+.. image:: https://travis-ci.com/blambright/qstylizer.svg?branch=master
     :target: https://www.travis-ci.org/blambright/qstylizer
 
 .. image:: https://readthedocs.org/projects/qstylizer/badge/?version=latest
