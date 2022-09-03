@@ -8,6 +8,7 @@ import qstylizer.descriptor.stylerule
 PROPERTY_VALUES = {
     "absolute",
     "active",
+    "alignment",
     "alternate-base",
     "always",
     "auto",
@@ -32,6 +33,7 @@ PROPERTY_VALUES = {
     "groove",
     "highlight",
     "highlighted-text",
+    "icon-size",
     "inset",
     "italic",
     "large",
@@ -121,6 +123,7 @@ class PropParent(qstylizer.descriptor.stylerule.StyleRuleParent):
     qtTableType = _descriptor_cls("-qt-table-type")
     qtUserState = _descriptor_cls("-qt-user-state")
     alternateBackgroundColor = _descriptor_cls("alternate-background-color")
+    alignment = _descriptor_cls("alignment")
     background = _descriptor_cls("background")
     backgroundAttachment = _descriptor_cls("background-attachment")
     backgroundClip = _descriptor_cls("background-clip")
@@ -165,6 +168,7 @@ class PropParent(qstylizer.descriptor.stylerule.StyleRuleParent):
     fontVariant = _descriptor_cls("font-variant")
     fontWeight = _descriptor_cls("font-weight")
     height = _descriptor_cls("height")
+    iconSize = _descriptor_cls("icon-size")
     image = _descriptor_cls("image")
     imagePosition = _descriptor_cls("image-position")
     lineHeight = _descriptor_cls("line-height")
