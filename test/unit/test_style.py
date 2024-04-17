@@ -25,6 +25,10 @@ import qstylizer.style
             ["QWidget", "[echoMode=2]"]
         ),
         (
+            'QWidget[custom_prop="1"]',
+            ["QWidget", '[custom_prop="1"]']
+        ),
+        (
             "QWidget#objectName",
             ["QWidget", "#objectName"]
         ),
@@ -43,6 +47,10 @@ import qstylizer.style
         (
             "QTreeView::branch:!has-children:adjoins-item",
             ["QTreeView", "::branch", ":!has_children", ":adjoins_item"]
+        ),
+        (
+            '*[custom_prop="custom_value:1"]',
+            ["*", '[custom_prop="custom_value:1"]']
         )
     ],
     ids=[
@@ -50,11 +58,13 @@ import qstylizer.style
         "with-pseudostate",
         "with-indicator-and-pseudostate",
         "with-object-property",
+        "with-custom-object-property",
         "with-class-and-object",
         "with-child-class",
         "with-object",
         "with-only-pseudostate",
-        "with-not-operator-and-dashes"
+        "with-not-operator-and-dashes",
+        "with-global-custom-prop"
     ]
 )
 def test_split_selector(css, selector, expected):

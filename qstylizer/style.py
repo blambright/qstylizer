@@ -65,7 +65,7 @@ class StyleRule(
         }
 
     """
-    _split_regex = r"\*|\[[A-Za-z0-9='\"]+\]|\W*\w*"
+    _split_regex = '\*|\[[A-Za-z0-9=\'"_:]+\]|\W*\w*'
 
     @classmethod
     def split_selector(cls, selector):
@@ -110,14 +110,17 @@ class StyleRule(
 
         """
         key = str(key)
-        if key and key[0] not in ["Q", "#", "[", " "] and key != inflection.camelize(key) and not key.startswith("qproperty-"):
+        if (
+            key and key[0] not in ["Q", "#", "[", " "] and
+            key != inflection.camelize(key) and
+            not key.startswith("qproperty-")
+        ):
             key = inflection.underscore(key)
-        return (
-            key
-            .replace("not_", "!")
-            .replace(":", "")
-            .replace("_", "-")
-        )
+
+        if key and key[0] != "[":
+            key = key.replace("not_", "!").replace(":", "").replace("_", "-")
+
+        return key
 
     @staticmethod
     def _sanitize_value(value):
